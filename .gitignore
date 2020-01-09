@@ -1,2 +1,6 @@
-elpa/
-eshell/
+*
+
+!README.org
+!init.el
+!.gitignore
+!useful_links.org
