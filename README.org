@@ -1,3 +1,37 @@
+* Table of Contents :TOC:
+- [[#about-this-configuration][About This Configuration]]
+  - [[#find-this-file-first-of-all][Find This File First of All]]
+  - [[#applying-changes][Applying Changes]]
+- [[#package-manager][Package Manager]]
+  - [[#package-repositories][Package Repositories]]
+  - [[#use-package][use-package]]
+- [[#better-defaults][Better Defaults]]
+  - [[#disable][Disable]]
+  - [[#enable][Enable]]
+  - [[#other][Other]]
+- [[#packages][Packages]]
+  - [[#helm][Helm]]
+  - [[#company][Company]]
+  - [[#company-box][Company Box]]
+  - [[#projectile][Projectile]]
+  - [[#lsp-mode][LSP Mode]]
+  - [[#eglot][Eglot]]
+  - [[#magit][Magit]]
+  - [[#doom-modeline][Doom Modeline]]
+  - [[#multiple-cursors][Multiple Cursors]]
+  - [[#which-key][Which Key]]
+  - [[#hl-todo][hl-todo]]
+  - [[#beacon][Beacon]]
+  - [[#toc-org][toc-org]]
+- [[#theme][Theme]]
+  - [[#disable-all-themes-before-loading-a-theme][Disable all themes before loading a theme]]
+  - [[#i-use-doom-spacegrey][I use doom-spacegrey]]
+  - [[#a-light-emacs-theme-thats-well-suited-for-org-mode][A light emacs theme that's well suited for org-mode]]
+- [[#programming-languages][Programming Languages]]
+  - [[#python][Python]]
+- [[#fun][Fun]]
+- [[#experimental][Experimental]]
+
 * About This Configuration
 ** Find This File First of All
 #+BEGIN_SRC emacs-lisp
@@ -180,6 +214,13 @@ checking executes in microseconds, it does not bother me.
     :init
     (setq beacon-color "#D18770")
     (beacon-mode 1))
+#+END_SRC
+
+** toc-org
+#+BEGIN_SRC emacs-lisp
+  (use-package toc-org
+    :config
+    (add-hook 'org-mode-hook 'toc-org-mode))
 #+END_SRC
 
 * Theme
