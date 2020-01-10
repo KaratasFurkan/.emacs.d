@@ -191,15 +191,15 @@ checking executes in microseconds, it does not bother me.
 
 ** Multiple Cursors
 #+BEGIN_SRC emacs-lisp
-(use-package multiple-cursors
-  :init (setq mc/always-run-for-all t)
-  :bind (("C-M-n" . mc/mark-next-word-like-this)
-	 ("C-M-p" . 'mc/mark-previous-like-this)
-	 ("C-M-S-n" . mc/skip-to-next-like-this)
-	 ("C-M-S-p" . mc/skip-to-previous-like-this)
-	 ("C-S-n" . mc/unmark-previous-like-this)
-	 ("C-S-p" . mc/unmark-next-like-this)
-	 ("C-M-<mouse-1>" . mc/add-cursor-on-click)))
+  (use-package multiple-cursors
+    :init (setq mc/always-run-for-all t)
+    :bind (("C-M-n" . mc/mark-next-like-this)
+	   ("C-M-p" . mc/mark-previous-like-this)
+	   ("C-M-S-n" . mc/skip-to-next-like-this)
+	   ("C-M-S-p" . mc/skip-to-previous-like-this)
+	   ("C-S-n" . mc/unmark-previous-like-this)
+	   ("C-S-p" . mc/unmark-next-like-this)
+	   ("C-M-<mouse-1>" . mc/add-cursor-on-click))
 #+END_SRC
 
 ** Which Key
