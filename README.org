@@ -1,10 +1,14 @@
-* Table of Contents :TOC:
+* Table of Contents :TOC_5:
 - [[#about-this-configuration][About This Configuration]]
   - [[#find-this-file-first-of-all][Find This File First of All]]
   - [[#applying-changes][Applying Changes]]
 - [[#package-manager][Package Manager]]
   - [[#package-repositories][Package Repositories]]
+    - [[#initialize-package-repositories][Initialize package repositories]]
   - [[#use-package][use-package]]
+    - [[#install-use-package-if-not-installed][Install use-package if not installed]]
+    - [[#always-install-packages-if-not-installed][Always install packages if not installed]]
+    - [[#always-compile-packages-and-use-the-newest-version-available][Always compile packages, and use the newest version available.]]
 - [[#better-defaults][Better Defaults]]
   - [[#disable][Disable]]
   - [[#enable][Enable]]
@@ -23,12 +27,15 @@
   - [[#hl-todo][hl-todo]]
   - [[#beacon][Beacon]]
   - [[#toc-org][toc-org]]
-- [[#theme][Theme]]
+  - [[#vterm][vterm]]
+- [[#appearance][Appearance]]
+  - [[#font][Font]]
   - [[#disable-all-themes-before-loading-a-theme][Disable all themes before loading a theme]]
   - [[#i-use-doom-spacegrey][I use doom-spacegrey]]
   - [[#a-light-emacs-theme-thats-well-suited-for-org-mode][A light emacs theme that's well suited for org-mode]]
 - [[#programming-languages][Programming Languages]]
   - [[#python][Python]]
+- [[#keybindings][Keybindings]]
 - [[#fun][Fun]]
 - [[#experimental][Experimental]]
 
@@ -103,31 +110,34 @@ checking executes in microseconds, it does not bother me.
 
 ** Enable
 #+BEGIN_SRC emacs-lisp
-  (delete-selection-mode 1)
-  (show-paren-mode 1)
-  (global-subword-mode 1)
+  (delete-selection-mode)
+  (show-paren-mode)
+  (global-subword-mode)
   (global-hl-line-mode)
-  (winner-mode 1)
+  (winner-mode)
+  (save-place-mode)
+  (column-number-mode)
 #+END_SRC
 
 ** Other
 #+BEGIN_SRC emacs-lisp
-  (setq-default custom-file (concat user-emacs-directory ".custom.el"))
-  (load custom-file)
-  (set-face-attribute 'default nil
-		    :family "Source Code Pro")
+  (setq
+   custom-file (concat user-emacs-directory ".custom.el") ; Don't load
+   save-place-file (concat user-emacs-directory ".places")
+   backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups")))
+   auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory ".saves") t))
+   gc-cons-threshold 1024 * 1024 * 200 ; 200mb
+   recenter-positions '(middle 0.2 top 0.8 bottom) ; C-l positions
+   frame-resize-pixelwise t
+   backup-by-copying-when-linked t
+   sentence-end-double-space nil
+   require-final-newline t
+   inhibit-startup-message t
+   initial-scratch-message nil)
+
   (defalias 'yes-or-no-p 'y-or-n-p)
-  (setq frame-resize-pixelwise t)
-  ;; Use shell-like backspace C-h, rebind help to C-?
-  (define-key key-translation-map [?\C-h] [?\C-?])
-  (global-set-key (kbd "C-?") 'help-command)
-  (global-set-key (kbd "M-o") 'other-window)
-  ;; Undo
-  (global-set-key (kbd "C-u") 'undo)
-  ;; Recenter positions values (C-l)
-  (setq recenter-positions '(middle 0.2 top 0.8 bottom))
-  (global-set-key (kbd "M-u") 'winner-undo)
-  (global-set-key (kbd "M-U") 'winner-redo)
+
+  (add-hook 'before-save-hook 'whitespace-cleanup)
 #+END_SRC
 
 * Packages
@@ -151,8 +161,8 @@ checking executes in microseconds, it does not bother me.
 ** Company Box
 - TODO: icon & font sizes are broken.
 #+BEGIN_SRC emacs-lisp
-  (use-package company-box
-    :hook (company-mode . company-box-mode))
+;;  (use-package company-box
+;;    :hook (company-mode . company-box-mode))
 #+END_SRC
 
 ** Projectile
@@ -223,7 +233,17 @@ checking executes in microseconds, it does not bother me.
     (add-hook 'org-mode-hook 'toc-org-mode))
 #+END_SRC
 
-* Theme
+** vterm
+#+BEGIN_SRC emacs-lisp
+  (use-package vterm)
+#+END_SRC
+
+* Appearance
+** Font
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'default nil :family "Source Code Pro")
+#+END_SRC
+
 ** Disable all themes before loading a theme
 #+BEGIN_SRC emacs-lisp
   (defun disable-all-themes ()
@@ -250,6 +270,16 @@ checking executes in microseconds, it does not bother me.
 
 * Programming Languages
 ** Python
+* Keybindings
+#+BEGIN_SRC emacs-lisp
+  (keyboard-translate ?\C-h ?\C-?) ;; Use shell-like backspace C-h
+  (global-set-key (kbd "C-?") 'help-command)
+  (global-set-key (kbd "M-o") 'other-window)
+  (global-set-key (kbd "C-u") 'undo)
+  (global-set-key (kbd "M-u") 'winner-undo)
+  (global-set-key (kbd "M-U") 'winner-redo)
+#+END_SRC
+
 * Fun
 * Experimental
 #+BEGIN_SRC emacs-lisp
