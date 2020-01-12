@@ -307,6 +307,25 @@ checking executes in microseconds, it does not bother me.
 
 * Programming Languages
 ** Python
+#+BEGIN_SRC emacs-lisp
+  (use-package python
+    :bind (:map python-mode-map
+		("M-." . xref-find-definitions))
+    :config
+    (use-package pyvenv)
+    (defun fk/activate-venv ()
+      "source: https://github.com/kadircancetin/.emacs.d/blob/master/README.org#python"
+      (interactive)
+      (progn
+	(let* ((pdir (projectile-project-root)) (pfile (concat pdir ".venv")))
+	  (if (file-exists-p pfile)
+	      (pyvenv-workon (with-temp-buffer
+			       (insert-file-contents pfile)
+			       (nth 0 (split-string (buffer-string)))))))))
+    (add-hook 'python-mode-hook 'fk/activate-venv)
+    (add-hook 'python-mode-hook 'eglot-ensure)
+    (add-hook 'before-save-hook 'eglot-format-buffer))
+#+END_SRC
 * Keybindings
 #+BEGIN_SRC emacs-lisp
   (keyboard-translate ?\C-h ?\C-?) ;; Use shell-like backspace C-h
