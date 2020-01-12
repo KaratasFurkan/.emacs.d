@@ -15,6 +15,7 @@
   - [[#other][Other]]
 - [[#packages][Packages]]
   - [[#helm][Helm]]
+    - [[#helm-projectile][Helm Projectile]]
   - [[#company][Company]]
   - [[#company-box][Company Box]]
   - [[#projectile][Projectile]]
@@ -151,13 +152,28 @@ checking executes in microseconds, it does not bother me.
 ** Helm
 #+BEGIN_SRC emacs-lisp
   (use-package helm
+    :init
+    (setq
+     helm-M-x-always-save-history t
+     helm-M-x-input-history t)
     :bind
-    ("M-x" . helm-M-x)
-    ("C-x C-f" . helm-find-files)
-    ("C-x C-b" . helm-buffers-list)
-    ("C-x b" . helm-buffers-list))
+    (("M-x" . helm-M-x)
+     ("C-x C-f" . helm-find-files)
+     ("C-x C-b" . helm-buffers-list)
+     ("C-x b" . helm-buffers-list)
+     ("C-x C-r" . helm-recentf)
+     ("C-x i" . helm-imenu-in-all-buffers) ; FIXME: does not work.
+     ("C-x C-i" . helm-imenu)
+     ("M-y" . helm-show-kill-ring)
+     ;;:map helm-find-files-map
+     ;;("<tab>" . helm-ff-RET)
+     ))
 #+END_SRC
-
+*** Helm Projectile
+#+BEGIN_SRC emacs-lisp
+ (use-package helm-projectile
+   :bind (("C-x f" . helm-projectile)))
+#+END_SRC
 ** Company
 #+BEGIN_SRC emacs-lisp
   (use-package company
@@ -174,7 +190,9 @@ checking executes in microseconds, it does not bother me.
 
 ** Projectile
 #+BEGIN_SRC emacs-lisp
-(use-package projectile)
+(use-package projectile
+  :config
+  (projectile-mode))
 #+END_SRC
 
 ** LSP Mode
@@ -206,7 +224,7 @@ checking executes in microseconds, it does not bother me.
 	   ("C-M-S-p" . mc/skip-to-previous-like-this)
 	   ("C-S-n" . mc/unmark-previous-like-this)
 	   ("C-S-p" . mc/unmark-next-like-this)
-	   ("C-M-<mouse-1>" . mc/add-cursor-on-click))
+	   ("C-M-<mouse-1>" . mc/add-cursor-on-click)))
 #+END_SRC
 
 ** Which Key
@@ -277,7 +295,7 @@ checking executes in microseconds, it does not bother me.
 ** I use doom-spacegrey
 #+BEGIN_SRC emacs-lisp
 (use-package doom-themes
-  :config
+  :init
   (load-theme 'doom-spacegrey t))
 #+END_SRC
 
