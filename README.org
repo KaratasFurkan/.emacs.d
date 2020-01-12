@@ -5,7 +5,7 @@
 - [[#package-manager][Package Manager]]
   - [[#package-repositories][Package Repositories]]
     - [[#initialize-package-repositories][Initialize package repositories]]
-  - [[#use-package][use-package]]
+  - [[#use-package][Use Package]]
     - [[#install-use-package-if-not-installed][Install use-package if not installed]]
     - [[#always-install-packages-if-not-installed][Always install packages if not installed]]
     - [[#always-compile-packages-and-use-the-newest-version-available][Always compile packages, and use the newest version available.]]
@@ -43,11 +43,11 @@
 * About This Configuration
 ** Find This File First of All
 #+BEGIN_SRC emacs-lisp
-(defun find-config ()
+(defun fk/find-config ()
   "Open config file"
   (interactive)
   (find-file config-org))
-(global-set-key (kbd "C-x c") 'find-config)
+(global-set-key (kbd "C-x c") 'fk/find-config)
 #+END_SRC
 
 ** Applying Changes
@@ -70,14 +70,14 @@ checking executes in microseconds, it does not bother me.
 ** Package Repositories
 *** Initialize package repositories
 #+BEGIN_SRC emacs-lisp
-(require 'package)
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-			 ("melpa" . "https://melpa.org/packages/")
-			 ("org" . "https://orgmode.org/elpa/")))
-(package-initialize)
+  (require 'package)
+  (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+			   ("melpa" . "https://melpa.org/packages/")
+			   ("org" . "https://orgmode.org/elpa/")))
+  (package-initialize)
 #+END_SRC
 
-** use-package
+** Use Package
 *** Install use-package if not installed
 #+BEGIN_SRC emacs-lisp
 (unless (package-installed-p 'use-package)
@@ -88,7 +88,9 @@ checking executes in microseconds, it does not bother me.
 *** Always install packages if not installed
 #+BEGIN_SRC emacs-lisp
 (require 'use-package-ensure)
-(setq use-package-always-ensure t)
+(setq use-package-always-ensure t
+;;      use-package-always-defer t
+)
 #+END_SRC
 
 *** Always compile packages, and use the newest version available.
@@ -99,7 +101,6 @@ checking executes in microseconds, it does not bother me.
 #+END_SRC
 
 * Better Defaults
-- TODO: this part is a mess, i'll tidy up.
 ** Disable
 #+BEGIN_SRC emacs-lisp
   (setq ring-bell-function 'ignore)
@@ -127,18 +128,23 @@ checking executes in microseconds, it does not bother me.
    save-place-file (concat user-emacs-directory ".places")
    backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups")))
    auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory ".saves") t))
-   gc-cons-threshold 1024 * 1024 * 200 ; 200mb
+   gc-cons-threshold (* 1024 1024 20) ; 20mb
+   truncate-lines t
    recenter-positions '(middle 0.2 top 0.8 bottom) ; C-l positions
    frame-resize-pixelwise t
-   backup-by-copying-when-linked t
+   backup-by-copying t
    sentence-end-double-space nil
    require-final-newline t
    inhibit-startup-message t
-   initial-scratch-message nil)
+   initial-scratch-message nil
+   scroll-conservatively 10000 ; Smooth scrolling
+   indent-tabs-mode nil
+   show-trailing-whitespace t)
 
   (defalias 'yes-or-no-p 'y-or-n-p)
 
   (add-hook 'before-save-hook 'whitespace-cleanup)
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 #+END_SRC
 
 * Packages
