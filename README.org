@@ -28,6 +28,7 @@
   - [[#beacon][Beacon]]
   - [[#toc-org][toc-org]]
   - [[#vterm][vterm]]
+  - [[#emacs-dashboard][Emacs Dashboard]]
 - [[#appearance][Appearance]]
   - [[#font][Font]]
   - [[#disable-all-themes-before-loading-a-theme][Disable all themes before loading a theme]]
@@ -236,6 +237,18 @@ checking executes in microseconds, it does not bother me.
 ** vterm
 #+BEGIN_SRC emacs-lisp
   (use-package vterm)
+#+END_SRC
+
+** Emacs Dashboard
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard
+    :defer nil
+    :init
+    (setq dashboard-startup-banner 'logo)
+    (setq dashboard-set-heading-icons t)
+    (setq dashboard-set-file-icons t)
+    :config
+    (dashboard-setup-startup-hook))
 #+END_SRC
 
 * Appearance
