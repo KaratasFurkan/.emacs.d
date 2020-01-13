@@ -177,6 +177,12 @@ checking executes in microseconds, it does not bother me.
 ** Company
 #+BEGIN_SRC emacs-lisp
   (use-package company
+    :init
+    (setq company-idle-delay 0
+	  company-minimum-prefix-length 1
+	  company-tooltip-align-annotations t
+	  ;; Disable single-candidate and echo-area frontends:
+	  company-frontends '(company-box-frontend))
     :config
     (global-company-mode))
 #+END_SRC
@@ -184,8 +190,41 @@ checking executes in microseconds, it does not bother me.
 ** Company Box
 - TODO: icon & font sizes are broken.
 #+BEGIN_SRC emacs-lisp
-;;  (use-package company-box
-;;    :hook (company-mode . company-box-mode))
+  (use-package company-box
+    :hook (company-mode . company-box-mode)
+    :config
+    (setq company-box-show-single-candidate t
+	  company-box-icons-alist 'company-box-icons-all-the-icons
+	  company-box-icons-all-the-icons
+	  (let ((all-the-icons-scale-factor 1)
+		(all-the-icons-default-adjust 0))
+	    `((Unknown       . ,(all-the-icons-octicon "file-text" :face 'all-the-icons-purple))
+	      (Text          . ,(all-the-icons-faicon "file-text-o" :face 'all-the-icons-green))
+	      (Method        . ,(all-the-icons-faicon "cube" :face 'all-the-icons-blue))
+	      (Function      . ,(all-the-icons-faicon "cube" :face 'all-the-icons-blue))
+	      (Constructor   . ,(all-the-icons-faicon "cube" :face 'all-the-icons-blue))
+	      (Field         . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+	      (Variable      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-blue))
+	      (Class         . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
+	      (Interface     . ,(all-the-icons-faicon "cogs" :face 'all-the-icons-red))
+	      (Module        . ,(all-the-icons-alltheicon "less" :face 'all-the-icons-red))
+	      (Property      . ,(all-the-icons-faicon "wrench" :face 'all-the-icons-red))
+	      (Unit          . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+	      (Value         . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+	      (Enum          . ,(all-the-icons-faicon "file-text-o" :face 'all-the-icons-red))
+	      (Keyword       . ,(all-the-icons-material "format_align_center" :face 'all-the-icons-red))
+	      (Snippet       . ,(all-the-icons-material "content_paste" :face 'all-the-icons-red))
+	      (Color         . ,(all-the-icons-material "palette" :face 'all-the-icons-red))
+	      (File          . ,(all-the-icons-faicon "file" :face 'all-the-icons-red))
+	      (Reference     . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+	      (Folder        . ,(all-the-icons-faicon "folder" :face 'all-the-icons-red))
+	      (EnumMember    . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+	      (Constant      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+	      (Struct        . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
+	      (Event         . ,(all-the-icons-faicon "bolt" :face 'all-the-icons-red))
+	      (Operator      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+	      (TypeParameter . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
+	      (Template      . ,(all-the-icons-octicon "file-code" :face 'all-the-icons-green))))))
 #+END_SRC
 
 ** Projectile
