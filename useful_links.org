@@ -21,4 +21,6 @@
 | https://medium.com/@suvratapte/configuring-emacs-from-scratch-intro-3157bed9d040 | blog |
 | https://emacs.christianbaeuerlein.com/                                           | blog |
 | https://emacs.zeef.com/ehartc (ilginç bir site)                                  | blog |
-
+| https://github.com/Atman50/emacs-config                                          |   18 |
+| https://github.com/dakra/dmacs                                                   |   49 |
+| https://github.com/zarkone/literally.el/blob/master/literally.org                |    5 |
