@@ -296,11 +296,42 @@ checking executes in microseconds, it does not bother me.
      ;;("<tab>" . helm-ff-RET)
      ))
 #+END_SRC
+
 *** Helm Projectile
 #+BEGIN_SRC emacs-lisp
  (use-package helm-projectile
    :bind (("C-x f" . helm-projectile)))
 #+END_SRC
+
+*** Helm Ag
+#+begin_src emacs-lisp
+  (use-package helm-ag
+    :init
+    (setq
+     helm-ag-base-command
+     "rg -S --no-heading --color=never --line-number --max-columns 200")
+    :bind ("C-M-s" . fk/helm-do-ag-project-root-or-current-dir))
+#+end_src
+
+*** Helm Xref
+#+begin_src emacs-lisp
+  (use-package helm-xref
+    :init
+    (setq xref-prompt-for-identifier nil)
+    :bind
+    (("M-r" . xref-find-references)))
+#+end_src
+
+** Shackle
+#+BEGIN_SRC emacs-lisp
+  (use-package shackle
+    :defer 0.2
+    :config
+    (shackle-mode 1)
+    (setq shackle-rules
+      '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :size 0.3))))
+#+END_SRC
+
 ** Company
 #+BEGIN_SRC emacs-lisp
   (use-package company
