@@ -505,7 +505,8 @@ checking executes in microseconds, it does not bother me.
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
     :config
-    (yas-global-mode))
+    (yas-global-mode)
+    (add-hook 'snippet-mode-hook (lambda () (setq require-final-newline nil))))
 #+END_SRC
 
 ** YASnippet-snippets
