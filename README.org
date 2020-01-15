@@ -102,13 +102,27 @@ checking executes in microseconds, it does not bother me.
 #+END_SRC
 
 * Better Defaults
-** Disable
-#+BEGIN_SRC emacs-lisp
-  (setq ring-bell-function 'ignore)
+** early-init.el
+#+begin_src emacs-lisp :tangle early-init.el
+  (add-hook 'post-gc-hook
+	'(lambda ()
+	   (message "%s %s" "GC COLLECT" (format-time-string "%-I:%M"))))
+  (setq gc-cons-threshold most-positive-fixnum
+	gc-cons-percentage 1)
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
+  (set-face-attribute 'default nil :family "Source Code Pro" :height 90)
+#+end_src
+
+** Disable
+#+BEGIN_SRC emacs-lisp
   (blink-cursor-mode -1)
+  (setq ring-bell-function 'ignore
+    tab-bar-show nil
+    inhibit-startup-message t
+    initial-scratch-message nil
+    create-lockfiles nil)
 #+END_SRC
 
 ** Enable
@@ -120,6 +134,8 @@ checking executes in microseconds, it does not bother me.
   (winner-mode)
   (save-place-mode)
   (column-number-mode)
+  (global-page-break-lines-mode)
+  (global-auto-revert-mode)
 #+END_SRC
 
 ** Other
@@ -129,23 +145,24 @@ checking executes in microseconds, it does not bother me.
    save-place-file (concat user-emacs-directory ".places")
    backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups")))
    auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory ".saves") t))
-   gc-cons-threshold (* 1024 1024 20) ; 20mb
-   truncate-lines t
    recenter-positions '(middle 0.2 top 0.8 bottom) ; C-l positions
+   truncate-lines t
    frame-resize-pixelwise t
    backup-by-copying t
    sentence-end-double-space nil
    require-final-newline t
-   inhibit-startup-message t
-   initial-scratch-message nil
    scroll-conservatively 10000 ; Smooth scrolling
    indent-tabs-mode nil
-   show-trailing-whitespace t)
+   show-trailing-whitespace t
+   frame-title-format '("%b [%m]") ; file name and major mode
+   recentf-exclude '("/\\.config/emacs/elpa/" "^/tmp/" "^/usr/")
+   dired-listing-switches "-lhpa")
 
   (defalias 'yes-or-no-p 'y-or-n-p)
 
   (add-hook 'before-save-hook 'whitespace-cleanup)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  ;;(add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
 #+END_SRC
 
 * Packages
