@@ -587,6 +587,18 @@ checking executes in microseconds, it does not bother me.
 #+end_src
 
 * Fun
+* Custom Faces
+#+begin_src emacs-lisp
+  (set-face-attribute 'highlight nil :underline t :weight 'bold :background nil :foreground nil)
+  (set-face-attribute 'show-paren-match nil :background nil :weight 'bold :foreground "white")
+  (set-face-attribute 'doom-modeline-buffer-path nil :inherit 'font-lock-comment-face)
+  (set-face-attribute 'doom-modeline-project-parent-dir nil :inherit 'font-lock-comment-face)
+  (set-face-attribute 'font-lock-function-name-face nil :foreground "LightGoldenrod1")
+  (set-face-attribute 'font-lock-string-face nil :foreground "PeachPuff3")
+  (set-face-attribute 'mode-line nil :height 80 :background "#262b35")
+  (set-face-attribute 'yas-field-highlight-face nil :inherit 'region)
+#+end_src
+
 * Experimental
 ** Elisp
 #+BEGIN_SRC emacs-lisp
