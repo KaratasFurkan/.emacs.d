@@ -543,7 +543,19 @@ checking executes in microseconds, it does not bother me.
     (add-hook 'python-mode-hook 'fk/activate-pyvenv)
     (add-hook 'before-save-hook 'eglot-format-buffer))
 #+END_SRC
+
 * Keybindings
+** Spacemacs' "Better Defaults" layer
+#+begin_src emacs-lisp
+  (use-package unfill
+    :bind (("M-q" . unfill-toggle)))
+
+  (use-package mwim
+    :bind (("C-a" . mwim-beginning-of-code-or-line)
+       ("C-e" . mwim-end-of-code-or-line)))
+
+  (global-set-key (kbd "C-w") 'fk/backward-kill-word-or-region)
+#+end_src
 #+BEGIN_SRC emacs-lisp
   (keyboard-translate ?\C-h ?\C-?) ;; Use shell-like backspace C-h
   (global-set-key (kbd "C-?") 'help-command)
