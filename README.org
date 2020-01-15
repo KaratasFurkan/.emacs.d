@@ -404,10 +404,20 @@ checking executes in microseconds, it does not bother me.
 (use-package magit)
 #+END_SRC
 
+** Expand Region
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :init
+    (setq expand-region-fast-keys-enabled nil
+	  expand-region-subword-enabled t)
+    :bind (("C-t" . er/expand-region)))
+#+END_SRC
+
 ** Doom Modeline
 #+BEGIN_SRC emacs-lisp
   (use-package doom-modeline
     :init
+    (setq doom-modeline-buffer-encoding nil)
     (doom-modeline-mode 1))
 #+END_SRC
 
@@ -428,6 +438,8 @@ checking executes in microseconds, it does not bother me.
 - TODO: Paging keybinding does not work.
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
+    :init
+    (setq which-key-idle-secondary-delay 0)
     :config
     (which-key-mode))
 #+END_SRC
@@ -444,7 +456,8 @@ checking executes in microseconds, it does not bother me.
 #+BEGIN_SRC emacs-lisp
   (use-package beacon
     :init
-    (setq beacon-color "#D18770")
+    (setq beacon-color "#D18770"
+	  beacon-blink-when-point-moves-vertically 10)
     (beacon-mode 1))
 #+END_SRC
 
@@ -465,9 +478,11 @@ checking executes in microseconds, it does not bother me.
   (use-package dashboard
     :defer nil
     :init
-    (setq dashboard-startup-banner 'logo)
-    (setq dashboard-set-heading-icons t)
-    (setq dashboard-set-file-icons t)
+    (setq dashboard-startup-banner 'logo
+	  dashboard-set-heading-icons t
+	  dashboard-set-file-icons t
+	  dashboard-items '((recents  . 10)
+			    (projects . 5)))
     :config
     (dashboard-setup-startup-hook))
 #+END_SRC
@@ -495,12 +510,38 @@ checking executes in microseconds, it does not bother me.
   :init
   (load-theme 'doom-spacegrey t))
 #+END_SRC
+** Winum
+#+begin_src emacs-lisp
+  (use-package winum
+    :init
+    (setq winum-keymap
+      (let ((map (make-sparse-keymap)))
+	(define-key map (kbd "M-0") 'winum-select-window-0-or-10)
+	(define-key map (kbd "M-1") 'winum-select-window-1)
+	(define-key map (kbd "M-2") 'winum-select-window-2)
+	(define-key map (kbd "M-3") 'winum-select-window-3)
+	(define-key map (kbd "M-4") 'winum-select-window-4)
+	(define-key map (kbd "M-5") 'winum-select-window-5)
+	(define-key map (kbd "M-6") 'winum-select-window-6)
+	(define-key map (kbd "M-7") 'winum-select-window-7)
+	(define-key map (kbd "M-8") 'winum-select-window-8)
+	(define-key map (kbd "M-9") 'winum-select-window-9)
+	map))
+    :config
+    (winum-mode))
+#+end_src
 
 ** A light emacs theme that's well suited for org-mode
 #+BEGIN_SRC emacs-lisp
   (use-package poet-theme
     :defer t)
 #+END_SRC
+** Deadgrep
+#+begin_src emacs-lisp
+  (use-package deadgrep
+    :bind
+    (("C-c C-e" . deadgrep-edit-mode)))
+#+end_src
 
 * Programming Languages
 ** Python
@@ -541,4 +582,29 @@ checking executes in microseconds, it does not bother me.
 	    (use-package elisp-slime-nav
 	      :bind (("M-." . elisp-slime-nav-find-elisp-thing-at-point)
 		     ("M-ç" . pop-tag-mark)))))
+#+END_SRC
+** Restclient
+   #+BEGIN_SRC emacs-lisp
+     (use-package restclient
+       :init
+       (add-to-list 'auto-mode-alist '("\\(\\.http\\'\\)" . restclient-mode))
+       :config
+       (add-to-list 'company-backends 'company-restclient))
+
+     (use-package company-restclient
+       :after (company restclient))
+   #+END_SRC
+
+** Dired icons
+#+BEGIN_SRC emacs-lisp
+ (use-package all-the-icons-dired
+   :hook (dired-mode . all-the-icons-dired-mode))
+#+END_SRC
+
+** wrap-region
+#+BEGIN_SRC emacs-lisp
+  (use-package wrap-region
+    :defer 1
+    :config
+    (wrap-region-global-mode t))
 #+END_SRC
