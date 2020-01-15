@@ -397,7 +397,9 @@ checking executes in microseconds, it does not bother me.
 ** Eglot
 #+BEGIN_SRC emacs-lisp
   (use-package eglot
-    :defer t)
+    :defer t
+    :config
+    (add-hook 'eglot-managed-mode-hook 'fk/company-enable-snippets))
 #+END_SRC
 
 ** Magit
