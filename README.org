@@ -342,7 +342,8 @@ checking executes in microseconds, it does not bother me.
 	  ;; Disable single-candidate and echo-area frontends:
 	  company-frontends '(company-box-frontend))
     :config
-    (global-company-mode))
+    (global-company-mode)
+    (fk/company-enable-snippets))
 #+END_SRC
 
 ** Company Box
@@ -487,29 +488,18 @@ checking executes in microseconds, it does not bother me.
     (dashboard-setup-startup-hook))
 #+END_SRC
 
-* Appearance
-** Font
+** YASnippet
 #+BEGIN_SRC emacs-lisp
-(set-face-attribute 'default nil :family "Source Code Pro")
+  (use-package yasnippet
+    :config
+    (yas-global-mode))
 #+END_SRC
 
-** Disable all themes before loading a theme
+** YASnippet-snippets
 #+BEGIN_SRC emacs-lisp
-  (defun disable-all-themes ()
-    "disable all active themes."
-    (dolist (theme custom-enabled-themes)
-      (disable-theme theme)))
-
-  (defadvice load-theme (before disable-themes-first activate)
-    (disable-all-themes))
+  (use-package yasnippet-snippets)
 #+END_SRC
 
-** I use doom-spacegrey
-#+BEGIN_SRC emacs-lisp
-(use-package doom-themes
-  :init
-  (load-theme 'doom-spacegrey t))
-#+END_SRC
 ** Winum
 #+begin_src emacs-lisp
   (use-package winum
@@ -531,11 +521,6 @@ checking executes in microseconds, it does not bother me.
     (winum-mode))
 #+end_src
 
-** A light emacs theme that's well suited for org-mode
-#+BEGIN_SRC emacs-lisp
-  (use-package poet-theme
-    :defer t)
-#+END_SRC
 ** Deadgrep
 #+begin_src emacs-lisp
   (use-package deadgrep
