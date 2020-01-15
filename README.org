@@ -576,13 +576,19 @@ checking executes in microseconds, it does not bother me.
 
 * Fun
 * Experimental
+** Elisp
 #+BEGIN_SRC emacs-lisp
-(add-hook 'emacs-lisp-mode-hook
-	  (lambda ()
-	    (use-package elisp-slime-nav
-	      :bind (("M-." . elisp-slime-nav-find-elisp-thing-at-point)
-		     ("M-ç" . pop-tag-mark)))))
+  (add-hook 'emacs-lisp-mode-hook
+	    (lambda ()
+	      (use-package elisp-slime-nav
+		:bind (("M-." . elisp-slime-nav-find-elisp-thing-at-point)
+		       ("M-ç" . pop-tag-mark)))))
+
+  (use-package aggressive-indent
+      :diminish
+      :hook (emacs-lisp-mode . aggressive-indent-mode))
 #+END_SRC
+
 ** Restclient
    #+BEGIN_SRC emacs-lisp
      (use-package restclient
