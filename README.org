@@ -556,14 +556,35 @@ checking executes in microseconds, it does not bother me.
 
   (global-set-key (kbd "C-w") 'fk/backward-kill-word-or-region)
 #+end_src
+** Global Key Bindings
 #+BEGIN_SRC emacs-lisp
   (keyboard-translate ?\C-h ?\C-?) ;; Use shell-like backspace C-h
   (global-set-key (kbd "C-?") 'help-command)
+  (global-set-key (kbd "C-x c") 'fk/find-config)
   (global-set-key (kbd "M-o") 'other-window)
   (global-set-key (kbd "C-u") 'undo)
   (global-set-key (kbd "M-u") 'winner-undo)
   (global-set-key (kbd "M-U") 'winner-redo)
+  (global-set-key (kbd "C-x C-k") 'kill-current-buffer)
+  (global-set-key (kbd "C-x k") 'kill-buffer-and-window)
+  (global-set-key (kbd "M-l") 'move-to-window-line-top-bottom)
+  (global-set-key (kbd "M-s") 'isearch-forward-symbol-at-point)
+  (global-set-key (kbd "C-x 2") 'fk/split-window-below-and-switch)
+  (global-set-key (kbd "C-x 3") 'fk/split-window-right-and-switch)
+  (global-set-key (kbd "C-v") (lambda () (interactive) (scroll-up-command 15)))
+  (global-set-key (kbd "M-v") (lambda () (interactive) (scroll-down-command 15)))
 #+END_SRC
+
+** Spacemacs-like Menu Map
+- TODO: improve this section.
+#+begin_src emacs-lisp
+  (bind-keys :prefix-map fk/menu-map
+	 :prefix "M-m"
+	 ("f f" . helm-find-files)
+	 ("f r" . helm-recentf)
+	 ("f c" . fk/find-config)
+	 ("u" . universal-argument))
+#+end_src
 
 * Fun
 * Experimental
