@@ -239,8 +239,44 @@ checking executes in microseconds, it does not bother me.
       (helm-do-ag default-directory)))
 #+end_src
 
+* Theme
+** Disable all themes before loading a theme
+#+BEGIN_SRC emacs-lisp
+  (defadvice load-theme (before disable-themes-first activate)
+    (fk/disable-all-themes))
+#+END_SRC
+
+** I use doom-spacegrey
+#+BEGIN_SRC emacs-lisp
+(use-package doom-themes
+  :config
+  (load-theme 'doom-spacegrey t))
+#+END_SRC
+
+** A light emacs theme that's well suited for org-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package poet-theme
+    :defer t)
+#+END_SRC
+
 * Packages
+** Org
+- TODO: use-package ile yapılabilir.
+#+begin_src emacs-lisp
+  (use-package org
+    :init
+    (setq org-confirm-babel-evaluate nil)
+    :bind (
+       :map org-mode-map
+       ("C-c C-e" . org-edit-special)
+       ("M-n" . org-next-visible-heading)
+       ("M-p" . org-previous-visible-heading)
+       :map org-src-mode-map
+       ("C-c C-c" . org-edit-src-exit)))
+#+end_src
+
 ** Helm
+*** Helm
 #+BEGIN_SRC emacs-lisp
   (use-package helm
     :init
