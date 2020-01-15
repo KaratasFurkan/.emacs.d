@@ -165,6 +165,80 @@ checking executes in microseconds, it does not bother me.
   ;;(add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
 #+END_SRC
 
+* Custom Functions
+#+begin_src emacs-lisp
+  (defun fk/find-config ()
+    "Open config file."
+    (interactive)
+    (find-file config-org))
+#+end_src
+#+begin_src emacs-lisp
+  (defun fk/disable-all-themes ()
+    "Disable all active themes."
+    (dolist (theme custom-enabled-themes)
+      (disable-theme theme)))
+#+end_src
+#+begin_src emacs-lisp
+  (defun fk/company-backend-with-yas (backend)
+    "Add ':with company-yasnippet' to the given company backend."
+    (if (and (listp backend) (member 'company-yasnippet backend))
+    backend
+      (append (if (consp backend)
+	  backend
+	(list backend))
+	  '(:with company-yasnippet))))
+#+end_src
+#+begin_src emacs-lisp
+  (defun fk/company-enable-snippets ()
+    "Enable snippet suggestions in company by adding
+  ':with company-yasnippet' to all company backends."
+    (interactive)
+    (setq company-backends
+      (mapcar 'fk/company-backend-with-yas company-backends)))
+#+end_src
+#+begin_src emacs-lisp
+  (defun fk/activate-pyvenv ()
+    "Activate python environment according to the `.venv' file."
+    (interactive)
+    (let* ((pdir (projectile-project-root)) (pfile (concat pdir ".venv")))
+      (if (file-exists-p pfile)
+      (pyvenv-workon (with-temp-buffer
+	   (insert-file-contents pfile)
+	   (nth 0 (split-string (buffer-string))))))))
+#+end_src
+#+begin_src emacs-lisp
+  (defun fk/split-window-below-and-switch ()
+    "Split the window horizontally, then switch to the new window."
+    (interactive)
+    (split-window-below)
+    (other-window 1))
+
+  (defun fk/split-window-right-and-switch ()
+    "Split the window vertically, then switch to the new window."
+    (interactive)
+    (split-window-right)
+    (other-window 1))
+#+end_src
+#+begin_src emacs-lisp
+  ;; source: spacemacs' better default layer
+  (defun fk/backward-kill-word-or-region ()
+    "Calls `kill-region' when a region is active and
+    `backward-kill-word' otherwise."
+    (interactive)
+    (if (region-active-p)
+    (call-interactively 'kill-region)
+      (backward-kill-word 1)))
+#+end_src
+#+begin_src emacs-lisp
+  (defun fk/helm-do-ag-project-root-or-current-dir ()
+    "If in a project call `helm-do-ag-project-root', else call
+  `helm-do-ag' with current directory."
+    (interactive)
+    (if (projectile-project-p)
+    (helm-do-ag-project-root)
+      (helm-do-ag default-directory)))
+#+end_src
+
 * Packages
 ** Helm
 #+BEGIN_SRC emacs-lisp
