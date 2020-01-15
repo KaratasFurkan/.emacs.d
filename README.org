@@ -614,3 +614,12 @@ checking executes in microseconds, it does not bother me.
     :config
     (wrap-region-global-mode t))
 #+END_SRC
+** Garbage Collect Threshold
+#+begin_src emacs-lisp
+  (defun fk/setup-gc ()
+    "Garbage collection settings to speed-up emacs."
+    (setq gc-cons-threshold (* 1024 1024 20))
+    (setq gc-cons-percentage 0.6))
+
+  (add-hook 'after-init-hook 'fk/setup-gc)
+#+end_src
