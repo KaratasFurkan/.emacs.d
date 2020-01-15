@@ -1,6 +1,5 @@
 * Table of Contents :TOC_5:
 - [[#about-this-configuration][About This Configuration]]
-  - [[#find-this-file-first-of-all][Find This File First of All]]
   - [[#applying-changes][Applying Changes]]
 - [[#package-manager][Package Manager]]
   - [[#package-repositories][Package Repositories]]
@@ -10,18 +9,30 @@
     - [[#always-install-packages-if-not-installed][Always install packages if not installed]]
     - [[#always-compile-packages-and-use-the-newest-version-available][Always compile packages, and use the newest version available.]]
 - [[#better-defaults][Better Defaults]]
+  - [[#early-initel][early-init.el]]
   - [[#disable][Disable]]
   - [[#enable][Enable]]
   - [[#other][Other]]
+- [[#custom-functions][Custom Functions]]
+- [[#theme][Theme]]
+  - [[#disable-all-themes-before-loading-a-theme][Disable all themes before loading a theme]]
+  - [[#i-use-doom-spacegrey][I use doom-spacegrey]]
+  - [[#a-light-emacs-theme-thats-well-suited-for-org-mode][A light emacs theme that's well suited for org-mode]]
 - [[#packages][Packages]]
+  - [[#org][Org]]
   - [[#helm][Helm]]
+    - [[#helm-1][Helm]]
     - [[#helm-projectile][Helm Projectile]]
+    - [[#helm-ag][Helm Ag]]
+    - [[#helm-xref][Helm Xref]]
+  - [[#shackle][Shackle]]
   - [[#company][Company]]
   - [[#company-box][Company Box]]
   - [[#projectile][Projectile]]
   - [[#lsp-mode][LSP Mode]]
   - [[#eglot][Eglot]]
   - [[#magit][Magit]]
+  - [[#expand-region][Expand Region]]
   - [[#doom-modeline][Doom Modeline]]
   - [[#multiple-cursors][Multiple Cursors]]
   - [[#which-key][Which Key]]
@@ -30,27 +41,26 @@
   - [[#toc-org][toc-org]]
   - [[#vterm][vterm]]
   - [[#emacs-dashboard][Emacs Dashboard]]
-- [[#appearance][Appearance]]
-  - [[#font][Font]]
-  - [[#disable-all-themes-before-loading-a-theme][Disable all themes before loading a theme]]
-  - [[#i-use-doom-spacegrey][I use doom-spacegrey]]
-  - [[#a-light-emacs-theme-thats-well-suited-for-org-mode][A light emacs theme that's well suited for org-mode]]
+  - [[#yasnippet][YASnippet]]
+  - [[#yasnippet-snippets][YASnippet-snippets]]
+  - [[#winum][Winum]]
+  - [[#deadgrep][Deadgrep]]
 - [[#programming-languages][Programming Languages]]
   - [[#python][Python]]
 - [[#keybindings][Keybindings]]
+  - [[#spacemacs-better-defaults-layer][Spacemacs' "Better Defaults" layer]]
+  - [[#global-key-bindings][Global Key Bindings]]
+  - [[#spacemacs-like-menu-map][Spacemacs-like Menu Map]]
 - [[#fun][Fun]]
+- [[#custom-faces][Custom Faces]]
 - [[#experimental][Experimental]]
+  - [[#elisp][Elisp]]
+  - [[#restclient][Restclient]]
+  - [[#dired-icons][Dired icons]]
+  - [[#wrap-region][wrap-region]]
+  - [[#garbage-collect-threshold][Garbage Collect Threshold]]
 
 * About This Configuration
-** Find This File First of All
-#+BEGIN_SRC emacs-lisp
-(defun fk/find-config ()
-  "Open config file"
-  (interactive)
-  (find-file config-org))
-(global-set-key (kbd "C-x c") 'fk/find-config)
-#+END_SRC
-
 ** Applying Changes
 To decrease startup time, I use a hook to export code blocks from my
 literate config file every time on save. Yes it is bad to run the
@@ -388,9 +398,9 @@ checking executes in microseconds, it does not bother me.
 
 ** Projectile
 #+BEGIN_SRC emacs-lisp
-(use-package projectile
-  :config
-  (projectile-mode))
+  (use-package projectile
+    :config
+    (projectile-mode))
 #+END_SRC
 
 ** LSP Mode
