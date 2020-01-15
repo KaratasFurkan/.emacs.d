@@ -45,6 +45,7 @@
   - [[#yasnippet-snippets][YASnippet-snippets]]
   - [[#winum][Winum]]
   - [[#deadgrep][Deadgrep]]
+  - [[#avy][Avy]]
 - [[#programming-languages][Programming Languages]]
   - [[#python][Python]]
 - [[#keybindings][Keybindings]]
@@ -538,6 +539,14 @@ checking executes in microseconds, it does not bother me.
   (use-package deadgrep
     :bind
     (("C-c C-e" . deadgrep-edit-mode)))
+#+end_src
+
+** Avy
+#+begin_src emacs-lisp
+  (use-package avy
+    :bind
+    (("M-j" . avy-goto-word-or-subword-1)
+     ("C-M-u" . avy-pop-mark)))
 #+end_src
 
 * Programming Languages
