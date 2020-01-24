@@ -1,3 +1,6 @@
+#+TITLE: Literate Emacs Config
+#+STARTUP: noindent
+
 * Table of Contents :TOC_5:
 - [[#about-this-configuration][About This Configuration]]
   - [[#applying-changes][Applying Changes]]
@@ -14,6 +17,18 @@
   - [[#enable][Enable]]
   - [[#other][Other]]
 - [[#custom-functions][Custom Functions]]
+  - [[#find-config][find-config]]
+  - [[#disable-all-themes][disable-all-themes]]
+  - [[#company-backend-with-yas][company-backend-with-yas]]
+  - [[#company-smart-snippets][company-smart-snippets]]
+  - [[#company-enable-snippets][company-enable-snippets]]
+  - [[#activate-pyvenv][activate-pyvenv]]
+  - [[#split-window-and-switch][split-window-and-switch]]
+  - [[#backward-kill-word-or-region][backward-kill-word-or-region]]
+  - [[#helm-do-ag-project-root-or-current-dir][helm-do-ag-project-root-or-current-dir]]
+  - [[#scratch][scratch]]
+  - [[#home][home]]
+  - [[#org-imenu][org-imenu]]
 - [[#theme][Theme]]
   - [[#disable-all-themes-before-loading-a-theme][Disable all themes before loading a theme]]
   - [[#i-use-doom-spacegrey][I use doom-spacegrey]]
@@ -25,9 +40,12 @@
     - [[#helm-projectile][Helm Projectile]]
     - [[#helm-ag][Helm Ag]]
     - [[#helm-xref][Helm Xref]]
+    - [[#helm-swoop][Helm Swoop]]
   - [[#shackle][Shackle]]
   - [[#company][Company]]
-  - [[#company-box][Company Box]]
+    - [[#company-1][Company]]
+    - [[#company-box][Company Box]]
+    - [[#company-statistics][Company Statistics]]
   - [[#projectile][Projectile]]
   - [[#lsp-mode][LSP Mode]]
   - [[#eglot][Eglot]]
@@ -46,20 +64,46 @@
   - [[#winum][Winum]]
   - [[#deadgrep][Deadgrep]]
   - [[#avy][Avy]]
+  - [[#highlight-indent-guides][Highlight Indent Guides]]
+  - [[#wrap-region][Wrap Region]]
+  - [[#rainbow-delimiters][Rainbow Delimiters]]
+  - [[#golden-ratio][Golden Ratio]]
+  - [[#treemacs][Treemacs]]
+    - [[#treemacs-1][Treemacs]]
+    - [[#treemacs-projectile][Treemacs Projectile]]
+  - [[#shell-pop][Shell Pop]]
+  - [[#dired-subtree][Dired Subtree]]
+  - [[#auto-highlight-symbol-mode][Auto Highlight Symbol Mode]]
+  - [[#git-gutter][Git Gutter]]
+  - [[#diff-hl][diff-hl]]
+  - [[#ob-async][ob-async]]
+  - [[#web-mode][Web Mode]]
+    - [[#web-mode-1][Web Mode]]
+    - [[#emmet-mode][Emmet Mode]]
+    - [[#company-web][Company Web]]
+    - [[#json-mode][Json Mode]]
+    - [[#prettier][Prettier]]
 - [[#programming-languages][Programming Languages]]
+  - [[#emacs-lisp][Emacs Lisp]]
+    - [[#elisp-slime-nav][Elisp Slime Nav]]
+    - [[#aggressive-indent][Aggressive Indent]]
   - [[#python][Python]]
+    - [[#python-1][Python]]
+    - [[#import-magic][Import Magic]]
 - [[#keybindings][Keybindings]]
   - [[#spacemacs-better-defaults-layer][Spacemacs' "Better Defaults" layer]]
   - [[#global-key-bindings][Global Key Bindings]]
   - [[#spacemacs-like-menu-map][Spacemacs-like Menu Map]]
 - [[#fun][Fun]]
+  - [[#selectric-mode][Selectric Mode]]
+  - [[#turkish-mode][Turkish Mode]]
 - [[#custom-faces][Custom Faces]]
 - [[#experimental][Experimental]]
-  - [[#elisp][Elisp]]
   - [[#restclient][Restclient]]
   - [[#dired-icons][Dired icons]]
-  - [[#wrap-region][wrap-region]]
   - [[#garbage-collect-threshold][Garbage Collect Threshold]]
+  - [[#dumb-jump][Dumb Jump]]
+  - [[#stripe-buffer][Stripe Buffer]]
 
 * About This Configuration
 ** Applying Changes
@@ -84,8 +128,8 @@ checking executes in microseconds, it does not bother me.
 #+BEGIN_SRC emacs-lisp
   (require 'package)
   (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-			   ("melpa" . "https://melpa.org/packages/")
-			   ("org" . "https://orgmode.org/elpa/")))
+                           ("melpa" . "https://melpa.org/packages/")
+                           ("org" . "https://orgmode.org/elpa/")))
   (package-initialize)
 #+END_SRC
 
@@ -116,10 +160,10 @@ checking executes in microseconds, it does not bother me.
 ** early-init.el
 #+begin_src emacs-lisp :tangle early-init.el
   (add-hook 'post-gc-hook
-	'(lambda ()
-	   (message "%s %s" "GC COLLECT" (format-time-string "%-I:%M"))))
+            '(lambda ()
+               (message "%s %s" "GC COLLECT" (format-time-string "%-I:%M"))))
   (setq gc-cons-threshold most-positive-fixnum
-	gc-cons-percentage 1)
+        gc-cons-percentage 1)
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
@@ -129,11 +173,11 @@ checking executes in microseconds, it does not bother me.
 ** Disable
 #+BEGIN_SRC emacs-lisp
   (blink-cursor-mode -1)
-  (setq ring-bell-function 'ignore
-    tab-bar-show nil
-    inhibit-startup-message t
-    initial-scratch-message nil
-    create-lockfiles nil)
+  (setq-default ring-bell-function 'ignore
+                tab-bar-show nil
+                inhibit-startup-message t
+                initial-scratch-message nil
+                create-lockfiles nil)
 #+END_SRC
 
 ** Enable
@@ -147,11 +191,12 @@ checking executes in microseconds, it does not bother me.
   (column-number-mode)
   (global-page-break-lines-mode)
   (global-auto-revert-mode)
+  (global-prettify-symbols-mode)
 #+END_SRC
 
 ** Other
 #+BEGIN_SRC emacs-lisp
-  (setq
+  (setq-default
    custom-file (concat user-emacs-directory ".custom.el") ; Don't load
    save-place-file (concat user-emacs-directory ".places")
    backup-directory-alist `(("." . ,(concat user-emacs-directory ".backups")))
@@ -167,46 +212,81 @@ checking executes in microseconds, it does not bother me.
    show-trailing-whitespace t
    frame-title-format '("%b [%m]") ; file name and major mode
    recentf-exclude '("/\\.config/emacs/elpa/" "^/tmp/" "^/usr/")
-   dired-listing-switches "-lhpa")
+   recentf-max-saved-items 200
+   dired-listing-switches "-lAhp --sort=time --group-directories-first"
+   completion-styles '(basic flex))
 
   (defalias 'yes-or-no-p 'y-or-n-p)
 
   (add-hook 'before-save-hook 'whitespace-cleanup)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  (add-hook 'prog-mode-hook 'electric-pair-mode)
   ;;(add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
+  (add-hook 'prog-mode-hook (lambda () (setq prettify-symbols-alist
+                                             '(("lambda" . ?λ)
+                                               ("->" . ?→)
+                                               ("=>" . ?⇒)
+                                               ("!=" . ?≠)
+                                               ("<=" . ?≤)
+                                               (">=" . ?≥)))))
 #+END_SRC
 
 * Custom Functions
+** find-config
 #+begin_src emacs-lisp
   (defun fk/find-config ()
     "Open config file."
     (interactive)
     (find-file config-org))
 #+end_src
+
+** disable-all-themes
 #+begin_src emacs-lisp
   (defun fk/disable-all-themes ()
     "Disable all active themes."
     (dolist (theme custom-enabled-themes)
       (disable-theme theme)))
 #+end_src
+
+** company-backend-with-yas
 #+begin_src emacs-lisp
   (defun fk/company-backend-with-yas (backend)
     "Add ':with company-yasnippet' to the given company backend."
     (if (and (listp backend) (member 'company-yasnippet backend))
     backend
       (append (if (consp backend)
-	  backend
-	(list backend))
-	  '(:with company-yasnippet))))
+          backend
+        (list backend))
+          '(:with company-yasnippet))))
 #+end_src
+
+** company-smart-snippets
+#+begin_src emacs-lisp
+  ;; TODO: creates a bug in scratch buffer.
+  (defun fk/company-smart-snippets (fn command &optional arg &rest _)
+    "Do not show yasnippet candidates after dot. Source:
+  https://www.reddit.com/r/emacs/comments/7dnbxl/how_to_temporally_filter_companymode_candidates/
+  I did not understand anything but it works."
+    (unless (when (and (equal command 'prefix) (> (point) 0))
+              (let* ((prefix (company-grab-symbol))
+                     (point-before-prefix (- (point) (length prefix) 1))
+                     (char (buffer-substring-no-properties point-before-prefix (1+ point-before-prefix))))
+                (string= char ".")))
+      (funcall fn command arg)))
+#+end_src
+
+** company-enable-snippets
 #+begin_src emacs-lisp
   (defun fk/company-enable-snippets ()
     "Enable snippet suggestions in company by adding
-  ':with company-yasnippet' to all company backends."
+    ':with company-yasnippet' to all company backends."
     (interactive)
     (setq company-backends
-      (mapcar 'fk/company-backend-with-yas company-backends)))
+          (mapcar 'fk/company-backend-with-yas company-backends))
+    (advice-add 'company-yasnippet :around 'fk/company-smart-snippets))
 #+end_src
+
+** activate-pyvenv
 #+begin_src emacs-lisp
   (defun fk/activate-pyvenv ()
     "Activate python environment according to the `.venv' file."
@@ -214,22 +294,28 @@ checking executes in microseconds, it does not bother me.
     (let* ((pdir (projectile-project-root)) (pfile (concat pdir ".venv")))
       (if (file-exists-p pfile)
       (pyvenv-workon (with-temp-buffer
-	   (insert-file-contents pfile)
-	   (nth 0 (split-string (buffer-string))))))))
+           (insert-file-contents pfile)
+           (nth 0 (split-string (buffer-string))))))))
 #+end_src
+
+** split-window-and-switch
 #+begin_src emacs-lisp
   (defun fk/split-window-below-and-switch ()
     "Split the window horizontally, then switch to the new window."
     (interactive)
     (split-window-below)
+    (balance-windows)
     (other-window 1))
 
   (defun fk/split-window-right-and-switch ()
     "Split the window vertically, then switch to the new window."
     (interactive)
     (split-window-right)
+    (balance-windows)
     (other-window 1))
 #+end_src
+
+** backward-kill-word-or-region
 #+begin_src emacs-lisp
   ;; source: spacemacs' better default layer
   (defun fk/backward-kill-word-or-region ()
@@ -240,6 +326,8 @@ checking executes in microseconds, it does not bother me.
     (call-interactively 'kill-region)
       (backward-kill-word 1)))
 #+end_src
+
+** helm-do-ag-project-root-or-current-dir
 #+begin_src emacs-lisp
   (defun fk/helm-do-ag-project-root-or-current-dir ()
     "If in a project call `helm-do-ag-project-root', else call
@@ -248,6 +336,31 @@ checking executes in microseconds, it does not bother me.
     (if (projectile-project-p)
     (helm-do-ag-project-root)
       (helm-do-ag default-directory)))
+#+end_src
+
+** scratch
+#+begin_src emacs-lisp
+  (defun fk/scratch ()
+    "Switch to scratch buffer."
+    (interactive)
+    (switch-to-buffer "*scratch*"))
+#+end_src
+
+** home
+#+begin_src emacs-lisp
+  (defun fk/home ()
+    "Switch to home (dashboard) buffer."
+    (interactive)
+    (switch-to-buffer "*dashboard*"))
+#+end_src
+
+** org-imenu
+#+begin_src emacs-lisp
+(defun fk/org-imenu ()
+  "Go to a heading with helm-imenu and expand the heading."
+  (interactive)
+  (helm-imenu)
+  (show-subtree))
 #+end_src
 
 * Theme
@@ -272,46 +385,88 @@ checking executes in microseconds, it does not bother me.
 
 * Packages
 ** Org
-- TODO: use-package ile yapılabilir.
 #+begin_src emacs-lisp
   (use-package org
     :init
-    (setq org-confirm-babel-evaluate nil)
+    (setq org-confirm-babel-evaluate nil
+          org-ellipsis "↴" ;; ↴, ▼, ▶, ⤵
+          org-src-window-setup 'current-window
+          org-startup-indented t)
     :bind (
-       :map org-mode-map
-       ("C-c C-e" . org-edit-special)
-       ("M-n" . org-next-visible-heading)
-       ("M-p" . org-previous-visible-heading)
-       :map org-src-mode-map
-       ("C-c C-c" . org-edit-src-exit)))
+           :map org-mode-map
+           ("C-c C-e" . org-edit-special)
+           ("M-n" . org-next-visible-heading)
+           ("M-p" . org-previous-visible-heading)
+           ("C-c C-f". fk/org-imenu)
+           :map org-src-mode-map
+           ("C-c C-c" . org-edit-src-exit))
+    :config
+    (org-babel-do-load-languages 'org-babel-load-languages
+                                 '((python . t)
+                                   (C . t)
+                                   (emacs-lisp . t)
+                                   (js . t)
+                                   (shell . t)))
+    ;; Beautify org mode
+    (use-package org-bullets
+      :init
+      (setq org-bullets-bullet-list '("⁖"))
+      :hook
+      (org-mode . org-bullets-mode))
+
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([+]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "◦"))))))
+    (defface org-checkbox-done-text
+      '((t (:inherit 'font-lock-comment-face :strike-through t)))
+      "Face for the text part of a checked org-mode checkbox.")
+
+    (font-lock-add-keywords
+     'org-mode
+     `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
+        1 'org-checkbox-done-text prepend))
+     'append)
+    :hook
+    (org-mode . (lambda () (setq prettify-symbols-alist
+                            '(("[ ]" . "☐")
+                              ("[X]" . "☑") ;; ✔
+                              ("[-]" . "⬕")))))) ;; ◪, ⬔
 #+end_src
 
 ** Helm
 *** Helm
 #+BEGIN_SRC emacs-lisp
   (use-package helm
+    :defer nil
     :init
     (setq
      helm-M-x-always-save-history t
-     helm-M-x-input-history t)
+     helm-display-function 'pop-to-buffer
+     savehist-additional-variables '(extended-command-history))
     :bind
     (("M-x" . helm-M-x)
      ("C-x C-f" . helm-find-files)
      ("C-x C-b" . helm-buffers-list)
      ("C-x b" . helm-buffers-list)
      ("C-x C-r" . helm-recentf)
-     ("C-x i" . helm-imenu-in-all-buffers) ; FIXME: does not work.
      ("C-x C-i" . helm-imenu)
      ("M-y" . helm-show-kill-ring)
-     ;;:map helm-find-files-map
-     ;;("<tab>" . helm-ff-RET)
-     ))
+     :map helm-find-files-map
+     ("TAB" . helm-ff-RET)
+     ("<tab>" . helm-ff-RET))
+    :config
+    (helm-mode)
+    (savehist-mode))
 #+END_SRC
 
 *** Helm Projectile
 #+BEGIN_SRC emacs-lisp
- (use-package helm-projectile
-   :bind (("C-x f" . helm-projectile)))
+  (use-package helm-projectile
+    :bind (("C-x f" . helm-projectile))
+    :hook (projectile-mode . helm-projectile-on))
 #+END_SRC
 
 *** Helm Ag
@@ -327,75 +482,116 @@ checking executes in microseconds, it does not bother me.
 *** Helm Xref
 #+begin_src emacs-lisp
   (use-package helm-xref
+    :defer nil
     :init
     (setq xref-prompt-for-identifier nil)
     :bind
     (("M-r" . xref-find-references)))
 #+end_src
 
+*** Helm Swoop
+#+begin_src emacs-lisp
+  (use-package helm-swoop
+    :init
+    (setq helm-swoop-speed-or-color t
+          helm-swoop-split-window-function 'display-buffer
+          helm-swoop-min-overlay-length 0
+          helm-swoop-use-fuzzy-match t)
+    :bind
+    (("M-s" . helm-swoop)
+     :map isearch-mode-map
+     ("M-s" . helm-swoop-from-isearch)
+     :map helm-swoop-map
+     ("M-s" . helm-multi-swoop-all-from-helm-swoop)
+     :map helm-swoop-edit-map
+     ("C-c C-c" . helm-swoop--edit-complete)
+     ("C-c C-k" . helm-swoop--edit-cancel))
+    :config
+    (set-face-attribute 'helm-swoop-target-line-face nil :background "black" :foreground nil :inverse-video nil: :extend t)
+    (set-face-attribute 'helm-swoop-target-word-face nil :inherit 'lazy-highlight :foreground nil))
+#+end_src
+
 ** Shackle
 #+BEGIN_SRC emacs-lisp
   (use-package shackle
-    :defer 0.2
-    :config
-    (shackle-mode 1)
+    :init
     (setq shackle-rules
-      '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :size 0.3))))
+          '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :size 0.3)))
+    :defer nil
+    :config
+    (shackle-mode))
 #+END_SRC
 
 ** Company
+*** Company
 #+BEGIN_SRC emacs-lisp
   (use-package company
+    :defer nil
     :init
     (setq company-idle-delay 0
-	  company-minimum-prefix-length 1
-	  company-tooltip-align-annotations t
-	  ;; Disable single-candidate and echo-area frontends:
-	  company-frontends '(company-box-frontend))
+          company-minimum-prefix-length 1
+          company-tooltip-align-annotations t
+          ;; Disable single-candidate and echo-area frontends:
+          company-frontends '(company-box-frontend))
+    :bind
+    (:map company-active-map
+          ([return] . nil)
+          ("RET" . nil)
+          ("TAB" . company-complete-selection)
+          ("<tab>" . company-complete-selection)
+          ("C-n" . company-select-next)
+          ("C-p" . company-select-previous))
     :config
     (global-company-mode)
     (fk/company-enable-snippets))
 #+END_SRC
 
-** Company Box
-- TODO: icon & font sizes are broken.
+*** Company Box
 #+BEGIN_SRC emacs-lisp
   (use-package company-box
     :hook (company-mode . company-box-mode)
     :config
     (setq company-box-show-single-candidate t
-	  company-box-icons-alist 'company-box-icons-all-the-icons
-	  company-box-icons-all-the-icons
-	  (let ((all-the-icons-scale-factor 1)
-		(all-the-icons-default-adjust 0))
-	    `((Unknown       . ,(all-the-icons-octicon "file-text" :face 'all-the-icons-purple))
-	      (Text          . ,(all-the-icons-faicon "file-text-o" :face 'all-the-icons-green))
-	      (Method        . ,(all-the-icons-faicon "cube" :face 'all-the-icons-blue))
-	      (Function      . ,(all-the-icons-faicon "cube" :face 'all-the-icons-blue))
-	      (Constructor   . ,(all-the-icons-faicon "cube" :face 'all-the-icons-blue))
-	      (Field         . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
-	      (Variable      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-blue))
-	      (Class         . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
-	      (Interface     . ,(all-the-icons-faicon "cogs" :face 'all-the-icons-red))
-	      (Module        . ,(all-the-icons-alltheicon "less" :face 'all-the-icons-red))
-	      (Property      . ,(all-the-icons-faicon "wrench" :face 'all-the-icons-red))
-	      (Unit          . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
-	      (Value         . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
-	      (Enum          . ,(all-the-icons-faicon "file-text-o" :face 'all-the-icons-red))
-	      (Keyword       . ,(all-the-icons-material "format_align_center" :face 'all-the-icons-red))
-	      (Snippet       . ,(all-the-icons-material "content_paste" :face 'all-the-icons-red))
-	      (Color         . ,(all-the-icons-material "palette" :face 'all-the-icons-red))
-	      (File          . ,(all-the-icons-faicon "file" :face 'all-the-icons-red))
-	      (Reference     . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
-	      (Folder        . ,(all-the-icons-faicon "folder" :face 'all-the-icons-red))
-	      (EnumMember    . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
-	      (Constant      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
-	      (Struct        . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
-	      (Event         . ,(all-the-icons-faicon "bolt" :face 'all-the-icons-red))
-	      (Operator      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
-	      (TypeParameter . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
-	      (Template      . ,(all-the-icons-octicon "file-code" :face 'all-the-icons-green))))))
+          company-box-icons-alist 'company-box-icons-all-the-icons
+          company-box-backends-colors nil ;; Same colors for all backends
+          company-box-icons-all-the-icons
+          (let ((all-the-icons-scale-factor 1)
+                (all-the-icons-default-adjust 0))
+            `((Unknown       . ,(all-the-icons-octicon "file-text" :face 'all-the-icons-purple))
+              (Text          . ,(all-the-icons-faicon "file-text-o" :face 'all-the-icons-green))
+              (Method        . ,(all-the-icons-faicon "cube" :face 'all-the-icons-blue))
+              (Function      . ,(all-the-icons-faicon "cube" :face 'all-the-icons-blue))
+              (Constructor   . ,(all-the-icons-faicon "cube" :face 'all-the-icons-blue))
+              (Field         . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+              (Variable      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-blue))
+              (Class         . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
+              (Interface     . ,(all-the-icons-faicon "cogs" :face 'all-the-icons-red))
+              (Module        . ,(all-the-icons-alltheicon "less" :face 'all-the-icons-red))
+              (Property      . ,(all-the-icons-faicon "wrench" :face 'all-the-icons-red))
+              (Unit          . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+              (Value         . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+              (Enum          . ,(all-the-icons-faicon "file-text-o" :face 'all-the-icons-red))
+              (Keyword       . ,(all-the-icons-material "format_align_center" :face 'all-the-icons-red))
+              (Snippet       . ,(all-the-icons-material "content_paste" :face 'all-the-icons-red))
+              (Color         . ,(all-the-icons-material "palette" :face 'all-the-icons-red))
+              (File          . ,(all-the-icons-faicon "file" :face 'all-the-icons-red))
+              (Reference     . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+              (Folder        . ,(all-the-icons-faicon "folder" :face 'all-the-icons-red))
+              (EnumMember    . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+              (Constant      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+              (Struct        . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
+              (Event         . ,(all-the-icons-faicon "bolt" :face 'all-the-icons-red))
+              (Operator      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+              (TypeParameter . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
+              (Template      . ,(all-the-icons-octicon "file-code" :face 'all-the-icons-green)))))
+    (set-face-attribute 'company-box-selection nil :extend t))
 #+END_SRC
+
+*** Company Statistics
+#+begin_src emacs-lisp
+  (use-package company-statistics
+    :hook (company-mode . company-statistics-mode))
+#+end_src
 
 ** Projectile
 #+BEGIN_SRC emacs-lisp
@@ -409,13 +605,29 @@ checking executes in microseconds, it does not bother me.
 #+BEGIN_SRC emacs-lisp
   (use-package eglot
     :defer t
+    :init
+    (setq eglot-ignored-server-capabilites '(:documentHighlightProvider
+                                             :hoverProvider
+                                             :signatureHelpProvider))
     :config
-    (add-hook 'eglot-managed-mode-hook 'fk/company-enable-snippets))
+    ;; Flymake echo error at point fix. source:
+    ;; https://github.com/joaotavora/eglot/issues/8#issuecomment-414149077
+    (advice-add 'eglot-eldoc-function :around
+                (lambda (oldfun)
+                  (let ((help (help-at-pt-kbd-string)))
+                    (if help (message "%s" help) (funcall oldfun)))))
+    :hook
+    (eglot-managed-mode . fk/company-enable-snippets))
 #+END_SRC
 
 ** Magit
 #+BEGIN_SRC emacs-lisp
-(use-package magit)
+  (use-package magit)
+  (use-package magit-todos
+    :after magit
+    :config
+    (magit-todos-mode)
+    (magit-todos-branch-list-toggle))
 #+END_SRC
 
 ** Expand Region
@@ -423,7 +635,7 @@ checking executes in microseconds, it does not bother me.
   (use-package expand-region
     :init
     (setq expand-region-fast-keys-enabled nil
-	  expand-region-subword-enabled t)
+          expand-region-subword-enabled t)
     :bind (("C-t" . er/expand-region)))
 #+END_SRC
 
@@ -440,16 +652,16 @@ checking executes in microseconds, it does not bother me.
   (use-package multiple-cursors
     :init (setq mc/always-run-for-all t)
     :bind (("C-M-n" . mc/mark-next-like-this)
-	   ("C-M-p" . mc/mark-previous-like-this)
-	   ("C-M-S-n" . mc/skip-to-next-like-this)
-	   ("C-M-S-p" . mc/skip-to-previous-like-this)
-	   ("C-S-n" . mc/unmark-previous-like-this)
-	   ("C-S-p" . mc/unmark-next-like-this)
-	   ("C-M-<mouse-1>" . mc/add-cursor-on-click)))
+           ("C-M-p" . mc/mark-previous-like-this)
+           ("C-M-S-n" . mc/skip-to-next-like-this)
+           ("C-M-S-p" . mc/skip-to-previous-like-this)
+           ("C-S-n" . mc/unmark-previous-like-this)
+           ("C-S-p" . mc/unmark-next-like-this)
+           ("C-M-<mouse-1>" . mc/add-cursor-on-click)))
 #+END_SRC
 
 ** Which Key
-- TODO: Paging keybinding does not work.
+- TODO: Paging keybinding does not work. Update: "?" works if not assigned.
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
     :init
@@ -466,12 +678,12 @@ checking executes in microseconds, it does not bother me.
 #+END_SRC
 
 ** Beacon
-- TODO: investigate beacon-push-mark.
 #+BEGIN_SRC emacs-lisp
   (use-package beacon
     :init
     (setq beacon-color "#D18770"
-	  beacon-blink-when-point-moves-vertically 10)
+          beacon-blink-when-point-moves-vertically 10
+          beacon-dont-blink-major-modes '(vterm-mode))
     (beacon-mode 1))
 #+END_SRC
 
@@ -484,7 +696,15 @@ checking executes in microseconds, it does not bother me.
 
 ** vterm
 #+BEGIN_SRC emacs-lisp
-  (use-package vterm)
+  (use-package vterm
+    :bind (
+           :map vterm-mode-map
+           ("C-c C-e" . 'vterm-copy-mode)
+           :map vterm-copy-mode-map
+           ("C-c C-e" . 'vterm-copy-mode)
+           ("C-c C-c" . 'vterm-copy-mode))
+    :hook
+    (vterm-mode . (lambda () (setq-local global-hl-line-mode nil))))
 #+END_SRC
 
 ** Emacs Dashboard
@@ -493,10 +713,10 @@ checking executes in microseconds, it does not bother me.
     :defer nil
     :init
     (setq dashboard-startup-banner 'logo
-	  dashboard-set-heading-icons t
-	  dashboard-set-file-icons t
-	  dashboard-items '((recents  . 10)
-			    (projects . 5)))
+          dashboard-set-heading-icons t
+          dashboard-set-file-icons t
+          dashboard-items '((recents  . 10)
+                            (projects . 5)))
     :config
     (dashboard-setup-startup-hook))
 #+END_SRC
@@ -504,6 +724,13 @@ checking executes in microseconds, it does not bother me.
 ** YASnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
+    :defer nil
+    :bind
+    (:map yas-minor-mode-map
+          ("TAB" . nil)
+          ("<tab>" . nil))
+    :bind*
+    (("C-j" . yas-expand))
     :config
     (yas-global-mode)
     (add-hook 'snippet-mode-hook (lambda () (setq require-final-newline nil))))
@@ -520,17 +747,17 @@ checking executes in microseconds, it does not bother me.
     :init
     (setq winum-keymap
       (let ((map (make-sparse-keymap)))
-	(define-key map (kbd "M-0") 'winum-select-window-0-or-10)
-	(define-key map (kbd "M-1") 'winum-select-window-1)
-	(define-key map (kbd "M-2") 'winum-select-window-2)
-	(define-key map (kbd "M-3") 'winum-select-window-3)
-	(define-key map (kbd "M-4") 'winum-select-window-4)
-	(define-key map (kbd "M-5") 'winum-select-window-5)
-	(define-key map (kbd "M-6") 'winum-select-window-6)
-	(define-key map (kbd "M-7") 'winum-select-window-7)
-	(define-key map (kbd "M-8") 'winum-select-window-8)
-	(define-key map (kbd "M-9") 'winum-select-window-9)
-	map))
+        (define-key map (kbd "M-0") 'winum-select-window-0-or-10)
+        (define-key map (kbd "M-1") 'winum-select-window-1)
+        (define-key map (kbd "M-2") 'winum-select-window-2)
+        (define-key map (kbd "M-3") 'winum-select-window-3)
+        (define-key map (kbd "M-4") 'winum-select-window-4)
+        (define-key map (kbd "M-5") 'winum-select-window-5)
+        (define-key map (kbd "M-6") 'winum-select-window-6)
+        (define-key map (kbd "M-7") 'winum-select-window-7)
+        (define-key map (kbd "M-8") 'winum-select-window-8)
+        (define-key map (kbd "M-9") 'winum-select-window-9)
+        map))
     :config
     (winum-mode))
 #+end_src
@@ -539,7 +766,8 @@ checking executes in microseconds, it does not bother me.
 #+begin_src emacs-lisp
   (use-package deadgrep
     :bind
-    (("C-c C-e" . deadgrep-edit-mode)))
+    (:map deadgrep-mode-map
+          ("C-c C-e" . deadgrep-edit-mode)))
 #+end_src
 
 ** Avy
@@ -550,19 +778,257 @@ checking executes in microseconds, it does not bother me.
      ("C-M-u" . avy-pop-mark)))
 #+end_src
 
+** Highlight Indent Guides
+#+begin_src emacs-lisp
+  (use-package highlight-indent-guides
+    :init
+    (setq highlight-indent-guides-method 'character
+          highlight-indent-guides-responsive 'top
+          highlight-indent-guides-auto-enabled nil)
+    :hook (prog-mode . highlight-indent-guides-mode)
+    :config
+    (set-face-attribute 'highlight-indent-guides-character-face nil :foreground "#323742")
+    (set-face-attribute 'highlight-indent-guides-top-character-face nil :foreground "#354050"))
+#+end_src
+
+** Wrap Region
+#+BEGIN_SRC emacs-lisp
+  (use-package wrap-region
+    :defer 1
+    :config
+    (wrap-region-global-mode))
+#+END_SRC
+
+** Rainbow Delimiters
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
+
+** Golden Ratio
+#+begin_src emacs-lisp
+  (use-package golden-ratio
+    :defer t)
+#+end_src
+
+** Treemacs
+*** Treemacs
+#+begin_src emacs-lisp
+  (use-package treemacs
+    :defer t
+    :init
+    (setq treemacs-width 25)
+    (with-eval-after-load 'winum
+      (define-key winum-keymap (kbd "M-0") 'treemacs-select-window))
+    :config
+    (treemacs-resize-icons 15))
+  ;; There is a bug which causes reset treemacs faces:
+  ;; https://github.com/Alexander-Miller/treemacs#compatibility
+  ;;(set-face-attribute 'treemacs-file-face nil :height .75)
+  ;;(set-face-attribute 'treemacs-directory-face nil :height .75)
+  ;;(set-face-attribute 'treemacs-git-ignored-face nil :height .75)
+#+end_src
+
+*** Treemacs Projectile
+#+begin_src emacs-lisp
+(use-package treemacs-projectile
+  :after treemacs projectile)
+#+end_src
+
+** Shell Pop
+#+begin_src emacs-lisp
+  (use-package shell-pop
+    :init
+    (setq shell-pop-shell-type '("vterm" "*vterm*" (lambda () (vterm)))
+          shell-pop-full-span t)
+    :bind*
+    (("M-t" . shell-pop))
+    :config
+    (set-face-attribute 'vterm-color-default nil :inherit 'hl-line)
+    (add-hook 'vterm-mode-hook (lambda ()
+                                 (setq buffer-face-mode-face '(:inherit hl-line))
+                                 (buffer-face-mode))))
+#+end_src
+
+** Dired Subtree
+#+begin_src emacs-lisp
+  (use-package dired-subtree
+    :after dired
+    :init
+    (setq dired-subtree-use-backgrounds nil)
+    :bind
+    (:map dired-mode-map
+          ("<tab>" . dired-subtree-cycle)
+          ("TAB" . dired-subtree-cycle)
+          ("<C-iso-lefttab>" . dired-subtree-remove)))
+#+end_src
+
+** Auto Highlight Symbol Mode
+#+begin_src emacs-lisp
+  (use-package auto-highlight-symbol
+    :defer t
+    :init
+    (setq ahs-case-fold-search nil
+          ahs-idle-interval 0.2)
+    ;; I also change the source code. Comment or delete the
+    ;; `(overlay-put overlay 'help-echo '(ahs-stat-string))' line in the
+    ;; `ahs-highlight-current-symbol' function to remove annoying echo
+    ;; area message.
+    :bind
+    (:map auto-highlight-symbol-mode-map
+          ("M-n" . ahs-forward)
+          ("M-p" . ahs-backward)
+          ("M-m s e" . ahs-edit-mode))
+    :config
+    (set-face-attribute 'ahs-plugin-defalt-face nil :inherit 'highlight :background nil  :foreground nil)
+    (set-face-attribute 'ahs-definition-face nil :inherit 'highlight :background nil  :foreground nil)
+    (set-face-attribute 'ahs-face nil :inherit 'highlight :background nil  :foreground nil)
+    (set-face-attribute 'ahs-plugin-whole-buffer-face nil :inherit 'highlight :background nil :foreground nil)
+    :hook
+    (prog-mode . auto-highlight-symbol-mode))
+#+end_src
+
+** Git Gutter
+#+begin_src emacs-lisp
+  ;;(use-package git-gutter
+  ;;  :defer nil
+  ;;  :init
+  ;;  (setq git-gutter:modified-sign "~"
+  ;;        git-gutter:update-interval 1)
+  ;;  :config
+  ;;  (global-git-gutter-mode)
+  ;;  (set-face-attribute 'git-gutter:modified nil :foreground nil :inherit 'font-lock-keyword-face))
+#+end_src
+
+** diff-hl
+#+begin_src emacs-lisp
+(use-package diff-hl
+  :config
+  (global-diff-hl-mode)
+  (diff-hl-flydiff-mode)
+  (set-face-attribute 'diff-hl-insert nil :background "#223822")
+  (set-face-attribute 'diff-hl-change nil :background "#442244" :foreground "mediumpurple1")
+  (set-face-attribute 'diff-hl-delete nil :background "#442222")
+  :hook
+  (org-mode . (lambda () (diff-hl-mode 0))))
+#+end_src
+
+** ob-async
+#+begin_src emacs-lisp
+  (use-package ob-async)
+#+end_src
+
+#+begin_src
+sleep 2s && echo "Done!"
+#+end_src
+
+** Web Mode
+*** Web Mode
+#+begin_src emacs-lisp
+  (use-package web-mode
+    :init
+    (setq web-mode-markup-indent-offset 2
+          web-mode-css-indent-offset 2)
+    ;;web-mode-engines-alist '(("django" . "\\.html\\'"))
+    :mode ;; Copied from spacemacs
+    (("\\.phtml\\'"      . web-mode)
+     ("\\.tpl\\.php\\'"  . web-mode)
+     ("\\.twig\\'"       . web-mode)
+     ("\\.xml\\'"        . web-mode)
+     ("\\.html\\'"       . web-mode)
+     ("\\.htm\\'"        . web-mode)
+     ("\\.[gj]sp\\'"     . web-mode)
+     ("\\.as[cp]x?\\'"   . web-mode)
+     ("\\.eex\\'"        . web-mode)
+     ("\\.erb\\'"        . web-mode)
+     ("\\.mustache\\'"   . web-mode)
+     ("\\.handlebars\\'" . web-mode)
+     ("\\.hbs\\'"        . web-mode)
+     ("\\.eco\\'"        . web-mode)
+     ("\\.ejs\\'"        . web-mode)
+     ("\\.svelte\\'"     . web-mode)
+     ("\\.djhtml\\'"     . web-mode)))
+#+end_src
+
+*** Emmet Mode
+#+begin_src emacs-lisp
+  (use-package emmet-mode
+    :init
+    (setq emmet-move-cursor-between-quotes t)
+    :bind
+    (:map emmet-mode-keymap
+          ([remap yas-expand] . emmet-expand-line)
+          ("M-n"  . emmet-next-edit-point)
+          ("M-p"  . emmet-prev-edit-point)
+          ("C-c C-p" . emmet-preview-mode))
+    :hook
+    ;;(rjsx-mode . (lambda () (setq emmet-expand-jsx-className? t)))
+    (web-mode . emmet-mode)
+    (css-mode . emmet-mode))
+#+end_src
+
+*** Company Web
+#+begin_src emacs-lisp
+  (use-package company-web
+    :config
+    (add-to-list 'company-backends '(company-web-html :with company-yasnippet)))
+#+end_src
+
+*** Json Mode
+#+begin_src emacs-lisp
+  (use-package json-mode)
+  (use-package json-navigator)
+#+end_src
+
+*** Prettier
+#+begin_src emacs-lisp
+  (use-package prettier-js
+    :hook
+    (web-mode . prettier-js-mode)
+    (css-mode . prettier-js-mode)
+    (json-mode . prettier-js-mode))
+#+end_src
+
 * Programming Languages
+** Emacs Lisp
+*** Elisp Slime Nav
+#+BEGIN_SRC emacs-lisp
+  (use-package elisp-slime-nav
+    :bind (
+           :map emacs-lisp-mode-map
+           ("M-." . elisp-slime-nav-find-elisp-thing-at-point)
+           :map org-mode-map
+           ("M-." . elisp-slime-nav-find-elisp-thing-at-point)))
+#+END_SRC
+
+*** Aggressive Indent
+#+begin_src emacs-lisp
+(use-package aggressive-indent
+  :diminish
+  :hook (emacs-lisp-mode . aggressive-indent-mode))
+#+end_src
+
 ** Python
+*** Python
 #+BEGIN_SRC emacs-lisp
   (use-package python
     :bind (
-	   :map python-mode-map
-	   ("M-." . xref-find-definitions))
+           :map python-mode-map
+           ("M-." . xref-find-definitions))
     :config
     (use-package pyvenv)
     (add-hook 'python-mode-hook 'eglot-ensure)
     (add-hook 'python-mode-hook 'fk/activate-pyvenv)
     (add-hook 'before-save-hook 'eglot-format-buffer))
 #+END_SRC
+
+*** Import Magic
+#+begin_src emacs-lisp
+  (use-package importmagic
+    ;; pip install importmagic epc
+    :hook
+    (python-mode . importmagic-mode))
+#+end_src
 
 * Keybindings
 ** Spacemacs' "Better Defaults" layer
@@ -576,6 +1042,7 @@ checking executes in microseconds, it does not bother me.
 
   (global-set-key (kbd "C-w") 'fk/backward-kill-word-or-region)
 #+end_src
+
 ** Global Key Bindings
 #+BEGIN_SRC emacs-lisp
   (keyboard-translate ?\C-h ?\C-?) ;; Use shell-like backspace C-h
@@ -588,25 +1055,56 @@ checking executes in microseconds, it does not bother me.
   (global-set-key (kbd "C-x C-k") 'kill-current-buffer)
   (global-set-key (kbd "C-x k") 'kill-buffer-and-window)
   (global-set-key (kbd "M-l") 'move-to-window-line-top-bottom)
-  (global-set-key (kbd "M-s") 'isearch-forward-symbol-at-point)
   (global-set-key (kbd "C-x 2") 'fk/split-window-below-and-switch)
   (global-set-key (kbd "C-x 3") 'fk/split-window-right-and-switch)
   (global-set-key (kbd "C-v") (lambda () (interactive) (scroll-up-command 15)))
   (global-set-key (kbd "M-v") (lambda () (interactive) (scroll-down-command 15)))
+  (global-set-key (kbd "C-M-o") 'tab-next)
+  (global-set-key (kbd "C-x 4") 'tab-new)
+  (global-set-key (kbd "M-ç") 'xref-pop-marker-stack)
 #+END_SRC
 
 ** Spacemacs-like Menu Map
-- TODO: improve this section.
 #+begin_src emacs-lisp
-  (bind-keys :prefix-map fk/menu-map
-	 :prefix "M-m"
-	 ("f f" . helm-find-files)
-	 ("f r" . helm-recentf)
-	 ("f c" . fk/find-config)
-	 ("u" . universal-argument))
+  (bind-keys
+   :prefix-map fk/menu-map
+   :prefix "M-m"
+   ;; General
+   ("u" . universal-argument)
+   ;; File
+   ("f f" . helm-find-files)
+   ("f r" . helm-recentf)
+   ("f c" . fk/find-config)
+   ;; Buffer
+   ("b s" . fk/scratch)
+   ("b h" . fk/home)
+   ;; Project
+   ("p r" . projectile-recentf)
+   ;; Yasnippet
+   ("y h" . yas-insert-snippet) ;; yas helm
+   ("y e" . yas-expand)
+   ;; Tabs
+   ("t t" . tab-bar-select-tab-by-name)
+   ("t n" . tab-new)
+   ("t o" . tab-next)
+   ("t f" . find-file-other-tab) ;; bozuk
+   ;; Eglot
+   ("e d" . eglot-help-at-point)
+   ;; Git / Version Control
+   ("g s" . magit-status)
+   ("g t" . helm-magit-todos))
 #+end_src
 
 * Fun
+** Selectric Mode
+#+begin_src emacs-lisp
+  (use-package selectric-mode)
+#+end_src
+
+** Turkish Mode
+#+begin_src emacs-lisp
+  (use-package turkish)
+#+end_src
 * Custom Faces
 #+begin_src emacs-lisp
   (set-face-attribute 'highlight nil :underline t :weight 'bold :background nil :foreground nil)
@@ -616,23 +1114,19 @@ checking executes in microseconds, it does not bother me.
   (set-face-attribute 'font-lock-function-name-face nil :foreground "LightGoldenrod1")
   (set-face-attribute 'font-lock-string-face nil :foreground "PeachPuff3")
   (set-face-attribute 'mode-line nil :height 80 :background "#262b35")
+  (set-face-attribute 'mode-line-inactive nil :background (face-attribute 'default :background))
   (set-face-attribute 'yas-field-highlight-face nil :inherit 'region)
+  (set-face-attribute 'trailing-whitespace nil :background nil :inherit 'font-lock-comment-face)
+  (set-face-attribute 'org-block nil :extend t)
+  (set-face-attribute 'org-ellipsis nil :foreground nil :inherit 'font-lock-comment-face :weight 'normal)
+  (set-face-attribute 'org-checkbox nil :foreground "white")
+  (set-face-attribute 'helm-source-header nil :extend t)
+  (set-face-attribute 'org-block-begin-line nil :extend t)
+  (set-face-attribute 'org-block-end-line nil :extend t)
+  (set-face-attribute 'lazy-highlight nil :background nil :foreground nil :box '(:line-width -1))
 #+end_src
 
 * Experimental
-** Elisp
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'emacs-lisp-mode-hook
-	    (lambda ()
-	      (use-package elisp-slime-nav
-		:bind (("M-." . elisp-slime-nav-find-elisp-thing-at-point)
-		       ("M-ç" . pop-tag-mark)))))
-
-  (use-package aggressive-indent
-      :diminish
-      :hook (emacs-lisp-mode . aggressive-indent-mode))
-#+END_SRC
-
 ** Restclient
    #+BEGIN_SRC emacs-lisp
      (use-package restclient
@@ -651,13 +1145,6 @@ checking executes in microseconds, it does not bother me.
    :hook (dired-mode . all-the-icons-dired-mode))
 #+END_SRC
 
-** wrap-region
-#+BEGIN_SRC emacs-lisp
-  (use-package wrap-region
-    :defer 1
-    :config
-    (wrap-region-global-mode t))
-#+END_SRC
 ** Garbage Collect Threshold
 #+begin_src emacs-lisp
   (defun fk/setup-gc ()
@@ -666,4 +1153,24 @@ checking executes in microseconds, it does not bother me.
     (setq gc-cons-percentage 0.6))
 
   (add-hook 'after-init-hook 'fk/setup-gc)
+#+end_src
+** Dumb Jump
+#+begin_src emacs-lisp
+  (use-package dumb-jump
+    :init
+    (setq dumb-jump-selector 'helm)
+    :bind (("M-g M-g" . dumb-jump-go)
+           ("M-g M-o" . dumb-jump-go-other-window)
+           ("M-g M-p" . dumb-jump-quick-look)
+           ("M-g M-b" . dumb-jump-back)
+           ("M-g g" . dumb-jump-go-prefer-external)
+           ("M-g o" . dumb-jump-go-prefer-external-other-window)))
+#+end_src
+
+** Stripe Buffer
+#+begin_src emacs-lisp
+  (use-package stripe-buffer
+    :hook (org-mode . turn-on-stripe-table-mode)
+    :config
+    (set-face-attribute 'stripe-highlight nil :background "#303540"))
 #+end_src
