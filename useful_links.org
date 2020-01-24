@@ -1,6 +1,7 @@
 | Link                                                                             | Star |
 |----------------------------------------------------------------------------------+------|
 | https://github.com/emacs-tw/awesome-emacs (awesome emacs)                        | 5400 |
+| https://github.com/redguardtoo/emacs.d                                           | 1600 |
 | https://github.com/caisah/emacs.dz (a list of emacs config files)                |  744 |
 | https://github.com/hrs/dotfiles/tree/master/emacs/.emacs.d                       |  441 |
 | https://github.com/sachac/.emacs.d/                                              |  268 |
@@ -8,19 +9,21 @@
 | https://github.com/rememberYou/.emacs.d                                          |  208 |
 | https://github.com/alhassy/ElispCheatSheet (elisp cheatsheet)                    |  151 |
 | https://github.com/angrybacon/dotemacs                                           |  144 |
-| https://github.com/ianpan870102/yay-evil-emacs#1-but-im-not-an-evil-user         |  136 |
+| https://github.com/ianpan870102/yay-evil-emacs                                   |  136 |
 | https://github.com/alhassy/emacs.d                                               |  112 |
 | https://github.com/novoid/dot-emacs                                              |   73 |
+| https://github.com/iqss/IQSS.emacs                                               |   52 |
+| https://github.com/dakra/dmacs                                                   |   49 |
 | https://github.com/ianpan870102/.personal-emacs.d                                |   46 |
 | https://github.com/jamiecollinson/dotfiles/blob/master/config.org/               |   38 |
 | https://github.com/codemac/config/tree/master/emacs.d                            |   23 |
 | https://gitlab.com/protesilaos/dotfiles/tree/master/emacs/.emacs.d               |   21 |
+| https://github.com/Atman50/emacs-config                                          |   18 |
 | https://github.com/belak/dotfiles/tree/master/emacs.d                            |   15 |
+| https://github.com/jonathanchu/dotemacs                                          |    9 |
+| https://github.com/zarkone/literally.el/blob/master/literally.org                |    5 |
 | https://github.com/kadircancetin/.emacs.d                                        |    0 |
 | https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/           | blog |
 | https://medium.com/@suvratapte/configuring-emacs-from-scratch-intro-3157bed9d040 | blog |
 | https://emacs.christianbaeuerlein.com/                                           | blog |
 | https://emacs.zeef.com/ehartc (ilginç bir site)                                  | blog |
-| https://github.com/Atman50/emacs-config                                          |   18 |
-| https://github.com/dakra/dmacs                                                   |   49 |
-| https://github.com/zarkone/literally.el/blob/master/literally.org                |    5 |
