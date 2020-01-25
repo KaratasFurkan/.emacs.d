@@ -26,8 +26,9 @@
   - [[#split-window-and-switch][split-window-and-switch]]
   - [[#backward-kill-word-or-region][backward-kill-word-or-region]]
   - [[#helm-do-ag-project-root-or-current-dir][helm-do-ag-project-root-or-current-dir]]
-  - [[#scratch][scratch]]
-  - [[#home][home]]
+  - [[#go-scratch][go-scratch]]
+  - [[#go-home][go-home]]
+  - [[#go-messages][go-messages]]
   - [[#org-imenu][org-imenu]]
 - [[#theme][Theme]]
   - [[#disable-all-themes-before-loading-a-theme][Disable all themes before loading a theme]]
@@ -338,7 +339,7 @@ checking executes in microseconds, it does not bother me.
       (helm-do-ag default-directory)))
 #+end_src
 
-** scratch
+** go-scratch
 #+begin_src emacs-lisp
   (defun fk/scratch ()
     "Switch to scratch buffer."
@@ -346,12 +347,20 @@ checking executes in microseconds, it does not bother me.
     (switch-to-buffer "*scratch*"))
 #+end_src
 
-** home
+** go-home
 #+begin_src emacs-lisp
   (defun fk/home ()
     "Switch to home (dashboard) buffer."
     (interactive)
     (switch-to-buffer "*dashboard*"))
+#+end_src
+
+** go-messages
+#+begin_src emacs-lisp
+  (defun fk/messages ()
+    "Switch to Messages buffer."
+    (interactive)
+    (switch-to-buffer "*Messages*"))
 #+end_src
 
 ** org-imenu
@@ -622,7 +631,8 @@ checking executes in microseconds, it does not bother me.
 
 ** Magit
 #+BEGIN_SRC emacs-lisp
-  (use-package magit)
+  (use-package magit
+    :defer t)
   (use-package magit-todos
     :after magit
     :config
@@ -850,9 +860,10 @@ checking executes in microseconds, it does not bother me.
     (("M-t" . shell-pop))
     :config
     (set-face-attribute 'vterm-color-default nil :inherit 'hl-line)
-    (add-hook 'vterm-mode-hook (lambda ()
-                                 (setq buffer-face-mode-face '(:inherit hl-line))
-                                 (buffer-face-mode))))
+    :hook
+    (vterm-mode . (lambda ()
+                    (setq buffer-face-mode-face '(:inherit hl-line))
+                    (buffer-face-mode))))
 #+end_src
 
 ** Dired Subtree
@@ -1083,6 +1094,7 @@ sleep 2s && echo "Done!"
    ;; Buffer
    ("b s" . fk/scratch)
    ("b h" . fk/home)
+   ("b m" . fk/messages)
    ;; Project
    ("p r" . projectile-recentf)
    ;; Yasnippet
