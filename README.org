@@ -211,7 +211,7 @@ checking executes in microseconds, it does not bother me.
    indent-tabs-mode nil
    show-trailing-whitespace t
    frame-title-format '("%b [%m]") ; file name and major mode
-   recentf-exclude '("/\\.config/emacs/elpa/" "^/tmp/" "^/usr/")
+   recentf-exclude '("/\\.config/emacs/elpa/" "^/tmp/" "^/usr/" "/\\.config/emacs/.cache/")
    recentf-max-saved-items 200
    dired-listing-switches "-lAhp --sort=time --group-directories-first"
    completion-styles '(basic flex))
