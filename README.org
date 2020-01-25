@@ -821,8 +821,13 @@ checking executes in microseconds, it does not bother me.
     (with-eval-after-load 'winum
       (define-key winum-keymap (kbd "M-0") 'treemacs-select-window))
     :config
-    (treemacs-resize-icons 15))
+    (treemacs-resize-icons 15)
+    :hook
+    (treemacs-mode . (lambda ()
+                       (setq buffer-face-mode-face '(:height .75))
+                       (buffer-face-mode))))
   ;; There is a bug which causes reset treemacs faces:
+  ;; (Update: solved by using buffer-face-mode)
   ;; https://github.com/Alexander-Miller/treemacs#compatibility
   ;;(set-face-attribute 'treemacs-file-face nil :height .75)
   ;;(set-face-attribute 'treemacs-directory-face nil :height .75)
