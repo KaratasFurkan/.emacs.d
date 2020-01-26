@@ -486,7 +486,9 @@ checking executes in microseconds, it does not bother me.
      ("<tab>" . helm-ff-RET))
     :config
     (helm-mode)
-    (savehist-mode))
+    (savehist-mode)
+    :hook
+    (helm-major-mode . fk/darken-background))
 #+END_SRC
 
 *** Helm Projectile
@@ -845,21 +847,17 @@ checking executes in microseconds, it does not bother me.
   (use-package treemacs
     :defer t
     :init
-    (setq treemacs-width 25)
+    (setq treemacs-width 20)
     (with-eval-after-load 'winum
       (define-key winum-keymap (kbd "M-0") 'treemacs-select-window))
     :config
     (treemacs-resize-icons 15)
     :hook
     (treemacs-mode . (lambda ()
-                       (setq buffer-face-mode-face '(:height .75))
-                       (buffer-face-mode))))
-  ;; There is a bug which causes reset treemacs faces:
-  ;; (Update: solved by using buffer-face-mode)
-  ;; https://github.com/Alexander-Miller/treemacs#compatibility
-  ;;(set-face-attribute 'treemacs-file-face nil :height .75)
-  ;;(set-face-attribute 'treemacs-directory-face nil :height .75)
-  ;;(set-face-attribute 'treemacs-git-ignored-face nil :height .75)
+                       (face-remap-add-relative 'default '(:height .75))
+                       (face-remap-add-relative 'mode-line-inactive '(:inherit hl-line))
+                       (face-remap-add-relative 'mode-line '(:inherit hl-line))
+                       (fk/darken-background))))
 #+end_src
 
 *** Treemacs Projectile
@@ -879,9 +877,7 @@ checking executes in microseconds, it does not bother me.
     :config
     (set-face-attribute 'vterm-color-default nil :inherit 'hl-line)
     :hook
-    (vterm-mode . (lambda ()
-                    (setq buffer-face-mode-face '(:inherit hl-line))
-                    (buffer-face-mode))))
+    (vterm-mode . fk/darken-background))
 #+end_src
 
 ** Dired Subtree
