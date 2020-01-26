@@ -163,11 +163,19 @@ checking executes in microseconds, it does not bother me.
   (add-hook 'post-gc-hook
             '(lambda ()
                (message "%s %s" "GC COLLECT" (format-time-string "%-I:%M"))))
+
   (setq gc-cons-threshold most-positive-fixnum
         gc-cons-percentage 1)
+
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
+
+  (setq window-divider-default-places t
+        window-divider-default-bottom-width 1
+        window-divider-default-right-width 1)
+  (window-divider-mode)
+
   (set-face-attribute 'default nil :family "Source Code Pro" :height 90)
 #+end_src
 
