@@ -30,6 +30,7 @@
   - [[#go-home][go-home]]
   - [[#go-messages][go-messages]]
   - [[#org-imenu][org-imenu]]
+  - [[#darken-background][darken-background]]
 - [[#theme][Theme]]
   - [[#disable-all-themes-before-loading-a-theme][Disable all themes before loading a theme]]
   - [[#i-use-doom-spacegrey][I use doom-spacegrey]]
@@ -378,6 +379,15 @@ checking executes in microseconds, it does not bother me.
   (interactive)
   (helm-imenu)
   (show-subtree))
+#+end_src
+
+** darken-background
+#+begin_src emacs-lisp
+  ;; I use this to darken non-file buffers like treemacs, helm etc.
+  (defun fk/darken-background ()
+    "Darken the background of the buffer."
+    (interactive)
+    (face-remap-add-relative 'default '(:inherit hl-line)))
 #+end_src
 
 * Theme
