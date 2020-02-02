@@ -1025,10 +1025,11 @@ sleep 2s && echo "Done!"
        :hook (org-mode . turn-on-stripe-table-mode)
        :config
        (set-face-attribute 'stripe-highlight nil :background "#303540")
-       ;; hl-line fix:
-       (defadvice global-hl-line-highlight (after stripe-set-priority activate)
+       ;;hl-line(higher priority stripes) fix:
+       (defadvice sb/redraw-region (after stripe-set-priority activate)
          (when (or stripe-buffer-mode stripe-table-mode)
-           (overlay-put global-hl-line-overlay 'priority 10))))
+           (dolist (overlay sb/overlays)
+             (overlay-put overlay 'priority -100)))))
    #+end_src
 
 * Programming Languages
