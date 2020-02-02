@@ -1018,6 +1018,18 @@ sleep 2s && echo "Done!"
     (css-mode . prettier-js-mode)
     (json-mode . prettier-js-mode))
 #+end_src
+** Stripe Buffer
+   #+begin_src emacs-lisp
+     (use-package stripe-buffer
+       :defer t
+       :hook (org-mode . turn-on-stripe-table-mode)
+       :config
+       (set-face-attribute 'stripe-highlight nil :background "#303540")
+       ;; hl-line fix:
+       (defadvice global-hl-line-highlight (after stripe-set-priority activate)
+         (when (or stripe-buffer-mode stripe-table-mode)
+           (overlay-put global-hl-line-overlay 'priority 10))))
+   #+end_src
 
 * Programming Languages
 ** Emacs Lisp
@@ -1198,13 +1210,6 @@ sleep 2s && echo "Done!"
            ("M-g o" . dumb-jump-go-prefer-external-other-window)))
 #+end_src
 
-** Stripe Buffer
-#+begin_src emacs-lisp
-  (use-package stripe-buffer
-    :hook (org-mode . turn-on-stripe-table-mode)
-    :config
-    (set-face-attribute 'stripe-highlight nil :background "#303540"))
-#+end_src
 * Other Emacs Configurations
   | Link                                                                             | Star |
   |----------------------------------------------------------------------------------+------|
