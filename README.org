@@ -238,7 +238,7 @@
       frame-title-format '("%b [%m]") ; file name and major mode
       recentf-exclude '("/\\.config/emacs/elpa/" "^/tmp/" "^/usr/" "/\\.config/emacs/.cache/" "/\\.config/emacs/bookmarks")
       recentf-max-saved-items 200
-      dired-listing-switches "-lAhp --sort=time --group-directories-first"
+      dired-listing-switches "-lAhp --group-directories-first"
       completion-styles '(basic flex))
 
      (defalias 'yes-or-no-p 'y-or-n-p)
