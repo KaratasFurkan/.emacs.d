@@ -413,7 +413,7 @@
   (defun fk/darken-background ()
     "Darken the background of the buffer."
     (interactive)
-    (face-remap-add-relative 'default :inherit 'hl-line))
+    (face-remap-add-relative 'default :background (face-attribute 'hl-line :background)))
    #+end_src
 
 ** indent-buffer
