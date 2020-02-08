@@ -109,6 +109,7 @@
     - [[#turkish-mode][Turkish Mode]]
     - [[#fireplace][Fireplace]]
     - [[#pacmacs][Pacmacs]]
+    - [[#2048][2048]]
   - [[#custom-faces][Custom Faces]]
   - [[#experimental][Experimental]]
     - [[#restclient][Restclient]]
@@ -1316,6 +1317,12 @@
 ** Pacmacs
    #+begin_src emacs-lisp
   (use-package pacmacs
+    :defer t)
+   #+end_src
+
+** 2048
+   #+begin_src emacs-lisp
+  (use-package 2048-game
     :defer t)
    #+end_src
 
