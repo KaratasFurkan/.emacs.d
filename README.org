@@ -33,6 +33,9 @@
     - [[#darken-background][darken-background]]
     - [[#indent-buffer][indent-buffer]]
     - [[#dired-mouse-action][dired-mouse-action]]
+    - [[#increase-font-size][increase-font-size]]
+    - [[#decrease-font-size][decrease-font-size]]
+    - [[#reset-font-size][reset-font-size]]
   - [[#theme][Theme]]
     - [[#disable-all-themes-before-loading-a-theme][Disable all themes before loading a theme]]
     - [[#i-use-doom-spacegrey][I use doom-spacegrey]]
@@ -192,7 +195,8 @@
            window-divider-default-right-width 1)
      (window-divider-mode)
 
-     (set-face-attribute 'default nil :family "Source Code Pro" :height 90)
+     (defvar default-font-size 90)
+     (set-face-attribute 'default nil :family "Source Code Pro" :height default-font-size)
    #+end_src
 
 ** Disable
@@ -436,6 +440,36 @@
       (if (file-directory-p file)
           (dired-mouse-find-file event)
         (browse-url-of-dired-file))))
+   #+end_src
+
+** increase-font-size
+   #+begin_src emacs-lisp
+  (defun fk/increase-font-size ()
+    "Increase font size by 0.5 (5 in height)."
+    (interactive)
+    (set-face-attribute 'default nil
+                        :height (+ (face-attribute 'default :height) 5))
+    (message "New font height: %s" (face-attribute 'default :height)))
+   #+end_src
+
+** decrease-font-size
+   #+begin_src emacs-lisp
+  (defun fk/decrease-font-size ()
+    "Decrease font size by 0.5 (5 in height)."
+    (interactive)
+    (set-face-attribute 'default nil
+                        :height (+ (face-attribute 'default :height) -5))
+    (message "New font height: %s" (face-attribute 'default :height)))
+   #+end_src
+
+** reset-font-size
+   #+begin_src emacs-lisp
+  (defun fk/reset-font-size ()
+    "Reset font size according to the `default-font-size' variable."
+    (interactive)
+    (set-face-attribute 'default nil
+                        :height default-font-size)
+    (message "New font height: %s" (face-attribute 'default :height)))
    #+end_src
 
 * Theme
@@ -1262,6 +1296,9 @@
   (global-set-key (kbd "C-M-o") 'tab-next)
   (global-set-key (kbd "C-x 4") 'tab-new)
   (global-set-key (kbd "M-ç") 'xref-pop-marker-stack)
+  (global-set-key (kbd "C--") 'fk/decrease-font-size)
+  (global-set-key (kbd "C-*") 'fk/increase-font-size)
+  (global-set-key (kbd "C-0") 'fk/reset-font-size)
    #+END_SRC
 
 ** Spacemacs-like Menu Map
