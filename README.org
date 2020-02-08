@@ -117,7 +117,6 @@
   - [[#experimental][Experimental]]
     - [[#restclient][Restclient]]
     - [[#garbage-collect-threshold][Garbage Collect Threshold]]
-    - [[#dumb-jump][Dumb Jump]]
     - [[#minimap][Minimap]]
     - [[#olivetti][Olivetti]]
   - [[#other-emacs-configurations][Other Emacs Configurations]]
@@ -1295,10 +1294,11 @@
   (global-set-key (kbd "M-v") (lambda () (interactive) (scroll-down-command 15)))
   (global-set-key (kbd "C-M-o") 'tab-next)
   (global-set-key (kbd "C-x 4") 'tab-new)
-  (global-set-key (kbd "M-ç") 'xref-pop-marker-stack)
   (global-set-key (kbd "C--") 'fk/decrease-font-size)
   (global-set-key (kbd "C-*") 'fk/increase-font-size)
   (global-set-key (kbd "C-0") 'fk/reset-font-size)
+  (global-set-key (kbd "M-g M-g") 'xref-find-definitions)
+  (global-set-key (kbd "M-g M-o") 'xref-find-definitions-other-window)
    #+END_SRC
 
 ** Spacemacs-like Menu Map
@@ -1401,19 +1401,6 @@
     (setq gc-cons-percentage 0.6))
 
   (add-hook 'after-init-hook 'fk/setup-gc)
-   #+end_src
-
-** Dumb Jump
-   #+begin_src emacs-lisp
-;;  (use-package dumb-jump
-;;    :init
-;;    (setq dumb-jump-selector 'helm)
-;;    :bind (("M-g M-g" . dumb-jump-go)
-;;           ("M-g M-o" . dumb-jump-go-other-window)
-;;           ("M-g M-p" . dumb-jump-quick-look)
-;;           ("M-g M-b" . dumb-jump-back)
-;;           ("M-g g" . dumb-jump-go-prefer-external)
-;;           ("M-g o" . dumb-jump-go-prefer-external-other-window)))
    #+end_src
 
 ** Minimap
