@@ -471,6 +471,62 @@
     (message "New font height: %s" (face-attribute 'default :height)))
    #+end_src
 
+** comment-or-uncomment-region
+   #+begin_src emacs-lisp
+  (defun fk/comment-or-uncomment-region ()
+    "If a region is active call comment-or-uncomment-region,
+  otherwise just insert the given char."
+    (interactive)
+    (call-interactively (if (region-active-p)
+                            'comment-or-uncomment-region
+                          'self-insert-command)))
+   #+end_src
+
+** generate-random-scratch
+#+begin_src emacs-lisp
+  (defun fk/generate-random-scratch ()
+    "Create and switch to a temporary scratch buffer with a random name."
+    (interactive)
+    (switch-to-buffer (make-temp-name "scratch-"))
+    (lisp-interaction-mode))
+#+end_src
+
+** org-screenshot
+#+begin_src emacs-lisp
+  (with-eval-after-load 'org
+    (defun fk/org-screenshot ()
+      ;; fork from: https://delta.re/org-screenshot/
+      ;; https://github.com/kadircancetin/.emacs.d
+      "Take a screenshot into a time stamped unique-named file in the
+  same directory as the org-buffer and insert a link to this file."
+      (interactive)
+      (when (eq major-mode 'org-mode)
+        (suspend-frame)
+        (run-at-time
+         "500 millisec" nil ;; I have animation when minimize window
+         (lambda ()
+           (org-display-inline-images)
+           (setq filename
+                 (concat
+                  (make-temp-name
+                   (concat (file-name-nondirectory (buffer-file-name))
+                           "_imgs/"
+                           (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+           (unless (file-exists-p (file-name-directory filename))
+             (make-directory (file-name-directory filename)))
+                                          ; take screenshot
+           (if (eq system-type 'darwin)
+               (call-process "screencapture" nil nil nil "-i" filename))
+           (if (eq system-type 'gnu/linux)
+               (call-process "import" nil nil nil filename))
+                                          ; insert into file if correctly taken
+           (if (file-exists-p filename)
+               (insert (concat "[[file:" filename "]]")))
+           (org-remove-inline-images)
+           (org-display-inline-images)
+           (other-frame 0))))))
+#+end_src
+
 * Theme
 ** Disable all themes before loading a theme
    #+BEGIN_SRC emacs-lisp
