@@ -2,124 +2,139 @@
 #+STARTUP: noindent
 
 * Table of Contents :TOC_5:
-  - [[#about-this-configuration][About This Configuration]]
-    - [[#applying-changes][Applying Changes]]
-  - [[#package-manager][Package Manager]]
-    - [[#package-repositories][Package Repositories]]
-      - [[#initialize-package-repositories][Initialize package repositories]]
-    - [[#use-package][Use Package]]
-      - [[#install-use-package-if-not-installed][Install use-package if not installed]]
-      - [[#always-install-packages-if-not-installed][Always install packages if not installed]]
-      - [[#always-compile-packages-and-use-the-newest-version-available][Always compile packages, and use the newest version available.]]
-  - [[#better-defaults][Better Defaults]]
-    - [[#early-initel][early-init.el]]
-    - [[#disable][Disable]]
-    - [[#enable][Enable]]
-    - [[#other][Other]]
-  - [[#custom-functions][Custom Functions]]
-    - [[#find-config][find-config]]
-    - [[#disable-all-themes][disable-all-themes]]
-    - [[#company-backend-with-yas][company-backend-with-yas]]
-    - [[#company-smart-snippets][company-smart-snippets]]
-    - [[#company-enable-snippets][company-enable-snippets]]
-    - [[#activate-pyvenv][activate-pyvenv]]
-    - [[#split-window-and-switch][split-window-and-switch]]
-    - [[#backward-kill-word-or-region][backward-kill-word-or-region]]
-    - [[#helm-do-ag-project-root-or-current-dir][helm-do-ag-project-root-or-current-dir]]
-    - [[#go-scratch][go-scratch]]
-    - [[#go-home][go-home]]
-    - [[#go-messages][go-messages]]
-    - [[#org-imenu][org-imenu]]
-    - [[#darken-background][darken-background]]
-    - [[#indent-buffer][indent-buffer]]
-    - [[#dired-mouse-action][dired-mouse-action]]
-    - [[#increase-font-size][increase-font-size]]
-    - [[#decrease-font-size][decrease-font-size]]
-    - [[#reset-font-size][reset-font-size]]
-  - [[#theme][Theme]]
-    - [[#disable-all-themes-before-loading-a-theme][Disable all themes before loading a theme]]
-    - [[#i-use-doom-spacegrey][I use doom-spacegrey]]
-    - [[#a-light-emacs-theme-thats-well-suited-for-org-mode][A light emacs theme that's well suited for org-mode]]
-  - [[#packages][Packages]]
-    - [[#org][Org]]
-    - [[#helm][Helm]]
-      - [[#helm-1][Helm]]
-      - [[#helm-projectile][Helm Projectile]]
-      - [[#helm-ag][Helm Ag]]
-      - [[#helm-xref][Helm Xref]]
-      - [[#helm-swoop][Helm Swoop]]
-      - [[#helm-descbinds][Helm Descbinds]]
-    - [[#shackle][Shackle]]
-    - [[#company][Company]]
-      - [[#company-1][Company]]
-      - [[#company-box][Company Box]]
-      - [[#company-statistics][Company Statistics]]
-    - [[#projectile][Projectile]]
-    - [[#lsp-mode][LSP Mode]]
-    - [[#eglot][Eglot]]
-    - [[#magit][Magit]]
-    - [[#expand-region][Expand Region]]
-    - [[#doom-modeline][Doom Modeline]]
-    - [[#multiple-cursors][Multiple Cursors]]
-    - [[#which-key][Which Key]]
-    - [[#hl-todo][hl-todo]]
-    - [[#beacon][Beacon]]
-    - [[#toc-org][toc-org]]
-    - [[#vterm][vterm]]
-    - [[#emacs-dashboard][Emacs Dashboard]]
-    - [[#yasnippet][YASnippet]]
-    - [[#yasnippet-snippets][YASnippet-snippets]]
-    - [[#winum][Winum]]
-    - [[#deadgrep][Deadgrep]]
-    - [[#avy][Avy]]
-    - [[#highlight-indent-guides][Highlight Indent Guides]]
-    - [[#wrap-region][Wrap Region]]
-    - [[#rainbow-delimiters][Rainbow Delimiters]]
-    - [[#golden-ratio][Golden Ratio]]
-    - [[#treemacs][Treemacs]]
-      - [[#treemacs-1][Treemacs]]
-      - [[#treemacs-projectile][Treemacs Projectile]]
-    - [[#shell-pop][Shell Pop]]
-    - [[#dired-subtree][Dired Subtree]]
-    - [[#auto-highlight-symbol-mode][Auto Highlight Symbol Mode]]
-    - [[#git-gutter][Git Gutter]]
-    - [[#diff-hl][diff-hl]]
-    - [[#ob-async][ob-async]]
-    - [[#web-mode][Web Mode]]
-      - [[#web-mode-1][Web Mode]]
-      - [[#emmet-mode][Emmet Mode]]
-        - [[#emmet-mode-1][Emmet Mode]]
-        - [[#helm-emmet][Helm Emmet]]
-      - [[#company-web][Company Web]]
-      - [[#json-mode][Json Mode]]
-      - [[#prettier][Prettier]]
-    - [[#anzu][Anzu]]
-    - [[#dired-icons][Dired icons]]
-    - [[#stripe-buffer][Stripe Buffer]]
-  - [[#programming-languages][Programming Languages]]
-    - [[#emacs-lisp][Emacs Lisp]]
-      - [[#elisp-slime-nav][Elisp Slime Nav]]
-      - [[#aggressive-indent][Aggressive Indent]]
-    - [[#python][Python]]
-      - [[#python-1][Python]]
-      - [[#import-magic][Import Magic]]
-  - [[#keybindings][Keybindings]]
-    - [[#spacemacs-better-defaults-layer][Spacemacs' "Better Defaults" layer]]
-    - [[#global-key-bindings][Global Key Bindings]]
-    - [[#spacemacs-like-menu-map][Spacemacs-like Menu Map]]
-  - [[#fun][Fun]]
-    - [[#selectric-mode][Selectric Mode]]
-    - [[#turkish-mode][Turkish Mode]]
-    - [[#fireplace][Fireplace]]
-    - [[#pacmacs][Pacmacs]]
-    - [[#2048][2048]]
-  - [[#custom-faces][Custom Faces]]
-  - [[#experimental][Experimental]]
-    - [[#restclient][Restclient]]
-    - [[#garbage-collect-threshold][Garbage Collect Threshold]]
-    - [[#minimap][Minimap]]
-    - [[#olivetti][Olivetti]]
-  - [[#other-emacs-configurations][Other Emacs Configurations]]
+- [[#about-this-configuration][About This Configuration]]
+  - [[#applying-changes][Applying Changes]]
+- [[#package-manager][Package Manager]]
+  - [[#package-repositories][Package Repositories]]
+    - [[#initialize-package-repositories][Initialize package repositories]]
+  - [[#use-package][Use Package]]
+    - [[#install-use-package-if-not-installed][Install use-package if not installed]]
+    - [[#always-install-packages-if-not-installed][Always install packages if not installed]]
+    - [[#always-compile-packages-and-use-the-newest-version-available][Always compile packages, and use the newest version available.]]
+- [[#better-defaults][Better Defaults]]
+  - [[#early-initel][early-init.el]]
+  - [[#disable][Disable]]
+  - [[#enable][Enable]]
+  - [[#other][Other]]
+- [[#custom-functions][Custom Functions]]
+  - [[#find-config][find-config]]
+  - [[#disable-all-themes][disable-all-themes]]
+  - [[#company-backend-with-yas][company-backend-with-yas]]
+  - [[#company-smart-snippets][company-smart-snippets]]
+  - [[#company-enable-snippets][company-enable-snippets]]
+  - [[#activate-pyvenv][activate-pyvenv]]
+  - [[#split-window-and-switch][split-window-and-switch]]
+  - [[#backward-kill-word-or-region][backward-kill-word-or-region]]
+  - [[#helm-do-ag-project-root-or-current-dir][helm-do-ag-project-root-or-current-dir]]
+  - [[#go-scratch][go-scratch]]
+  - [[#go-home][go-home]]
+  - [[#go-messages][go-messages]]
+  - [[#org-imenu][org-imenu]]
+  - [[#darken-background][darken-background]]
+  - [[#indent-buffer][indent-buffer]]
+  - [[#dired-mouse-action][dired-mouse-action]]
+  - [[#increase-font-size][increase-font-size]]
+  - [[#decrease-font-size][decrease-font-size]]
+  - [[#reset-font-size][reset-font-size]]
+  - [[#comment-or-uncomment-region][comment-or-uncomment-region]]
+  - [[#generate-random-scratch][generate-random-scratch]]
+  - [[#org-screenshot][org-screenshot]]
+  - [[#dired-smart-open][dired-smart-open]]
+- [[#theme][Theme]]
+  - [[#disable-all-themes-before-loading-a-theme][Disable all themes before loading a theme]]
+  - [[#do-not-confirm-when-load-theme][Do not confirm when load-theme]]
+  - [[#i-use-doom-spacegrey][I use doom-spacegrey]]
+  - [[#a-light-emacs-theme-thats-well-suited-for-org-mode][A light emacs theme that's well suited for org-mode]]
+- [[#packages][Packages]]
+  - [[#org][Org]]
+  - [[#helm][Helm]]
+    - [[#helm-1][Helm]]
+    - [[#helm-projectile][Helm Projectile]]
+    - [[#helm-ag][Helm Ag]]
+    - [[#helm-xref][Helm Xref]]
+    - [[#helm-swoop][Helm Swoop]]
+    - [[#helm-descbinds][Helm Descbinds]]
+  - [[#shackle][Shackle]]
+  - [[#company][Company]]
+    - [[#company-1][Company]]
+    - [[#company-box][Company Box]]
+    - [[#company-statistics][Company Statistics]]
+  - [[#projectile][Projectile]]
+  - [[#eglot][Eglot]]
+  - [[#magit][Magit]]
+  - [[#expand-region][Expand Region]]
+  - [[#doom-modeline][Doom Modeline]]
+  - [[#multiple-cursors][Multiple Cursors]]
+  - [[#which-key][Which Key]]
+  - [[#hl-todo][hl-todo]]
+  - [[#beacon][Beacon]]
+  - [[#toc-org][toc-org]]
+  - [[#vterm][vterm]]
+  - [[#emacs-dashboard][Emacs Dashboard]]
+  - [[#yasnippet][YASnippet]]
+  - [[#yasnippet-snippets][YASnippet-snippets]]
+  - [[#winum][Winum]]
+  - [[#deadgrep][Deadgrep]]
+  - [[#avy][Avy]]
+  - [[#highlight-indent-guides][Highlight Indent Guides]]
+  - [[#wrap-region][Wrap Region]]
+  - [[#rainbow-delimiters][Rainbow Delimiters]]
+  - [[#golden-ratio][Golden Ratio]]
+  - [[#treemacs][Treemacs]]
+    - [[#treemacs-1][Treemacs]]
+    - [[#treemacs-projectile][Treemacs Projectile]]
+  - [[#shell-pop][Shell Pop]]
+  - [[#dired-subtree][Dired Subtree]]
+  - [[#auto-highlight-symbol-mode][Auto Highlight Symbol Mode]]
+  - [[#git-gutter][Git Gutter]]
+  - [[#diff-hl][diff-hl]]
+  - [[#ob-async][ob-async]]
+  - [[#web-mode][Web Mode]]
+    - [[#web-mode-1][Web Mode]]
+    - [[#emmet-mode][Emmet Mode]]
+      - [[#emmet-mode-1][Emmet Mode]]
+      - [[#helm-emmet][Helm Emmet]]
+    - [[#company-web][Company Web]]
+    - [[#json-mode][Json Mode]]
+    - [[#prettier][Prettier]]
+  - [[#anzu][Anzu]]
+  - [[#dired-icons][Dired icons]]
+  - [[#stripe-buffer][Stripe Buffer]]
+  - [[#markdown][Markdown]]
+  - [[#lsp-mode][LSP Mode]]
+    - [[#lsp-mode-1][LSP Mode]]
+    - [[#lsp-ui][LSP UI]]
+    - [[#company-lsp][Company LSP]]
+  - [[#flycheck][Flycheck]]
+- [[#programming-languages][Programming Languages]]
+  - [[#emacs-lisp][Emacs Lisp]]
+    - [[#elisp-slime-nav][Elisp Slime Nav]]
+    - [[#aggressive-indent][Aggressive Indent]]
+  - [[#python][Python]]
+    - [[#python-1][Python]]
+    - [[#import-magic][Import Magic]]
+- [[#keybindings][Keybindings]]
+  - [[#spacemacs-better-defaults-layer][Spacemacs' "Better Defaults" layer]]
+  - [[#global-key-bindings][Global Key Bindings]]
+  - [[#spacemacs-like-menu-map][Spacemacs-like Menu Map]]
+- [[#fun][Fun]]
+  - [[#selectric-mode][Selectric Mode]]
+  - [[#turkish-mode][Turkish Mode]]
+  - [[#fireplace][Fireplace]]
+  - [[#pacmacs][Pacmacs]]
+  - [[#2048][2048]]
+- [[#custom-faces][Custom Faces]]
+- [[#experimental][Experimental]]
+  - [[#restclient][Restclient]]
+  - [[#garbage-collect-threshold][Garbage Collect Threshold]]
+  - [[#minimap][Minimap]]
+  - [[#olivetti][Olivetti]]
+  - [[#esup][Esup]]
+  - [[#plantuml][PlantUML]]
+  - [[#fira-code-mode][Fira Code Mode]]
+  - [[#dimmer][Dimmer]]
+  - [[#helpful][Helpful]]
+- [[#other-emacs-configurations][Other Emacs Configurations]]
 
 * About This Configuration
 ** Applying Changes
@@ -163,6 +178,7 @@
   (setq use-package-always-ensure t
   ;;      use-package-always-defer t
   )
+  ;; TODO: package-autoremove ayarla
     #+END_SRC
 
 *** Always compile packages, and use the newest version available.
@@ -200,13 +216,13 @@
 
 ** Disable
    #+BEGIN_SRC emacs-lisp
-  (blink-cursor-mode -1)
-  (setq-default ring-bell-function 'ignore
-                tab-bar-show nil
-                inhibit-startup-message t
-                initial-scratch-message nil
-                create-lockfiles nil
-                confirm-kill-processes nil)
+     (blink-cursor-mode -1)
+     (setq-default ring-bell-function 'ignore
+                   tab-bar-show nil
+                   inhibit-startup-message t
+                   initial-scratch-message nil
+                   create-lockfiles nil
+                   confirm-kill-processes nil)
    #+END_SRC
 
 ** Enable
@@ -226,10 +242,10 @@
 ** Other
    #+BEGIN_SRC emacs-lisp
      (setq-default
-      custom-file "/dev/null" ;; i dont use `customize' interface
+      custom-file (concat user-emacs-directory ".custom.el")
       save-place-file (concat user-emacs-directory ".places")
       backup-directory-alist `((".*" . ,(concat user-emacs-directory ".backups/")))
-      ;;auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory ".saves") t))
+      auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory ".saves/") t))
       recenter-positions '(middle 0.15 top 0.85 bottom) ; C-l positions
       truncate-lines t
       frame-resize-pixelwise t
@@ -239,11 +255,18 @@
       scroll-conservatively 10000 ; Smooth scrolling
       indent-tabs-mode nil
       show-trailing-whitespace t
-      frame-title-format '("%b [%m]") ; file name and major mode
+      frame-title-format '((:eval
+                            (let ((project-name (projectile-project-name)))
+                              (unless (string= "-" project-name)
+                                (format "%s // " project-name))))
+                           "%b") ; project-name // file-name
       recentf-exclude '("/\\.config/emacs/elpa/" "^/tmp/" "^/usr/" "/\\.config/emacs/.cache/" "/\\.config/emacs/bookmarks")
       recentf-max-saved-items 200
       dired-listing-switches "-lAhp --group-directories-first"
+      dired-dwim-target t
       completion-styles '(basic flex))
+
+     (load custom-file)
 
      (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -251,23 +274,29 @@
      (add-hook 'prog-mode-hook 'display-line-numbers-mode)
      (add-hook 'prog-mode-hook 'electric-pair-mode)
      ;;(add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
-     (add-hook 'prog-mode-hook (lambda () (setq prettify-symbols-alist
-                                           '(("lambda" . ?λ)
-                                             ("->" . ?→)
-                                             ("=>" . ?⇒)
-                                             ("!=" . ?≠)
-                                             ("<=" . ?≤)
-                                             (">=" . ?≥)))))
+     ;; (add-hook 'prog-mode-hook (lambda () (setq prettify-symbols-alist
+     ;;                                       '(("lambda" . ?λ)
+     ;;                                         ("->" . ?→)
+     ;;                                         ("=>" . ?⇒)
+     ;;                                         ("!=" . ?≠)
+     ;;                                         ("<=" . ?≤)
+     ;;                                         (">=" . ?≥)))))
      (with-eval-after-load 'dired
        (add-hook 'dired-mode-hook 'dired-hide-details-mode)
        (add-hook 'dired-mode-hook (lambda () (setq mouse-1-click-follows-link nil)))
        (define-key dired-mode-map (kbd "-") 'dired-up-directory)
+       (define-key dired-mode-map (kbd "C-M-u") 'dired-up-directory)
        (define-key dired-mode-map (kbd "O") 'browse-url-of-dired-file)
        (define-key dired-mode-map (kbd "<mouse-1>") 'fk/dired-mouse-action)
        (define-key dired-mode-map (kbd "<mouse-2>") 'dired-up-directory)
        (define-key dired-mode-map (kbd "<mouse-3>") '(lambda (event) (interactive "e")
                                                        (mouse-set-point event)
-                                                       (dired-subtree-toggle))))
+                                                       (dired-subtree-toggle)))
+       (define-key dired-mode-map (kbd "RET") 'fk/dired-smart-open))
+
+     ;; Quit help window after pressing a button.
+     (defadvice push-button (after quit-help activate)
+       (quit-window nil (get-buffer-window "*Help*")))
    #+END_SRC
 
 * Custom Functions
@@ -301,15 +330,15 @@
 
 ** company-smart-snippets
    #+begin_src emacs-lisp
-     ;; TODO: creates a bug in scratch buffer.
      (defun fk/company-smart-snippets (fn command &optional arg &rest _)
        "Do not show yasnippet candidates after dot."
        ;;Source:
        ;;https://www.reddit.com/r/emacs/comments/7dnbxl/how_to_temporally_filter_companymode_candidates/
-       ;;I did not understand anything but it works.
        (unless (when (and (equal command 'prefix) (> (point) 0))
                  (let* ((prefix (company-grab-symbol))
-                        (point-before-prefix (- (point) (length prefix) 1))
+                        (point-before-prefix (if (> (- (point) (length prefix) 1) 0)
+                                                 (- (point) (length prefix) 1)
+                                               1))
                         (char (buffer-substring-no-properties point-before-prefix (1+ point-before-prefix))))
                    (string= char ".")))
          (funcall fn command arg)))
@@ -317,13 +346,13 @@
 
 ** company-enable-snippets
    #+begin_src emacs-lisp
-  (defun fk/company-enable-snippets ()
-    "Enable snippet suggestions in company by adding
-    ':with company-yasnippet' to all company backends."
-    (interactive)
-    (setq company-backends
-          (mapcar 'fk/company-backend-with-yas company-backends))
-    (advice-add 'company-yasnippet :around 'fk/company-smart-snippets))
+     (defun fk/company-enable-snippets ()
+       "Enable snippet suggestions in company by adding
+       ':with company-yasnippet' to all company backends."
+       (interactive)
+       (setq company-backends
+             (mapcar 'fk/company-backend-with-yas company-backends))
+       (advice-add 'company-yasnippet :around 'fk/company-smart-snippets))
    #+end_src
 
 ** activate-pyvenv
@@ -527,12 +556,29 @@
            (other-frame 0))))))
 #+end_src
 
+** dired-smart-open
+#+begin_src emacs-lisp
+  (defun fk/dired-smart-open ()
+    "If file size bigger than 50mb, open with associated system
+  application, else call `dired-find-file'"
+    (interactive)
+    (if (> (file-attribute-size (file-attributes (dired-file-name-at-point)))
+           50000000)
+        (browse-url-of-dired-file)
+      (dired-find-file)))
+#+end_src
+
 * Theme
 ** Disable all themes before loading a theme
    #+BEGIN_SRC emacs-lisp
      (defadvice load-theme (before disable-themes-first activate)
        (fk/disable-all-themes))
    #+END_SRC
+
+** Do not confirm when load-theme
+   #+begin_src emacs-lisp
+  (advice-add 'load-theme :around (lambda (fn theme &optional no-confirm no-enable) (funcall fn theme t)))
+   #+end_src
 
 ** I use doom-spacegrey
    #+BEGIN_SRC emacs-lisp
@@ -556,7 +602,8 @@
              org-confirm-babel-evaluate nil
              org-ellipsis "↴" ;; ↴, ▼, ▶, ⤵
              org-src-window-setup 'current-window
-             org-startup-indented t)
+             org-startup-indented t
+             org-startup-with-inline-images t)
        :bind (
               :map org-mode-map
               ("C-c C-e" . org-edit-special)
@@ -571,12 +618,11 @@
        (set-face-attribute 'org-checkbox nil :foreground "white")
        (set-face-attribute 'org-block-begin-line nil :extend t)
        (set-face-attribute 'org-block-end-line nil :extend t)
-       (org-babel-do-load-languages 'org-babel-load-languages
-                                    '((python . t)
-                                      (C . t)
-                                      (emacs-lisp . t)
-                                      (js . t)
-                                      (shell . t)))
+       (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
+                                                                (C . t)
+                                                                (emacs-lisp . t)
+                                                                (js . t)
+                                                                (shell . t)))
        ;; Beautify org mode
        (use-package org-bullets
          :init
@@ -603,7 +649,8 @@
        (org-mode . (lambda () (setq prettify-symbols-alist
                                '(("[ ]" . "☐")
                                  ("[X]" . "☑") ;; ✔
-                                 ("[-]" . "⬕")))))) ;; ◪, ⬔
+                                 ("[-]" . "⬕"))))) ;; ◪, ⬔
+       (org-babel-after-execute . org-redisplay-inline-images))
    #+end_src
 
 ** Helm
@@ -713,7 +760,9 @@
           company-minimum-prefix-length 1
           company-tooltip-align-annotations t
           ;; Disable single-candidate and echo-area frontends:
-          company-frontends '(company-box-frontend))
+          company-frontends '(company-box-frontend)
+          company-dabbrev-downcase nil
+          company-dabbrev-ignore-case t)
     :bind
     (:map company-active-map
           ([return] . nil)
@@ -729,44 +778,47 @@
 
 *** Company Box
     #+BEGIN_SRC emacs-lisp
+      ;; (use-package company-box
+      ;;   :hook
+      ;;   (company-mode . company-box-mode)
+      ;;   :config
+      ;;   (setq company-box-show-single-candidate t
+      ;;         company-box-icons-alist 'company-box-icons-all-the-icons
+      ;;         company-box-backends-colors nil ;; Same colors for all backends
+      ;;         company-box-icons-all-the-icons
+      ;;         (let ((all-the-icons-scale-factor 1)
+      ;;               (all-the-icons-default-adjust 0))
+      ;;           `((Unknown       . ,(all-the-icons-faicon "question" :face 'all-the-icons-purple)) ;;question-circle is also good
+      ;;             (Text          . ,(all-the-icons-faicon "file-text-o" :face 'all-the-icons-green))
+      ;;             (Method        . ,(all-the-icons-faicon "cube" :face 'all-the-icons-dcyan))
+      ;;             (Function      . ,(all-the-icons-faicon "cube" :face 'all-the-icons-dcyan))
+      ;;             (Constructor   . ,(all-the-icons-faicon "cube" :face 'all-the-icons-dcyan))
+      ;;             (Field         . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+      ;;             (Variable      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-dpurple))
+      ;;             (Class         . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
+      ;;             (Interface     . ,(all-the-icons-faicon "cogs" :face 'all-the-icons-red))
+      ;;             (Module        . ,(all-the-icons-alltheicon "less" :face 'all-the-icons-red))
+      ;;             (Property      . ,(all-the-icons-faicon "wrench" :face 'all-the-icons-red))
+      ;;             (Unit          . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+      ;;             (Value         . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+      ;;             (Enum          . ,(all-the-icons-faicon "file-text-o" :face 'all-the-icons-red))
+      ;;             (Keyword       . ,(all-the-icons-material "format_align_center" :face 'all-the-icons-red))
+      ;;             (Snippet       . ,(all-the-icons-material "content_paste" :face 'all-the-icons-red))
+      ;;             (Color         . ,(all-the-icons-material "palette" :face 'all-the-icons-red))
+      ;;             (File          . ,(all-the-icons-faicon "file" :face 'all-the-icons-red))
+      ;;             (Reference     . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+      ;;             (Folder        . ,(all-the-icons-faicon "folder" :face 'all-the-icons-red))
+      ;;             (EnumMember    . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+      ;;             (Constant      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+      ;;             (Struct        . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
+      ;;             (Event         . ,(all-the-icons-faicon "bolt" :face 'all-the-icons-red))
+      ;;             (Operator      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
+      ;;             (TypeParameter . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
+      ;;             (Template      . ,(all-the-icons-faicon "bookmark" :face 'all-the-icons-dgreen)))))
+      ;;   (set-face-attribute 'company-box-selection nil :extend t))
       (use-package company-box
-        :hook
-        (company-mode . company-box-mode)
-        :config
-        (setq company-box-show-single-candidate t
-              company-box-icons-alist 'company-box-icons-all-the-icons
-              company-box-backends-colors nil ;; Same colors for all backends
-              company-box-icons-all-the-icons
-              (let ((all-the-icons-scale-factor 1)
-                    (all-the-icons-default-adjust 0))
-                `((Unknown       . ,(all-the-icons-faicon "question" :face 'all-the-icons-purple)) ;;question-circle is also good
-                  (Text          . ,(all-the-icons-faicon "file-text-o" :face 'all-the-icons-green))
-                  (Method        . ,(all-the-icons-faicon "cube" :face 'all-the-icons-dcyan))
-                  (Function      . ,(all-the-icons-faicon "cube" :face 'all-the-icons-dcyan))
-                  (Constructor   . ,(all-the-icons-faicon "cube" :face 'all-the-icons-dcyan))
-                  (Field         . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
-                  (Variable      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-dpurple))
-                  (Class         . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
-                  (Interface     . ,(all-the-icons-faicon "cogs" :face 'all-the-icons-red))
-                  (Module        . ,(all-the-icons-alltheicon "less" :face 'all-the-icons-red))
-                  (Property      . ,(all-the-icons-faicon "wrench" :face 'all-the-icons-red))
-                  (Unit          . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
-                  (Value         . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
-                  (Enum          . ,(all-the-icons-faicon "file-text-o" :face 'all-the-icons-red))
-                  (Keyword       . ,(all-the-icons-material "format_align_center" :face 'all-the-icons-red))
-                  (Snippet       . ,(all-the-icons-material "content_paste" :face 'all-the-icons-red))
-                  (Color         . ,(all-the-icons-material "palette" :face 'all-the-icons-red))
-                  (File          . ,(all-the-icons-faicon "file" :face 'all-the-icons-red))
-                  (Reference     . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
-                  (Folder        . ,(all-the-icons-faicon "folder" :face 'all-the-icons-red))
-                  (EnumMember    . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
-                  (Constant      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
-                  (Struct        . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
-                  (Event         . ,(all-the-icons-faicon "bolt" :face 'all-the-icons-red))
-                  (Operator      . ,(all-the-icons-faicon "tag" :face 'all-the-icons-red))
-                  (TypeParameter . ,(all-the-icons-faicon "cog" :face 'all-the-icons-red))
-                  (Template      . ,(all-the-icons-faicon "bookmark" :face 'all-the-icons-dgreen)))))
-        (set-face-attribute 'company-box-selection nil :extend t))
+        :load-path (lambda () (concat user-emacs-directory "load/company-box"))
+        :hook (company-mode . company-box-mode))
     #+END_SRC
 
 *** Company Statistics
@@ -777,12 +829,13 @@
 
 ** Projectile
    #+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :config
-    (projectile-mode))
+     (use-package projectile
+       :bind
+       ("C-x f" . projectile-find-file)
+       :config
+       (projectile-mode))
    #+END_SRC
 
-** LSP Mode
 ** Eglot
    #+BEGIN_SRC emacs-lisp
      (use-package eglot
@@ -804,13 +857,13 @@
 
 ** Magit
    #+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :defer t)
-  (use-package magit-todos
-    :after magit
-    :config
-    (magit-todos-mode)
-    (magit-todos-branch-list-toggle))
+     (use-package magit
+       :defer t)
+     (use-package magit-todos
+       :commands
+       (helm-magit-todos)
+       :hook
+       (magit-mode . magit-todos-mode))
    #+END_SRC
 
 ** Expand Region
@@ -904,6 +957,8 @@
        :bind (
               :map vterm-mode-map
               ("C-c C-e" . 'vterm-copy-mode)
+              ("M-m" . nil)
+              ("/" . vterm--self-insert)
               :map vterm-copy-mode-map
               ("C-c C-e" . 'vterm-copy-mode)
               ("C-c C-c" . 'vterm-copy-mode))
@@ -937,21 +992,24 @@
 
 ** YASnippet
    #+BEGIN_SRC emacs-lisp
-     (use-package yasnippet
-       :defer nil
-       :init
-       (setq yas-indent-line nil)
-       :bind
-       (:map yas-minor-mode-map
-             ("TAB" . nil)
-             ("<tab>" . nil))
-       :bind*
-       (("C-j" . yas-expand))
-       :hook
-       (snippet-mode . (lambda () (setq require-final-newline nil)))
-       :config
-       (yas-global-mode)
-       (set-face-attribute 'yas-field-highlight-face nil :inherit 'region))
+     ;; TODO: açılışta çok zaman alıyor, major mode veya findfile hook'una
+     ;; koyup if yas-global-mode active gibi bişeyle tekrar terkar
+     ;; çağırılması önlenebilir.
+      (use-package yasnippet
+        :defer nil
+        :init
+        (setq yas-indent-line nil)
+        :bind
+        (:map yas-minor-mode-map
+              ("TAB" . nil)
+              ("<tab>" . nil))
+        :bind*
+        (("C-j" . yas-expand))
+        :hook
+        (snippet-mode . (lambda () (setq require-final-newline nil)))
+        :config
+        (yas-global-mode)
+        (set-face-attribute 'yas-field-highlight-face nil :inherit 'region))
    #+END_SRC
 
 ** YASnippet-snippets
@@ -1190,7 +1248,7 @@
          ("\\.svelte\\'"     . web-mode)
          ("\\.djhtml\\'"     . web-mode))
         :hook
-        (before-save . fk/indent-buffer))
+        (web-mode . (lambda () (add-hook 'before-save-hook 'fk/indent-buffer nil t))))
     #+end_src
 
 *** Emmet Mode
@@ -1204,7 +1262,7 @@
               ([remap yas-expand] . emmet-expand-line)
               ("M-n"  . emmet-next-edit-point)
               ("M-p"  . emmet-prev-edit-point)
-              ("C-c C-p" . emmet-preview-mode))
+              ("C-c p" . emmet-preview-mode))
         :config
         (set-face-attribute 'emmet-preview-input nil :inherit nil :box t :weight 'bold)
         :hook
@@ -1277,6 +1335,38 @@
              (overlay-put overlay 'priority -100)))))
    #+end_src
 
+** Markdown
+#+begin_src emacs-lisp
+  (use-package vmd-mode
+    :after markdown-mode)
+#+end_src
+
+** LSP Mode
+*** LSP Mode
+#+begin_src emacs-lisp
+  (use-package lsp-mode
+    :defer t)
+#+end_src
+
+*** LSP UI
+#+begin_src emacs-lisp
+  (use-package lsp-ui
+    :after lsp-mode)
+#+end_src
+
+*** Company LSP
+#+begin_src emacs-lisp
+  (use-package company-lsp
+    :commands company-lsp)
+#+end_src
+
+** Flycheck
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :defer t
+    :config (setq flycheck-idle-change-delay 2))
+#+end_src
+
 * Programming Languages
 ** Emacs Lisp
 *** Elisp Slime Nav
@@ -1284,8 +1374,6 @@
   (use-package elisp-slime-nav
     :bind (
            :map emacs-lisp-mode-map
-           ("M-." . elisp-slime-nav-find-elisp-thing-at-point)
-           :map org-mode-map
            ("M-." . elisp-slime-nav-find-elisp-thing-at-point)))
     #+END_SRC
 
@@ -1305,10 +1393,16 @@
                ("M-." . xref-find-definitions))
         :config
         (use-package pyvenv)
+        (setq python-shell-interpreter "ipython"
+              python-shell-interpreter-args "-i --simple-prompt")
         :hook
-        (python-mode . eglot-ensure)
+        ;; pip install python-language-server pyls-black pyls-isort flake8
+        ;;(python-mode . eglot-ensure)
         (python-mode . fk/activate-pyvenv)
-        (python-mode . (lambda () (add-hook 'before-save-hook 'eglot-format-buffer nil t))))
+        (python-mode . flycheck-mode)
+        (python-mode . lsp)
+        ;;(python-mode . (lambda () (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
+        )
     #+END_SRC
 
 *** Import Magic
@@ -1355,6 +1449,8 @@
   (global-set-key (kbd "C-0") 'fk/reset-font-size)
   (global-set-key (kbd "M-g M-g") 'xref-find-definitions)
   (global-set-key (kbd "M-g M-o") 'xref-find-definitions-other-window)
+  (global-set-key (kbd "M-g M-b") 'xref-pop-marker-stack)
+  (global-set-key (kbd "/") 'fk/comment-or-uncomment-region)
    #+END_SRC
 
 ** Spacemacs-like Menu Map
@@ -1370,6 +1466,7 @@
    ("f c" . fk/find-config)
    ;; Buffer
    ("b s" . fk/scratch)
+   ("b S" . fk/generate-random-scratch)
    ("b h" . fk/home)
    ("b m" . fk/messages)
    ;; Project
@@ -1403,8 +1500,12 @@
    #+end_src
 ** Fireplace
    #+begin_src emacs-lisp
-  (use-package fireplace
-    :defer t)
+     ;;(use-package fireplace
+     ;;  :defer t)
+     (use-package fireplace
+       :load-path (lambda () (concat user-emacs-directory "load/fireplace"))
+       :commands fireplace
+       :init (setq fireplace-sound-on t))
    #+end_src
 
 ** Pacmacs
@@ -1470,6 +1571,55 @@
   (use-package olivetti
     :defer t)
    #+end_src
+
+** Esup
+   #+begin_src emacs-lisp
+  (use-package esup
+    :commands (esup))
+   #+end_src
+
+** PlantUML
+   #+begin_src emacs-lisp
+     (use-package plantuml-mode
+       :defer t
+       :init
+       (setq plantuml-jar-path (concat user-emacs-directory "plantuml.jar")
+             plantuml-default-exec-mode 'jar
+             plantuml-indent-level 4)
+       ;;(setq-default plantuml-output-type "txt")
+       (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+       (with-eval-after-load "org"
+         (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+         (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
+         (setq org-plantuml-jar-path plantuml-jar-path)))
+   #+end_src
+
+** Fira Code Mode
+#+begin_src emacs-lisp
+  (use-package fira-code-mode
+    :load-path (lambda () (concat user-emacs-directory "load/fira-code-mode"))
+    :custom (fira-code-mode-disabled-ligatures '("[]" "x"))
+    :hook prog-mode)
+#+end_src
+
+** Dimmer
+#+begin_src emacs-lisp
+  (use-package dimmer
+    :defer t
+    :config
+    (setq dimmer-fraction 0.7))
+#+end_src
+
+** Helpful
+#+begin_src emacs-lisp
+  (use-package helpful
+    :bind
+    (([remap describe-function] . helpful-callable)
+     ([remap describe-variable] . helpful-variable)
+     ([remap describe-key] . helpful-key)
+     :map emacs-lisp-mode-map
+     ("C-c C-d" . helpful-at-point)))
+#+end_src
 
 * Other Emacs Configurations
   | Link                                                                             | Star |
