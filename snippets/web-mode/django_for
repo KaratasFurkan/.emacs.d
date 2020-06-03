@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: django_for
+# key: for
+# --
+{% for ${1:item} in $1s %}
+  $0
+{% endfor %}

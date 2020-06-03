@@ -1,6 +1,4 @@
-*
-
-!README.org
-!init.el
-!.gitignore
-!useful_links.org
+elpa
+etc
+var
+README.el

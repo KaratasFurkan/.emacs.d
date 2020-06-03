@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: use-package
+# key: u
+# --
+#+BEGIN_SRC emacs-lisp
+  (use-package $0
+    :defer ${1:t})
+#+END_SRC

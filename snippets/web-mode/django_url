@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: django_url
+# key: url
+# --
+{% url "$1" %}
