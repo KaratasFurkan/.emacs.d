@@ -936,6 +936,7 @@ Change default window dividers to a better built-in alternative.
 *** Company
 #+BEGIN_SRC emacs-lisp
 (use-package company
+  :defer nil
   :custom
   (company-idle-delay 0)
   (company-minimum-prefix-length 1)
