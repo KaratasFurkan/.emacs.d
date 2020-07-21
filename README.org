@@ -52,7 +52,7 @@
     - [[#anzu][Anzu]]
   - [[#window-dividers][Window Dividers]]
   - [[#page-break-lines][Page Break Lines]]
-  - [[#trailing-white-space][Trailing White Space]]
+  - [[#trailing-white-space][Trailing White Space*]]
   - [[#highlight-todos][Highlight TODOs]]
   - [[#beacon][Beacon]]
   - [[#all-the-icons][All The Icons]]
@@ -63,34 +63,34 @@
   - [[#stripe-buffer][Stripe Buffer]]
   - [[#fill-column-indicator][Fill Column Indicator]]
   - [[#line-numbers][Line Numbers]]
-  - [[#dired-icons][Dired Icons]]
-  - [[#rainbow-delimiters][Rainbow Delimiters]]
-  - [[#helm-icons][Helm Icons]]
+  - [[#dired-icons][Dired Icons*]]
+  - [[#rainbow-delimiters][Rainbow Delimiters*]]
+  - [[#helm-icons][Helm Icons*]]
 - [[#completion][Completion]]
   - [[#better-defaults-2][Better Defaults]]
   - [[#which-key-keybinding-completion][Which Key (Keybinding Completion)]]
   - [[#helm-general-completion--selection][Helm (General Completion & Selection)]]
     - [[#helm][Helm]]
-    - [[#helm-projectile][Helm Projectile]]
-    - [[#helm-ag][Helm Ag]]
-    - [[#helm-xref][Helm Xref]]
-    - [[#helm-swoop][Helm Swoop]]
+    - [[#helm-projectile][Helm Projectile*]]
+    - [[#helm-ag][Helm Ag*]]
+    - [[#helm-xref][Helm Xref*]]
+    - [[#helm-swoop][Helm Swoop*]]
     - [[#helm-descbinds][Helm Descbinds]]
-    - [[#helm-icons-1][Helm Icons]]
+    - [[#helm-icons-1][Helm Icons*]]
     - [[#helm-posframe][Helm Posframe]]
   - [[#company-code--text-completion][Company (Code & Text Completion)]]
     - [[#company][Company]]
     - [[#company-box][Company Box]]
     - [[#company-statistics][Company Statistics]]
   - [[#yasnippet-snippet-completion][YASnippet (Snippet Completion)]]
-  - [[#emmet-snippet-completion-for-html--css][Emmet (Snippet Completion for HTML & CSS)]]
+  - [[#emmet-snippet-completion-for-html--css][Emmet* (Snippet Completion for HTML & CSS)]]
 - [[#search--navigation][Search & Navigation]]
   - [[#better-defaults-3][Better Defaults]]
   - [[#custom-functions-2][Custom Functions]]
     - [[#find-config][find-config]]
     - [[#go-scratch][go-scratch]]
     - [[#go-messages][go-messages]]
-    - [[#go-home][go-home]]
+    - [[#go-home][go-home*]]
     - [[#split-window-and-switch][split-window-and-switch]]
     - [[#generate-random-scratch][generate-random-scratch]]
   - [[#keybindings-1][Keybindings]]
@@ -110,8 +110,9 @@
   - [[#treemacs][Treemacs]]
     - [[#treemacs-1][Treemacs]]
     - [[#treemacs-projectile][Treemacs Projectile]]
-  - [[#dired-sidebar][Dired Sidebar]]
-  - [[#ibuffer-sidebar][IBuffer Sidebar]]
+  - [[#persp-mode][Persp Mode]]
+  - [[#dired-sidebar][Dired Sidebar*]]
+  - [[#ibuffer-sidebar][IBuffer Sidebar*]]
 - [[#text-editing][Text Editing]]
   - [[#better-defaults-4][Better Defaults]]
   - [[#custom-functions-3][Custom Functions]]
@@ -131,10 +132,10 @@
       - [[#align-comments][align-comments]]
       - [[#indent-buffer][indent-buffer]]
       - [[#comment-or-uncomment-region][comment-or-uncomment-region]]
-    - [[#fill-column-indicator-1][Fill Column Indicator]]
-    - [[#line-numbers-1][Line Numbers]]
+    - [[#fill-column-indicator-1][Fill Column Indicator*]]
+    - [[#line-numbers-1][Line Numbers*]]
     - [[#comments][Comments]]
-    - [[#yasnippet][YASnippet]]
+    - [[#yasnippet][YASnippet*]]
     - [[#projectile][Projectile]]
     - [[#flycheck][Flycheck]]
     - [[#language-server-protocol][Language Server Protocol]]
@@ -169,6 +170,7 @@
     - [[#dired-subtree][Dired Subtree]]
     - [[#dired-sidebar-1][Dired Sidebar]]
     - [[#ibuffer-sidebar-1][IBuffer Sidebar]]
+    - [[#dired-show-readme][Dired Show Readme]]
   - [[#org][Org]]
     - [[#org-1][Org]]
     - [[#org-imenu][org-imenu]]
@@ -557,7 +559,7 @@ size. This function also handles icons and modeline font sizes."
   :custom-face
   (font-lock-comment-face ((t (:slant italic))))
   (font-lock-string-face ((t (:foreground "PeachPuff3"))))
-  (font-lock-function-name-face ((t (:foreground "LightGoldenrod1"))))
+  (font-lock-function-name-face ((t (:foreground "LightGoldenrod"))))
   (highlight ((t (:underline t :weight bold :background nil :foreground nil))))
   (lazy-highlight ((t (:background nil :foreground nil :box (:line-width -1)))))
   :config
@@ -653,7 +655,7 @@ Change default window dividers to a better built-in alternative.
   (global-page-break-lines-mode))
 #+END_SRC
 
-** [[#trailing-white-space][Trailing White Space]]
+** [[#trailing-white-space][Trailing White Space*]]
 ** Highlight TODOs
 #+BEGIN_SRC emacs-lisp
 (use-package hl-todo
@@ -804,9 +806,9 @@ Change default window dividers to a better built-in alternative.
   (prog-mode . display-line-numbers-mode))
 #+END_SRC
 
-** [[#dired-icons][Dired Icons]]
-** [[#rainbow-delimiters][Rainbow Delimiters]]
-** [[#helm-icons][Helm Icons]]
+** [[#dired-icons][Dired Icons*]]
+** [[#rainbow-delimiters][Rainbow Delimiters*]]
+** [[#helm-icons][Helm Icons*]]
 * Completion
 ** Better Defaults
 #+BEGIN_SRC emacs-lisp
@@ -871,6 +873,8 @@ Change default window dividers to a better built-in alternative.
   (savehist-additional-variables '(extended-command-history))  ; Shows multiple
   :custom-face
   (helm-non-file-buffer ((t (:inherit font-lock-comment-face))))
+  (helm-ff-file-extension ((t (:inherit default))))
+  (helm-buffer-file ((t (:inherit default))))
   :bind
   (("M-x" . helm-M-x)
    ("C-x C-f" . helm-find-files)
@@ -892,21 +896,24 @@ Change default window dividers to a better built-in alternative.
   :config
   (helm-mode)
   (savehist-mode)
+  (dolist (regexp '("\\*epc con" "\\*helm" "\\*EGLOT"
+                    "\\*straight" "\\*Flymake"))
+    (add-to-list 'helm-boring-buffer-regexp-list regexp))
   :hook
   (helm-major-mode . fk/darken-background))
 #+END_SRC
 
-*** [[#helm-projectile][Helm Projectile]]
-*** [[#helm-ag][Helm Ag]]
-*** [[#helm-xref][Helm Xref]]
-*** [[#helm-swoop][Helm Swoop]]
+*** [[#helm-projectile][Helm Projectile*]]
+*** [[#helm-ag][Helm Ag*]]
+*** [[#helm-xref][Helm Xref*]]
+*** [[#helm-swoop][Helm Swoop*]]
 *** Helm Descbinds
 #+BEGIN_SRC emacs-lisp
 (use-package helm-descbinds
   :commands helm-descbinds)
 #+END_SRC
 
-*** [[#helm-icons][Helm Icons]]
+*** [[#helm-icons][Helm Icons*]]
 *** Helm Posframe
 #+BEGIN_SRC emacs-lisp
 (use-package helm-posframe
@@ -927,7 +934,6 @@ Change default window dividers to a better built-in alternative.
 *** Company
 #+BEGIN_SRC emacs-lisp
 (use-package company
-  :defer nil
   :custom
   (company-idle-delay 0)
   (company-minimum-prefix-length 1)
@@ -941,7 +947,7 @@ Change default window dividers to a better built-in alternative.
    ("RET" . nil)
    ("TAB" . company-complete-selection)
    ("<tab>" . company-complete-selection)
-   ("C-i" . company-complete-selection)  ; Mostly to use during yasnippet expansion
+   ("C-s" . company-complete-selection)  ; Mostly to use during yasnippet expansion
    ("C-n" . company-select-next)
    ("C-p" . company-select-previous))
   :config
@@ -1005,7 +1011,7 @@ company-yasnippet' to all company backends."
 (use-package yasnippet
   ;; Expand snippets with `C-j', not with `TAB'. Use `TAB' to always
   ;; jump to next field, even when company window is active. If there
-  ;; is need to complete company's selection, use `C-i'
+  ;; is need to complete company's selection, use `C-s'
   ;; (`company-complete-selection').
   :defer nil
   :custom
@@ -1026,7 +1032,7 @@ company-yasnippet' to all company backends."
   (yas-global-mode))
 #+END_SRC
 
-** [[#emmet-mode][Emmet]] (Snippet Completion for HTML & CSS)
+** [[#emmet-mode][Emmet*]] (Snippet Completion for HTML & CSS)
 * Search & Navigation
 ** Better Defaults
 #+BEGIN_SRC emacs-lisp
@@ -1062,7 +1068,7 @@ company-yasnippet' to all company backends."
   (switch-to-buffer "*Messages*"))
 #+END_SRC
 
-*** [[#emacs-dashboard][go-home]]
+*** [[#emacs-dashboard][go-home*]]
 *** split-window-and-switch
 #+BEGIN_SRC emacs-lisp
 (defun fk/split-window-below-and-switch ()
@@ -1301,8 +1307,16 @@ from melpa.
   :after treemacs projectile)
 #+END_SRC
 
-** [[#dired-sidebar][Dired Sidebar]]
-** [[#ibuffer-sidebar][IBuffer Sidebar]]
+** Persp Mode
+#+BEGIN_SRC emacs-lisp
+(use-package persp-mode
+  :defer t
+  :config
+  (persp-mode))
+#+END_SRC
+
+** [[#dired-sidebar][Dired Sidebar*]]
+** [[#ibuffer-sidebar][IBuffer Sidebar*]]
 * Text Editing
 ** Better Defaults
 #+BEGIN_SRC emacs-lisp
@@ -1456,8 +1470,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
                         'self-insert-command)))
 #+END_SRC
 
-*** [[#fill-column-indicator][Fill Column Indicator]]
-*** [[#line-numbers][Line Numbers]]
+*** [[#fill-column-indicator][Fill Column Indicator*]]
+*** [[#line-numbers][Line Numbers*]]
 *** Comments
 #+BEGIN_SRC emacs-lisp
 (use-package newcomment
@@ -1481,7 +1495,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
                        (setq-local comment-column 0))))
 #+END_SRC
 
-*** [[#yasnippet-snippet-completion][YASnippet]]
+*** [[#yasnippet-snippet-completion][YASnippet*]]
 *** Projectile
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
@@ -1501,14 +1515,16 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 (use-package eglot
   :commands eglot
+  ;;:init
+  ;;(load-library "project")  ; FIXME
   :custom
   (eglot-ignored-server-capabilites '(:documentHighlightProvider
-                                      ;;:signatureHelpProvider
-                                      ))
+                                      :signatureHelpProvider
+                                      :hoverProvider))
   (eglot-stay-out-of '(flymake))
   :hook
   (eglot-managed-mode . fk/company-enable-snippets)
-  )
+  (eglot-managed-mode . (lambda () (flymake-mode 0))))
 #+END_SRC
 
 ***** Eldoc Box
@@ -1814,6 +1830,15 @@ else call `dired-find-file'"
    ("M-o" . nil)))
 #+END_SRC
 
+*** Dired Show Readme
+#+BEGIN_SRC emacs-lisp
+(use-package dired-show-readme
+  :straight
+  (dired-show-readme :host gitlab :repo "kisaragi-hiu/dired-show-readme")
+  :hook
+  (dired-mode . dired-show-readme-mode))
+#+END_SRC
+
 ** TODO Org
 *** Org
 #+BEGIN_SRC emacs-lisp
@@ -1893,8 +1918,10 @@ else call `dired-find-file'"
 ;;   :hook org-mode)
 
 (use-package toc-org
+  :straight
+  (:host github :repo "KaratasFurkan/toc-org" :branch "insert-silently")
   :custom
-  (toc-org-max-depth 5)
+  (toc-org-max-depth 10)
   (toc-org-insert-silent t)
   :hook (org-mode . toc-org-mode))
 #+END_SRC
@@ -2046,7 +2073,9 @@ Pull Requests, Issues etc.
 *** Restclient
 #+BEGIN_SRC emacs-lisp
 (use-package restclient
-  :mode ("\\.http\\'" . restclient-mode))
+  :mode ("\\.http\\'" . restclient-mode)
+  :custom
+  (restclient-log-request nil))
 #+END_SRC
 
 *** Company Restclient
@@ -2067,10 +2096,10 @@ Pull Requests, Issues etc.
 
 ** TODO EAF
 #+BEGIN_SRC emacs-lisp
-;; FIXME: does not load
-;; (use-package eaf
-;;   :straight
-;;   (:host github :repo "manateelazycat/emacs-application-framework" :depth 1))
+;; FIXME: does not load with straight
+;;(use-package eaf
+;;  :straight
+;;  (:host github :repo "manateelazycat/emacs-application-framework" :depth 1))
 #+END_SRC
 
 * Fun
