@@ -2,6 +2,4 @@
 # name: use-package
 # key: u
 # --
-#+BEGIN_SRC emacs-lisp
-  (use-package $0)
-#+END_SRC
+(use-package ${1:package})
