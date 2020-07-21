@@ -3,4 +3,4 @@
 
 (if (file-exists-p config-el)
     (load-file config-el)
-  (org-babel-load-file config-org))
+  (org-babel-tangle-file config-org config-el))

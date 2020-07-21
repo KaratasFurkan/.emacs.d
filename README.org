@@ -224,7 +224,7 @@ init.el is just used to load literate config.
 
 (if (file-exists-p config-el)
     (load-file config-el)
-  (org-babel-load-file config-org))
+  (org-babel-tangle-file config-org config-el))
 #+END_SRC
 
 ** early-init.el
