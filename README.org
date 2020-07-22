@@ -52,13 +52,14 @@
     - [[#anzu][Anzu]]
   - [[#window-dividers][Window Dividers]]
   - [[#page-break-lines][Page Break Lines]]
-  - [[#trailing-white-space][Trailing White Space*]]
+  - [[#trailing-white-space][*Trailing White Space]]
   - [[#highlight-todos][Highlight TODOs]]
   - [[#beacon][Beacon]]
   - [[#all-the-icons][All The Icons]]
   - [[#highlight-indent-guides][Highlight Indent Guides]]
   - [[#shackle][Shackle]]
   - [[#golden-ratio][Golden Ratio]]
+  - [[#zoom][Zoom]]
   - [[#emacs-dashboard][Emacs Dashboard]]
   - [[#stripe-buffer][Stripe Buffer]]
   - [[#fill-column-indicator][Fill Column Indicator]]
@@ -191,6 +192,7 @@
     - [[#company-restclient][Company Restclient]]
     - [[#ob-restclient][ob-restclient]]
   - [[#eaf][EAF]]
+  - [[#google-translate][Google Translate]]
 - [[#fun][Fun]]
   - [[#play-free-software-song][Play Free Software Song]]
   - [[#selectric-mode][Selectric Mode]]
@@ -203,6 +205,7 @@
   - [[#olivetti][Olivetti]]
   - [[#helm-system-packages][Helm System Packages]]
   - [[#dimmer][Dimmer]]
+  - [[#focus][Focus]]
 - [[#todos][TODOs]]
   - [[#explore][Explore]]
     - [[#packages][Packages]]
@@ -657,7 +660,7 @@ Change default window dividers to a better built-in alternative.
   (global-page-break-lines-mode))
 #+END_SRC
 
-** [[#trailing-white-space][Trailing White Space*]]
+** [[#trailing-white-space][*Trailing White Space]]
 ** Highlight TODOs
 #+BEGIN_SRC emacs-lisp
 (use-package hl-todo
@@ -728,8 +731,6 @@ Change default window dividers to a better built-in alternative.
 #+BEGIN_SRC emacs-lisp
 ;; TODO: Add a function to set window width to fill column width
 ;; according to current major mode
-;;
-;; Maybe better in Appearance section??
 (use-package golden-ratio
   :commands golden-ratio-mode
   :custom
@@ -749,6 +750,15 @@ Change default window dividers to a better built-in alternative.
                      winum-select-window-9
                      avy-pop-mark))
       (add-to-list 'golden-ratio-extra-commands funcs))))
+#+END_SRC
+
+** Zoom
+#+BEGIN_SRC emacs-lisp
+;; (Better?) Golden Ratio Alternative.
+(use-package zoom
+  :commands zoom-mode
+  :custom
+  (zoom-size '(100 . 40)))
 #+END_SRC
 
 ** Emacs Dashboard
@@ -1300,7 +1310,7 @@ from melpa.
                      (face-remap-add-relative 'default :height .75)
                      (face-remap-add-relative 'mode-line-inactive :background fk/dark-color)
                      (face-remap-add-relative 'mode-line :background fk/dark-color)
-                     (face-remap-add-relative 'hl-line :background fk/background-color)
+                     (face-remap-add-relative 'hl-line :background fk/background-color :weight 'bold)
                      (fk/darken-background))))
 #+END_SRC
 
@@ -1518,8 +1528,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 (use-package eglot
   :commands eglot
-  ;;:init
-  ;;(load-library "project")  ; FIXME
+  :init
+  (load-library "project")  ; TEMP: https://github.com/raxod502/straight.el/issues/531
   :custom
   (eglot-ignored-server-capabilites '(:documentHighlightProvider
                                       :signatureHelpProvider
@@ -1925,7 +1935,7 @@ else call `dired-find-file'"
   (:host github :repo "KaratasFurkan/toc-org" :branch "insert-silently")
   :custom
   (toc-org-max-depth 10)
-  (toc-org-insert-silent t)
+  (toc-org-insert-silently t)
   :hook (org-mode . toc-org-mode))
 #+END_SRC
 
@@ -2105,6 +2115,24 @@ Pull Requests, Issues etc.
 ;;  (:host github :repo "manateelazycat/emacs-application-framework" :depth 1))
 #+END_SRC
 
+** Google Translate
+#+BEGIN_SRC emacs-lisp
+(use-package google-translate
+  :custom
+  (google-translate-default-source-language "en")
+  (google-translate-default-target-language "tr")
+  :bind*
+  (
+   :prefix-map google-translate
+   :prefix "M-m t g"
+   ("g" . google-translate-at-point)
+   ("G" . google-translate-at-point-reverse)
+   ("r" . google-translate-at-point-reverse)
+   ("q" . google-translate-query-translate)
+   ("Q" . google-translate-query-translate-reverse)
+   ("s" . google-translate-smooth-translate)))
+#+END_SRC
+
 * Fun
 ** Play Free Software Song
 #+BEGIN_SRC emacs-lisp
@@ -2180,6 +2208,14 @@ Pull Requests, Issues etc.
   :commands dimmer-mode
   :custom
   (dimmer-fraction 0.7))
+#+END_SRC
+
+** Focus
+#+BEGIN_SRC emacs-lisp
+(use-package focus
+  :commands focus-mode
+  :config
+  (add-to-list 'focus-mode-to-thing '(python-mode . paragraph)))
 #+END_SRC
 
 * TODOs
