@@ -257,6 +257,9 @@ git clone https://github.com/KaratasFurkan/.emacs.d.git
 
 Open Emacs and let the configuration install necessary packages.
 
+Note: I use emacs 27.0.91, most of this configuration will work in old versions
+too but some parts needs emacs27+.
+
 ** init.el
 init.el is just used to load literate config.
 #+BEGIN_SRC emacs-lisp :tangle init.el
