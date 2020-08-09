@@ -1,8 +1,26 @@
 #+TITLE: My Literate Emacs Config
 
 * TODO Screenshots
+** Initial Screen (Dashboard)
+[[./screenshots/dashboard.png]]
+
+** Python Development
+File explorer (treemacs), auto complete (company), git&github integration
+(magit, forge), terminal (vterm, shell-pop), markdown, python interpreter
+(ipython)
+[[./screenshots/python.png]]
+** Org Mode (and Olivetti)
+[[./screenshots/org-mode_and_olivetti.png]]
+** Helm & Which Key (Dired and Elisp Mode in the background)
+[[./screenshots/helm-posframe.png]]
+
+[[./screenshots/whichkey-posframe.png]]
 * Table Of Contents :TOC:
 - [[#screenshots][Screenshots]]
+  - [[#initial-screen-dashboard][Initial Screen (Dashboard)]]
+  - [[#python-development][Python Development]]
+  - [[#org-mode-and-olivetti][Org Mode (and Olivetti)]]
+  - [[#helm--which-key-dired-and-elisp-mode-in-the-background][Helm & Which Key (Dired and Elisp Mode in the background)]]
 - [[#about][About]]
   - [[#installation][Installation]]
   - [[#initel][init.el]]
@@ -226,7 +244,7 @@
   - [[#focus][Focus]]
 - [[#todos][TODOs]]
   - [[#explore][Explore]]
-    - [[#packages][Packages]]
+    - [[#packages-29][Packages]]
     - [[#blog-posts][Blog posts]]
 - [[#some-other-emacs-configurations][Some Other Emacs Configurations]]
 
@@ -2105,6 +2123,7 @@ else call `dired-find-file'"
   (org-startup-with-inline-images t)
   (org-image-actual-width '(400))
   (org-hierarchical-todo-statistics nil)
+  (org-checkbox-hierarchical-statistics nil)
   (org-src-preserve-indentation t)
   (org-adapt-indentation nil)
   (org-tags-column 0)
@@ -2165,7 +2184,7 @@ else call `dired-find-file'"
   (org-mode . (lambda () (setq prettify-symbols-alist
                                '(("[ ]" . "☐")
                                  ("[X]" . "☑") ;; ✔
-                                 ("[-]" . "⬕"))))) ;; ◪, ⬔
+                                 ("[-]" . "◿"))))) ;; ◪, ⬔
   (org-babel-after-execute . org-redisplay-inline-images))
 #+END_SRC
 
@@ -2550,16 +2569,16 @@ Pull Requests, Issues etc.
 * TODOs
 - :defer nil or :hook after-init?
 ** Explore
-*** Packages
-- https://github.com/jojojames/dired-sidebar
-- https://github.com/raxod502/selectrum
-  + https://github.com/raxod502/prescient.el
-  + https://github.com/oantolin/orderless
-- https://github.com/emacsorphanage/quickrun
-- https://github.com/pashinin/workgroups2
-- https://github.com/Bad-ptr/persp-mode.el
-- https://github.com/hrs/engine-mode
-- https://github.com/cyrus-and/zoom
+*** Packages [2/9]
+- [ ] https://github.com/jojojames/dired-sidebar
+- [-] https://github.com/raxod502/selectrum
+  + [X] https://github.com/raxod502/prescient.el
+  + [ ] https://github.com/oantolin/orderless
+- [ ] https://github.com/emacsorphanage/quickrun
+- [ ] https://github.com/pashinin/workgroups2
+- [X] https://github.com/Bad-ptr/perspective.el
+- [ ] https://github.com/hrs/engine-mode
+- [ ] https://github.com/cyrus-and/zoom
 
 *** Blog posts
 - https://joshrollinswrites.com/help-desk-head-desk/20200611/
