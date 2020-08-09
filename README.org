@@ -18,13 +18,15 @@
     - [[#notes-1][Notes]]
 - [[#performance-optimization][Performance Optimization]]
   - [[#garbage-collection][Garbage Collection]]
-      - [[#gc-before-helm-vb][GC before helm vb.]]
+    - [[#gc-before-helm-vb][GC before helm vb.]]
   - [[#file-handler][File Handler]]
   - [[#emacs-start-up-profiler][Emacs Start Up Profiler]]
 - [[#better-defaults][Better Defaults]]
   - [[#file-paths][File Paths]]
   - [[#general][General]]
   - [[#helpful][Helpful]]
+  - [[#menu-style-keybindings][Menu Style Keybindings]]
+  - [[#susudo][Su/Sudo]]
 - [[#appearance][Appearance]]
   - [[#notes-2][Notes]]
   - [[#better-defaults-1][Better Defaults]]
@@ -52,7 +54,7 @@
     - [[#anzu][Anzu]]
   - [[#window-dividers][Window Dividers]]
   - [[#page-break-lines][Page Break Lines]]
-  - [[#trailing-white-space][*Trailing White Space]]
+  - [[#trailing-white-space-][Trailing White Space-]]
   - [[#highlight-todos][Highlight TODOs]]
   - [[#beacon][Beacon]]
   - [[#all-the-icons][All The Icons]]
@@ -64,34 +66,37 @@
   - [[#stripe-buffer][Stripe Buffer]]
   - [[#fill-column-indicator][Fill Column Indicator]]
   - [[#line-numbers][Line Numbers]]
-  - [[#dired-icons][Dired Icons*]]
-  - [[#rainbow-delimiters][Rainbow Delimiters*]]
-  - [[#helm-icons][Helm Icons*]]
+  - [[#dired-icons-][Dired Icons-]]
+  - [[#rainbow-delimiters-][Rainbow Delimiters-]]
+  - [[#helm-icons-][Helm Icons-]]
+  - [[#symbol-overlay][Symbol Overlay]]
+  - [[#olivetti][Olivetti]]
+  - [[#emojify][Emojify]]
 - [[#completion][Completion]]
   - [[#better-defaults-2][Better Defaults]]
   - [[#which-key-keybinding-completion][Which Key (Keybinding Completion)]]
   - [[#helm-general-completion--selection][Helm (General Completion & Selection)]]
     - [[#helm][Helm]]
-    - [[#helm-projectile][Helm Projectile*]]
-    - [[#helm-ag][Helm Ag*]]
-    - [[#helm-xref][Helm Xref*]]
-    - [[#helm-swoop][Helm Swoop*]]
+    - [[#helm-projectile-][Helm Projectile-]]
+    - [[#helm-ag-][Helm Ag-]]
+    - [[#helm-xref-][Helm Xref-]]
+    - [[#helm-swoop-][Helm Swoop-]]
     - [[#helm-descbinds][Helm Descbinds]]
-    - [[#helm-icons-1][Helm Icons*]]
+    - [[#helm-icons--1][Helm Icons-]]
     - [[#helm-posframe][Helm Posframe]]
   - [[#company-code--text-completion][Company (Code & Text Completion)]]
     - [[#company][Company]]
     - [[#company-box][Company Box]]
     - [[#company-statistics][Company Statistics]]
   - [[#yasnippet-snippet-completion][YASnippet (Snippet Completion)]]
-  - [[#emmet-snippet-completion-for-html--css][Emmet* (Snippet Completion for HTML & CSS)]]
+  - [[#emmet--snippet-completion-for-html--css][Emmet- (Snippet Completion for HTML & CSS)]]
 - [[#search--navigation][Search & Navigation]]
   - [[#better-defaults-3][Better Defaults]]
   - [[#custom-functions-2][Custom Functions]]
     - [[#find-config][find-config]]
     - [[#go-scratch][go-scratch]]
     - [[#go-messages][go-messages]]
-    - [[#go-home][go-home*]]
+    - [[#go-home-][go-home-]]
     - [[#split-window-and-switch][split-window-and-switch]]
     - [[#generate-random-scratch][generate-random-scratch]]
   - [[#keybindings-1][Keybindings]]
@@ -99,33 +104,36 @@
   - [[#winner-mode][Winner Mode]]
   - [[#ace-window][Ace Window]]
     - [[#dependents][Dependents]]
-      - [[#helm-icons-2][Helm Icons]]
+      - [[#helm-icons][Helm Icons]]
   - [[#winum][Winum]]
   - [[#mwim-move-where-i-mean][Mwim (Move Where I Mean)]]
-  - [[#helm-projectile-1][Helm Projectile]]
-  - [[#helm-ag-1][Helm Ag]]
-  - [[#helm-xref-1][Helm Xref]]
-  - [[#helm-swoop-1][Helm Swoop]]
+  - [[#helm-projectile][Helm Projectile]]
+  - [[#helm-ag][Helm Ag]]
+  - [[#helm-xref][Helm Xref]]
+  - [[#helm-swoop][Helm Swoop]]
   - [[#deadgrep][Deadgrep]]
   - [[#avy][Avy]]
   - [[#treemacs][Treemacs]]
     - [[#treemacs-1][Treemacs]]
     - [[#treemacs-projectile][Treemacs Projectile]]
   - [[#persp-mode][Persp Mode]]
-  - [[#dired-sidebar][Dired Sidebar*]]
-  - [[#ibuffer-sidebar][IBuffer Sidebar*]]
+  - [[#smart-jump][Smart Jump]]
+  - [[#dired-sidebar-][Dired Sidebar-]]
+  - [[#ibuffer-sidebar-][IBuffer Sidebar-]]
 - [[#text-editing][Text Editing]]
   - [[#better-defaults-4][Better Defaults]]
   - [[#custom-functions-3][Custom Functions]]
     - [[#backward-kill-word-or-region][backward-kill-word-or-region]]
   - [[#keybindings-2][Keybindings]]
-  - [[#trailing-white-space-1][Trailing White Space]]
+  - [[#undo-tree][Undo Tree]]
+  - [[#trailing-white-space][Trailing White Space]]
   - [[#case-switching][Case Switching]]
   - [[#paren][Paren]]
   - [[#multiple-cursors][Multiple Cursors]]
   - [[#wrap-region][Wrap Region]]
   - [[#fill-unfill-paragraph][Fill-Unfill Paragraph]]
   - [[#expand-region][Expand Region]]
+  - [[#flyspell-popup][Flyspell Popup]]
 - [[#programming][Programming]]
   - [[#general-1][General]]
     - [[#better-defaults-5][Better Defaults]]
@@ -133,10 +141,10 @@
       - [[#align-comments][align-comments]]
       - [[#indent-buffer][indent-buffer]]
       - [[#comment-or-uncomment-region][comment-or-uncomment-region]]
-    - [[#fill-column-indicator-1][Fill Column Indicator*]]
-    - [[#line-numbers-1][Line Numbers*]]
+    - [[#fill-column-indicator-][Fill Column Indicator-]]
+    - [[#line-numbers-][Line Numbers-]]
     - [[#comments][Comments]]
-    - [[#yasnippet][YASnippet*]]
+    - [[#yasnippet-][YASnippet-]]
     - [[#projectile][Projectile]]
     - [[#flycheck][Flycheck]]
     - [[#language-server-protocol][Language Server Protocol]]
@@ -145,7 +153,7 @@
         - [[#eldoc-box][Eldoc Box]]
       - [[#lsp-mode][LSP Mode]]
     - [[#yasnippet-snippets][YASnippet-snippets]]
-    - [[#rainbow-delimiters-1][Rainbow Delimiters]]
+    - [[#rainbow-delimiters][Rainbow Delimiters]]
   - [[#emacs-lisp][Emacs Lisp]]
     - [[#elisp-slime-nav][Elisp Slime Nav]]
     - [[#aggressive-indent][Aggressive Indent]]
@@ -167,17 +175,23 @@
   - [[#dired][Dired]]
     - [[#dired-1][Dired]]
     - [[#dired-x][Dired-X]]
-    - [[#dired-icons-1][Dired Icons]]
+    - [[#dired-icons][Dired Icons]]
     - [[#dired-subtree][Dired Subtree]]
-    - [[#dired-sidebar-1][Dired Sidebar]]
-    - [[#ibuffer-sidebar-1][IBuffer Sidebar]]
+    - [[#dired-sidebar][Dired Sidebar]]
+    - [[#ibuffer-sidebar][IBuffer Sidebar]]
     - [[#dired-show-readme][Dired Show Readme]]
   - [[#org][Org]]
     - [[#org-1][Org]]
-    - [[#org-imenu][org-imenu]]
-    - [[#org-screenshot][org-screenshot]]
-    - [[#org-indent-src-block][org-indent-src-block]]
+    - [[#custom-functions-5][Custom Functions]]
+      - [[#org-imenu][org-imenu]]
+      - [[#org-screenshot][org-screenshot]]
+      - [[#org-indent-src-block][org-indent-src-block]]
+    - [[#org-bullets][Org Bullets]]
+    - [[#toc-org][Toc Org]]
+    - [[#org-table-auto-align][Org Table Auto Align]]
     - [[#ob-async][ob-async]]
+    - [[#org-pomodoro][Org Pomodoro]]
+  - [[#markdown][Markdown]]
   - [[#version-control][Version Control]]
     - [[#magit][Magit]]
       - [[#magit-1][Magit]]
@@ -193,6 +207,11 @@
     - [[#ob-restclient][ob-restclient]]
   - [[#eaf][EAF]]
   - [[#google-translate][Google Translate]]
+  - [[#docker][Docker]]
+  - [[#yaml][Yaml]]
+  - [[#pdf][PDF]]
+    - [[#pdf-tools][PDF Tools]]
+    - [[#interleave][Interleave]]
 - [[#fun][Fun]]
   - [[#play-free-software-song][Play Free Software Song]]
   - [[#selectric-mode][Selectric Mode]]
@@ -202,7 +221,6 @@
 - [[#packages-i-almost-never-use-but-want-to-keep][Packages I almost never use but want to keep]]
   - [[#turkish-mode][Turkish Mode]]
   - [[#minimap][Minimap]]
-  - [[#olivetti][Olivetti]]
   - [[#helm-system-packages][Helm System Packages]]
   - [[#dimmer][Dimmer]]
   - [[#focus][Focus]]
@@ -322,6 +340,10 @@ file; follow link? (y or n)"= every time, to always answer =yes=, set
 ;; Install packages in `use-package' forms with `straight'. (not the built-in
 ;; package.el)
 (setq straight-use-package-by-default t)
+
+;; Key Chord functionality in use-package
+(use-package use-package-chords
+  :config (key-chord-mode 1))
 #+END_SRC
 
 *** Notes
@@ -336,9 +358,6 @@ file; follow link? (y or n)"= every time, to always answer =yes=, set
 #+END_SRC
 
 * TODO Performance Optimization
-:PROPERTIES:
-:header-args: :tangle no
-:END:
 TODO: Check this out
 https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly
 TODO: package-enable-at-startup nil????
@@ -350,24 +369,48 @@ load time.
 
 Note: tangle to early-init.el to make startup even faster
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
-;; (setq gc-cons-threshold most-positive-fixnum
-;;       gc-cons-percentage 1)  ; TODO: try with and without it
+(setq gc-cons-threshold most-positive-fixnum)
 #+END_SRC
 
 Restore it to reasonable value after init.
 #+BEGIN_SRC emacs-lisp
-(defun fk/increase-gc-threshold ()
-  "Increase garbage collection threshold to speed-up emacs by reducing the
-frequency of garbage collection stops."
-  (setq gc-cons-threshold (* 1024 1024 20))
-  (setq gc-cons-percentage 0.6))
+;; (defun fk/increase-gc-threshold ()
+;;   "Increase garbage collection threshold to speed-up emacs by reducing the
+;; frequency of garbage collection stops."
+;;   (setq gc-cons-threshold (* 1024 1024 20))
+;;   (setq gc-cons-percentage 0.3))
 
-(add-hook 'after-init-hook 'fk/increase-gc-threshold)
+;; (add-hook 'after-init-hook 'fk/increase-gc-threshold)
+
+(add-hook 'emacs-startup-hook (lambda () (setq gc-cons-threshold 20971520)))  ; 20mb
 #+END_SRC
 
-**** TODO GC before helm vb.
+*** TODO GC before helm vb.
+#+BEGIN_SRC emacs-lisp
+(defun doom-defer-garbage-collection-h ()
+  (setq gc-cons-threshold most-positive-fixnum))
+
+(defun doom-restore-garbage-collection-h ()
+  ;; Defer it so that commands launched immediately after will enjoy the
+  ;; benefits.
+  (run-at-time
+   1 nil (lambda () (setq gc-cons-threshold 20971520))))
+
+(add-hook 'minibuffer-setup-hook #'doom-defer-garbage-collection-h)
+(add-hook 'minibuffer-exit-hook #'doom-restore-garbage-collection-h)
+#+END_SRC
 
 ** TODO File Handler
+#+BEGIN_SRC emacs-lisp :tangle early-init.el
+(defvar doom--file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
+;; Alternatively, restore it even later:
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq file-name-handler-alist doom--file-name-handler-alist)))
+#+END_SRC
+
 ** Emacs Start Up Profiler
 Benchmark Emacs startup time.
 #+BEGIN_SRC emacs-lisp
@@ -409,7 +452,8 @@ Keep Emacs directory clean.
  confirm-kill-processes nil            ; exit emacs without asking to kill processes
  backup-by-copying t                   ; prevent linked files
  require-final-newline t               ; always end files with newline
- delete-old-versions t)                ; don't ask to delete old backup files
+ delete-old-versions t                 ; don't ask to delete old backup files
+ revert-without-query '(".*"))         ; `revert-buffer' without confirmation
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -439,6 +483,31 @@ A better, more detailed *help* buffer.
    ([remap describe-key] . helpful-key)
    :map emacs-lisp-mode-map
    ("C-c C-d" . helpful-at-point)))
+#+END_SRC
+
+** Menu Style Keybindings
+Menu style keybindings like Spacemacs.
+#+BEGIN_SRC emacs-lisp
+;; NOTE: I use F1 as C-h (paging & help).
+(bind-keys*
+ :prefix-map fk/menu-map
+ :prefix "M-m"
+ ("M-m" . which-key-show-full-major-mode)
+ :map fk/menu-map :prefix-map buffers         :prefix "b"
+ :map fk/menu-map :prefix-map comments        :prefix "c"
+ :map fk/menu-map :prefix-map files           :prefix "f"
+ :map fk/menu-map :prefix-map text            :prefix "t"
+ :map fk/menu-map :prefix-map version-control :prefix "v"
+ :map fk/menu-map :prefix-map windows         :prefix "w")
+#+END_SRC
+
+** Su/Sudo
+read-only files will be writable but if you attempt to save your modifications,
+emacs will ask root user's password if needed.
+#+BEGIN_SRC emacs-lisp
+(use-package su
+  :straight (:host github :repo "PythonNut/su.el")
+  :config (su-mode))
 #+END_SRC
 
 * Appearance
@@ -523,7 +592,9 @@ size. This function also handles icons and modeline font sizes."
     (when (fboundp 'treemacs-resize-icons)
       (treemacs-resize-icons new-size))
     (when (fboundp 'company-box-icons-resize)
-      (company-box-icons-resize new-size))))
+      (company-box-icons-resize new-size)))
+  (if diff-hl-mode
+      (diff-hl-maybe-redefine-bitmaps)))
 #+END_SRC
 
 **** increase-font-size
@@ -569,6 +640,7 @@ size. This function also handles icons and modeline font sizes."
   (lazy-highlight ((t (:background nil :foreground nil :box (:line-width -1)))))
   :config
   (load-theme 'doom-spacegrey t)
+  (defconst fk/font-color (face-attribute 'default :foreground))
   (defconst fk/background-color (face-attribute 'default :background))
   (defconst fk/dark-color (doom-darken fk/background-color 0.15))
   (defconst fk/dark-color1 (doom-darken fk/background-color 0.01))
@@ -620,7 +692,7 @@ size. This function also handles icons and modeline font sizes."
 (use-package doom-modeline
   :custom
   (doom-modeline-buffer-encoding nil)
-  (doom-modeline-vcs-max-length 30)
+  (doom-modeline-vcs-max-length 50)
   :custom-face
   (mode-line ((t (:background ,fk/dark-color))))
   (mode-line-inactive ((t (:background ,(doom-darken fk/background-color 0.05)))))
@@ -660,7 +732,7 @@ Change default window dividers to a better built-in alternative.
   (global-page-break-lines-mode))
 #+END_SRC
 
-** [[#trailing-white-space][*Trailing White Space]]
+** [[#trailing-white-space][Trailing White Space-]]
 ** Highlight TODOs
 #+BEGIN_SRC emacs-lisp
 (use-package hl-todo
@@ -678,6 +750,7 @@ Change default window dividers to a better built-in alternative.
                            ("KLUDGE" . "#b1951d")
                            ("HACK" . "#b1951d")
                            ("TEMP" . "#b1951d")
+                           ("QUESTION" . "#b1951d")
                            ("HOLD" . "#dc752f")
                            ("FIXME" . "#dc752f")
                            ("XXX+" . "#dc752f")))
@@ -688,8 +761,10 @@ Change default window dividers to a better built-in alternative.
 ** Beacon
 #+BEGIN_SRC emacs-lisp
 (use-package beacon
+  :preface
+  (defconst cursor-color+1 (format "#%x" (+ 1 (string-to-number (string-remove-prefix "#" (face-attribute 'cursor :background)) 16))))
   :custom
-  (beacon-color "#D18770") ; TODO: handle in theme
+  (beacon-color cursor-color+1)
   (beacon-blink-when-point-moves-vertically 10)
   (beacon-dont-blink-major-modes '(dashboard-mode))
   :config
@@ -721,7 +796,8 @@ Change default window dividers to a better built-in alternative.
 #+BEGIN_SRC emacs-lisp
 (use-package shackle
   :custom
-  (shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :size 0.3)
+  (shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :size 0.4)  ; I use helm-posframe now, this is unnecessary but i want to keep just in case
+                   ("\\`\\*helpful.*?\\*\\'" :regexp t :align t :size 0.4)
                    (help-mode :align t :size 0.4 :select t)))
   :config
   (shackle-mode))
@@ -764,9 +840,11 @@ Change default window dividers to a better built-in alternative.
 ** Emacs Dashboard
 #+BEGIN_SRC emacs-lisp
 (use-package dashboard
+  :straight (:host github :repo "KaratasFurkan/emacs-dashboard")
   :custom
   (dashboard-startup-banner 'logo)
   (dashboard-set-heading-icons t)
+  (dashboard-projectile-vc t)
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
   (dashboard-items '((recents  . 10)
@@ -805,7 +883,7 @@ Change default window dividers to a better built-in alternative.
 (use-package display-fill-column-indicator
   :straight (:type built-in)
   :custom-face
-  (fill-column-indicator ((t (:foreground ,fk/light-color3))))
+  (fill-column-indicator ((t (:foreground ,fk/light-color7))))
   :hook
   (prog-mode . display-fill-column-indicator-mode))
 #+END_SRC
@@ -818,9 +896,72 @@ Change default window dividers to a better built-in alternative.
   (prog-mode . display-line-numbers-mode))
 #+END_SRC
 
-** [[#dired-icons][Dired Icons*]]
-** [[#rainbow-delimiters][Rainbow Delimiters*]]
-** [[#helm-icons][Helm Icons*]]
+** [[#dired-icons][Dired Icons-]]
+** [[#rainbow-delimiters][Rainbow Delimiters-]]
+** [[#helm-icons][Helm Icons-]]
+** Symbol Overlay
+#+BEGIN_SRC emacs-lisp
+(use-package symbol-overlay
+  :commands (symbol-overlay-mode symbol-overlay-put)
+  ;;:hook (prog-mode . symbol-overlay-mode)
+  )
+#+END_SRC
+
+** Olivetti
+#+BEGIN_SRC emacs-lisp
+(use-package olivetti
+  :defer nil
+  :init
+  (defvar fk/olivetti-fringe-face '(:background "#2a2f39"))  ; TODO: why '(:background fk/dark-color2) does not work?
+  (defvar fk/olivetti-excluded-buffers '("*dashboard*" " *which-key*"))
+  :custom
+  (olivetti-body-width 100)
+  (olivetti-enable-visual-line-mode nil)
+  :bind*
+  (
+   :map windows
+   ("c" . olivetti-mode)
+   ("v" . visual-line-mode)
+   :map windows
+   :prefix-map olivetti
+   :prefix "o"
+   ("e" . olivetti-expand)
+   ("s" . olivetti-shrink))
+  :hook
+  (olivetti-mode . (lambda () (face-remap-add-relative 'fringe fk/olivetti-fringe-face)))
+  :config
+  (defun fk/activate-olivetti-if-single-window ()
+    "Activate olivetti-mode if there is only one window visible."
+    (if (= (count-windows) 1)
+        (unless (member (buffer-name) fk/olivetti-excluded-buffers)
+          (olivetti-mode))
+      (fk/olivetti-reset)))
+
+  (defun fk/olivetti-reset ()
+    "Reset all windows' margins and face-remaps."
+    (olivetti-mode -1)
+    (olivetti-reset-all-windows)
+    (dolist (window (window-list))
+      (with-selected-window window
+        (face-remap-remove-relative (cons 'fringe fk/olivetti-fringe-face)))))
+
+  (define-minor-mode fk/olivetti-single-window-mode
+    "Toggle olivetti-mode when there is only one window visible."
+    :global t
+    (if fk/olivetti-single-window-mode
+        (add-hook 'window-configuration-change-hook 'fk/activate-olivetti-if-single-window)
+      (remove-hook 'window-configuration-change-hook 'fk/activate-olivetti-if-single-window)
+      (fk/olivetti-reset)))
+
+  (fk/olivetti-single-window-mode))
+#+END_SRC
+
+** Emojify
+#+BEGIN_SRC emacs-lisp
+(use-package emojify
+  :commands emojify-mode)
+#+END_SRC
+
 * Completion
 ** Better Defaults
 #+BEGIN_SRC emacs-lisp
@@ -838,40 +979,7 @@ Change default window dividers to a better built-in alternative.
   (which-key-posframe-border ((t (:background "gray"))))
   :config
   (which-key-mode)
-  (which-key-posframe-mode)
-
-  ;; Menu keymap like Spacemacs
-  ;; NOTE: I use F1 as C-h (paging & help).
-  (bind-keys*
-   :prefix-map fk/menu-map
-   :prefix "M-m"
-   ("M-m" . which-key-show-full-major-mode))
-
-  (bind-keys*
-   :prefix-map files
-   :prefix "M-m f")
-  (bind-keys*
-   :prefix-map buffers
-   :prefix "M-m b")
-  (bind-keys*
-   :prefix-map windows
-   :prefix "M-m w")
-  (bind-keys*
-   :prefix-map version-control
-   :prefix "M-m v")
-  (bind-keys*
-   :prefix-map comments
-   :prefix "M-m c")
-  ;; (bind-keys*
-  ;;  :prefix-map help
-  ;;  :prefix "M-m h")
-  ;; (bind-keys*
-  ;;  :prefix-map jump  ; or navigation
-  ;;  :prefix "M-m j")
-  ;; (bind-keys*
-  ;;  :prefix-map search
-  ;;  :prefix "M-m s")
-  )
+  (which-key-posframe-mode))
 #+END_SRC
 
 ** Helm (General Completion & Selection)
@@ -882,7 +990,8 @@ Change default window dividers to a better built-in alternative.
   :custom
   (helm-M-x-always-save-history t)
   (helm-display-function 'pop-to-buffer)
-  (savehist-additional-variables '(extended-command-history))  ; Shows multiple
+  (savehist-additional-variables '(extended-command-history))
+  (history-delete-duplicates t)
   :custom-face
   (helm-non-file-buffer ((t (:inherit font-lock-comment-face))))
   (helm-ff-file-extension ((t (:inherit default))))
@@ -900,6 +1009,9 @@ Change default window dividers to a better built-in alternative.
    ("<tab>" . helm-execute-persistent-action)
    ("C-z" . helm-select-action)
    ("C-w" . backward-kill-word)  ; Fix C-w
+   :map helm-buffer-map
+   ("M-d" . helm-buffer-run-kill-buffers)
+   ("C-M-d" . helm-buffer-run-kill-persistent)
    :map files
    ("f" . helm-find-files)
    ("r" . helm-recentf)
@@ -908,29 +1020,29 @@ Change default window dividers to a better built-in alternative.
   :config
   (helm-mode)
   (savehist-mode)
-  (dolist (regexp '("\\*epc con" "\\*helm" "\\*EGLOT"
-                    "\\*straight" "\\*Flymake"))
+  (dolist (regexp '("\\*epc con" "\\*helm" "\\*EGLOT" "\\*straight" "\\*Flymake"
+                    "\\*eldoc" "\\*Compile-Log" "\\*xref" "\\*company"
+                    "\\*aw-posframe" "\\*Warnings" "\\*Backtrace"))
     (add-to-list 'helm-boring-buffer-regexp-list regexp))
   :hook
   (helm-major-mode . fk/darken-background))
 #+END_SRC
 
-*** [[#helm-projectile][Helm Projectile*]]
-*** [[#helm-ag][Helm Ag*]]
-*** [[#helm-xref][Helm Xref*]]
-*** [[#helm-swoop][Helm Swoop*]]
+*** [[#helm-projectile][Helm Projectile-]]
+*** [[#helm-ag][Helm Ag-]]
+*** [[#helm-xref][Helm Xref-]]
+*** [[#helm-swoop][Helm Swoop-]]
 *** Helm Descbinds
 #+BEGIN_SRC emacs-lisp
 (use-package helm-descbinds
   :commands helm-descbinds)
 #+END_SRC
 
-*** [[#helm-icons][Helm Icons*]]
+*** [[#helm-icons][Helm Icons-]]
 *** Helm Posframe
 #+BEGIN_SRC emacs-lisp
 (use-package helm-posframe
-  :straight
-  (helm-posframe :host github :repo "KaratasFurkan/helm-posframe")
+  :straight (:host github :repo "KaratasFurkan/helm-posframe")
   :after helm
   :custom
   (helm-display-header-line nil)
@@ -1004,7 +1116,7 @@ company-yasnippet' to all company backends."
 *** Company Box
 #+BEGIN_SRC emacs-lisp
 (use-package company-box
-  :straight (company-box :host github :repo "gcentauri/company-box")
+  :straight (:host github :repo "gcentauri/company-box")
   :custom
   (company-box-show-single-candidate t)
   (company-box-backends-colors nil) ;; Same colors for all backends
@@ -1045,7 +1157,7 @@ company-yasnippet' to all company backends."
   (yas-global-mode))
 #+END_SRC
 
-** [[#emmet-mode][Emmet*]] (Snippet Completion for HTML & CSS)
+** [[#emmet-mode][Emmet-]] (Snippet Completion for HTML & CSS)
 * Search & Navigation
 ** Better Defaults
 #+BEGIN_SRC emacs-lisp
@@ -1081,7 +1193,7 @@ company-yasnippet' to all company backends."
   (switch-to-buffer "*Messages*"))
 #+END_SRC
 
-*** [[#emacs-dashboard][go-home*]]
+*** [[#emacs-dashboard][go-home-]]
 *** split-window-and-switch
 #+BEGIN_SRC emacs-lisp
 (defun fk/split-window-below-and-switch ()
@@ -1130,6 +1242,12 @@ company-yasnippet' to all company backends."
  ("r" . fk/generate-random-scratch)
  ("h" . fk/home)
  ("m" . fk/messages))
+
+(bind-keys*
+ :map windows
+ ("b" . balance-windows)
+ ("d" . delete-window)
+ ("k" . kill-buffer-and-window))
 #+END_SRC
 
 ** Recentf (Recent Files)
@@ -1148,6 +1266,9 @@ company-yasnippet' to all company backends."
   :straight (:type built-in)
   :bind
   (("M-u" . winner-undo)
+   ;; ("M-u" . (lambda () (interactive) (condition-case nil
+   ;;                                       (xref-pop-marker-stack)
+   ;;                                     (error (winner-undo)))))
    ("M-U" . winner-redo)
    :map windows
    ("u" . winner-undo)
@@ -1159,10 +1280,7 @@ company-yasnippet' to all company backends."
 ** Ace Window
 #+BEGIN_SRC emacs-lisp
 (use-package ace-window
-  :straight
-  (ace-window :host github
-              :repo "KaratasFurkan/ace-window"
-              :branch "feature/posframe")
+  :straight (:host github :repo "KaratasFurkan/ace-window" :branch "feature/posframe")
   :custom
   (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (aw-ignore-current t)
@@ -1170,10 +1288,8 @@ company-yasnippet' to all company backends."
   (
    :map windows
    ("w" . ace-window)
-   ("d" . delete-window)
    ("D" . ace-delete-window)
-   ("s" . ace-swap-window)
-   ("b" . balance-windows))
+   ("s" . ace-swap-window))
   :config
   (ace-window-posframe-mode)
   :custom-face
@@ -1186,7 +1302,7 @@ from melpa.
 **** Helm Icons
 #+BEGIN_SRC emacs-lisp
 (use-package helm-icons
-  :straight (helm-icons :host github :repo "yyoncho/helm-icons")
+  :straight (:host github :repo "yyoncho/helm-icons")
   :after helm
   :config
   (treemacs-resize-icons fk/default-icon-size)
@@ -1247,12 +1363,20 @@ from melpa.
 
 ** Helm Xref
 #+BEGIN_SRC emacs-lisp
-;; TODO: bunu incele, xref diye up ayarla
-(use-package helm-xref
+(use-package xref
   :custom
   (xref-prompt-for-identifier nil)
   :bind
+  ("C-9" . xref-find-definitions)
+  ("C-M-j" . xref-find-definitions)
+  ("C-8" . xref-pop-marker-stack)
+  ("C-M-S-j" . xref-pop-marker-stack)
+  ("C-M-9" . xref-find-definitions-other-window)
   ("C-M-r" . xref-find-references))
+
+(use-package helm-xref
+  :init
+  (require 'helm-xref))  ; this package has no autoloads :(
 #+END_SRC
 
 ** Helm Swoop
@@ -1262,7 +1386,7 @@ from melpa.
   (helm-swoop-speed-or-color t)
   (helm-swoop-split-window-function 'display-buffer)
   (helm-swoop-min-overlay-length 0)
-  (helm-swoop-use-fuzzy-match t)
+  ;;(helm-swoop-use-fuzzy-match t)
   :custom-face
   (helm-swoop-target-line-face ((t (:background "black" :foreground nil :inverse-video nil :extend t))))
   (helm-swoop-target-word-face ((t (:inherit lazy-highlight :foreground nil))))
@@ -1322,14 +1446,44 @@ from melpa.
 
 ** Persp Mode
 #+BEGIN_SRC emacs-lisp
-(use-package persp-mode
-  :defer t
+(use-package perspective
+  :defer nil
+  :custom
+  (persp-mode-prefix-key (kbd "M-m p"))
+  (persp-state-default-file (no-littering-expand-var-file-name "perspective.el"))
+  :custom-face
+  (persp-selected-face ((t (:foreground nil :inherit 'doom-modeline-warning))))
+  :bind
+  (
+   :map persp-mode-map
+   ("C-M-o" . persp-next)
+   ("C-x p" . persp-switch))
   :config
-  (persp-mode))
+  (persp-mode)
+  :hook
+  (kill-emacs . persp-state-save))
 #+END_SRC
 
-** [[#dired-sidebar][Dired Sidebar*]]
-** [[#ibuffer-sidebar][IBuffer Sidebar*]]
+** Smart Jump
+#+BEGIN_SRC emacs-lisp
+(use-package smart-jump
+  :custom
+  (dumb-jump-aggressive t)
+  :bind
+  (([remap xref-find-definitions] . smart-jump-go)
+   ([remap xref-pop-marker-stack] . smart-jump-back)
+   ([remap xref-find-references] . smart-jump-references))
+  :config
+  (smart-jump-register :modes 'python-mode
+                       :order 1
+                       smart-jump-xref-fallback)
+  (smart-jump-register :modes 'python-mode
+                       :order 2
+                       smart-jump-simple-fallback))
+#+END_SRC
+
+** [[#dired-sidebar][Dired Sidebar-]]
+** [[#ibuffer-sidebar][IBuffer Sidebar-]]
 * Text Editing
 ** Better Defaults
 #+BEGIN_SRC emacs-lisp
@@ -1358,19 +1512,38 @@ otherwise."
 #+BEGIN_SRC emacs-lisp
 (keyboard-translate ?\C-h ?\C-?)  ; C-h as DEL, (F1 as `help-command')
 (global-set-key (kbd "C-w") 'fk/backward-kill-word-or-region)
-(global-set-key (kbd "C-u") 'undo)
+#+END_SRC
+
+** Undo Tree
+#+BEGIN_SRC emacs-lisp
+(use-package undo-tree
+  :defer nil
+  :bind
+  (("C-u" . undo-tree-undo)
+   ("C-S-u" . undo-tree-redo))
+  :config
+  (global-undo-tree-mode))
 #+END_SRC
 
 ** Trailing White Space
 #+BEGIN_SRC emacs-lisp
-(use-package whitespace
-  :straight (:type built-in)
+;; (use-package whitespace
+;;   :straight (:type built-in)
+;;   :custom
+;;   (show-trailing-whitespace t)  ; not from whitespace.el
+;;   :custom-face
+;;   (trailing-whitespace ((t (:background ,fk/light-color7))))  ; not from whitespace.el
+;;   :hook
+;;   (before-save . whitespace-cleanup))
+
+;; Try an alternative:
+(use-package whitespace-cleanup-mode
   :custom
-  (show-trailing-whitespace t)  ; not from whitespace.el
+  (show-trailing-whitespace t)  ; not from whitespace-cleanup-mode.el
   :custom-face
-  (trailing-whitespace ((t (:background ,fk/light-color7))))  ; not from whitespace.el
-  :hook
-  (before-save . whitespace-cleanup))
+  (trailing-whitespace ((t (:background ,fk/light-color7))))  ; not from whitespace-cleanup-mode.el
+  :config
+  (global-whitespace-cleanup-mode))
 #+END_SRC
 
 ** Case Switching
@@ -1379,24 +1552,26 @@ otherwise."
 (put 'downcase-region 'disabled nil)
 
 ;; built-in functions
-(bind-keys*
- :prefix-map text
- :prefix "M-m t"
+(bind-keys
+ :map text
  ("u" . upcase-dwim)
  ("d" . downcase-dwim)
  ("c" . capitalize-dwim))
 
 (use-package string-inflection
-  :bind*
+  :bind
   (
    :map text
-   ("t" . string-inflection-all-cycle)))
+   ("t" . string-inflection-all-cycle)
+   ("k" . string-inflection-kebab-case)))
 #+END_SRC
 
 ** Paren
 #+BEGIN_SRC emacs-lisp
 (use-package paren
   :straight (:type built-in)
+  :custom
+  (show-paren-when-point-inside-paren t)
   :custom-face
   (show-paren-match ((t (:background nil :weight bold :foreground "white"))))
   :config
@@ -1428,7 +1603,8 @@ otherwise."
   (wrap-region-add-wrapper "_" "_" nil 'org-mode)
   (wrap-region-add-wrapper "/" "/" nil 'org-mode)
   (wrap-region-add-wrapper "+" "+" nil 'org-mode)
-  (wrap-region-add-wrapper "~" "~" nil 'org-mode))
+  (wrap-region-add-wrapper "~" "~" nil 'org-mode)
+  (wrap-region-add-wrapper "#" "#" nil 'org-mode))
 #+END_SRC
 
 ** Fill-Unfill Paragraph
@@ -1444,7 +1620,19 @@ otherwise."
   (expand-region-fast-keys-enabled nil)
   (expand-region-subword-enabled t)
   :bind
-  ("C-t" . er/expand-region))
+  ("C-t" . er/expand-region)
+  :chords
+  ("jk" . er/expand-region))  ; just to try
+#+END_SRC
+
+** Flyspell Popup
+#+BEGIN_SRC emacs-lisp
+(use-package flyspell-popup
+  :after flyspell
+  :custom
+  (flyspell-popup-correct-delay 1)
+  :config
+  (flyspell-popup-auto-correct-mode))
 #+END_SRC
 
 * TODO Programming
@@ -1483,8 +1671,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
                         'self-insert-command)))
 #+END_SRC
 
-*** [[#fill-column-indicator][Fill Column Indicator*]]
-*** [[#line-numbers][Line Numbers*]]
+*** [[#fill-column-indicator][Fill Column Indicator-]]
+*** [[#line-numbers][Line Numbers-]]
 *** Comments
 #+BEGIN_SRC emacs-lisp
 (use-package newcomment
@@ -1508,18 +1696,60 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
                        (setq-local comment-column 0))))
 #+END_SRC
 
-*** [[#yasnippet-snippet-completion][YASnippet*]]
+*** [[#yasnippet-snippet-completion][YASnippet-]]
 *** Projectile
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
   :config
+  (require 'tramp)  ; TEMP: error: "Symbol's value as variable is void tramp-methods"
   (projectile-mode))
 #+END_SRC
 
 *** Flycheck
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
-  :custom (flycheck-idle-change-delay 2))
+  :custom
+  (flycheck-check-syntax-automatically '(save mode-enabled)))
+
+;; Spacemacs' custom fringes
+
+;; :config
+;; (define-fringe-bitmap 'fk/flycheck-fringe-indicator
+;;   (vector #b00000000
+;;           #b00000000
+;;           #b00000000
+;;           #b00000000
+;;           #b00000000
+;;           #b00000000
+;;           #b00000000
+;;           #b00011100
+;;           #b00111110
+;;           #b00111110
+;;           #b00111110
+;;           #b00011100
+;;           #b00000000
+;;           #b00000000
+;;           #b00000000
+;;           #b00000000
+;;           #b00000000))
+;; (flycheck-define-error-level 'error
+;;   :severity 2
+;;   :overlay-category 'flycheck-error-overlay
+;;   :fringe-bitmap 'fk/flycheck-fringe-indicator
+;;   :error-list-face 'flycheck-error-list-error
+;;   :fringe-face 'flycheck-fringe-error)
+;; (flycheck-define-error-level 'warning
+;;   :severity 1
+;;   :overlay-category 'flycheck-warning-overlay
+;;   :fringe-bitmap 'fk/flycheck-fringe-indicator
+;;   :error-list-face 'flycheck-error-list-warning
+;;   :fringe-face 'flycheck-fringe-warning)
+;; (flycheck-define-error-level 'info
+;;   :severity 0
+;;   :overlay-category 'flycheck-info-overlay
+;;   :fringe-bitmap 'fk/flycheck-fringe-indicator
+;;   :error-list-face 'flycheck-error-list-info
+;;   :fringe-face 'flycheck-fringe-info)
 #+END_SRC
 
 *** Language Server Protocol
@@ -1535,6 +1765,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
                                       :signatureHelpProvider
                                       :hoverProvider))
   (eglot-stay-out-of '(flymake))
+  (eglot-autoshutdown t)
   :hook
   (eglot-managed-mode . fk/company-enable-snippets)
   (eglot-managed-mode . (lambda () (flymake-mode 0))))
@@ -1588,6 +1819,13 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (python-shell-interpreter "ipython")
   (python-shell-interpreter-args "-i --simple-prompt")
   (python-indent-guess-indent-offset-verbose nil)
+  :bind
+  (
+   :map python-mode-map
+   ("M-n" . python-nav-forward-block)
+   ("M-p" . python-nav-backward-block)
+   ("C-c i r" . python-indent-shift-right)
+   ("C-c i l" . python-indent-shift-left))
   :hook
   ;; pip install python-language-server pyls-black pyls-isort flake8
   ;; NOTE: these hooks runs in reverse order
@@ -1619,8 +1857,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 (use-package importmagic
   ;; pip install importmagic epc
-  :commands importmagic-mode
-  :custom (importmagic-python-interpreter "python"))
+  :commands importmagic-mode)
 #+END_SRC
 
 *** Blacken
@@ -1636,7 +1873,8 @@ TODO: seperate sections (html, css..)
 (use-package web-mode
   :custom
   (css-indent-offset 2)
-  (web-mode-markup-indent-offset 2)
+  ;;(web-mode-markup-indent-offset 2)
+  (web-mode-enable-auto-indentation nil)
   (web-mode-enable-auto-pairing nil)
   (web-mode-engines-alist '(("django" . "\\.html\\'")))
   :mode ;; Copied from spacemacs
@@ -1657,8 +1895,9 @@ TODO: seperate sections (html, css..)
    ("\\.ejs\\'"        . web-mode)
    ("\\.svelte\\'"     . web-mode)
    ("\\.djhtml\\'"     . web-mode))
-  :hook
-  (web-mode . (lambda () (fk/add-local-hook 'before-save-hook 'fk/indent-buffer))))
+  ;;:hook
+  ;;(web-mode . (lambda () (fk/add-local-hook 'before-save-hook 'fk/indent-buffer)))
+  )
 #+END_SRC
 
 *** Emmet Mode
@@ -1741,7 +1980,7 @@ TODO: seperate sections (html, css..)
    ("<mouse-3>" . (lambda (event) (interactive "e")  ; right click
                     (mouse-set-point event)
                     (dired-subtree-toggle)))
-   ;;("RET" . fk/dired-smart-open)
+   ("RET" . fk/dired-smart-open)
    ("C-c C-e" . wdired-change-to-wdired-mode))
   :config
   (defun fk/dired-left-click (event)
@@ -1855,53 +2094,56 @@ else call `dired-find-file'"
 ** TODO Org
 *** Org
 #+BEGIN_SRC emacs-lisp
-;; TODO: clean up this section, choose built-in or upstream
 (use-package org
   :straight (:type built-in)
-  :init
-  (setq org-agenda-files '("~/Org/agenda.org")
-        org-confirm-babel-evaluate nil
-        org-ellipsis "↴" ;; ↴, ▼, ▶, ⤵
-        org-src-window-setup 'current-window
-        org-startup-indented t
-        org-startup-with-inline-images t
-        org-image-actual-width '(400)
-        org-hierarchical-todo-statistics nil
-        org-src-preserve-indentation t
-        org-adapt-indentation nil
-        org-tags-column 0
-        org-imenu-depth 20)
-  :bind (
-         :map org-mode-map
-         ("C-c C-e" . org-edit-special)
-         ("M-n" . org-next-visible-heading)
-         ("M-p" . org-previous-visible-heading)
-         ("C-c C-f". fk/org-imenu)
-         ;; ("" . org-shiftright) TODO: find proper keybinding
-         ;; ("" . org-shiftleft)
-         ;; ("" . org-metaright)
-         ;; ("" . org-metaleft)
-         ;; ("" . org-metaup)
-         ;; ("" . org-metadown
-         :map org-src-mode-map
-         ("C-c C-c" . org-edit-src-exit))
+  :custom
+  (org-agenda-files '("~/Org/agenda.org"))
+  (org-confirm-babel-evaluate nil)
+  (org-ellipsis "↴") ;; ↴, ▼, ▶, ⤵
+  (org-src-window-setup 'current-window)
+  (org-startup-indented t)
+  (org-startup-with-inline-images t)
+  (org-image-actual-width '(400))
+  (org-hierarchical-todo-statistics nil)
+  (org-src-preserve-indentation t)
+  (org-adapt-indentation nil)
+  (org-tags-column 0)
+  (org-imenu-depth 20)
+  (org-hide-emphasis-markers t)
+  :custom-face
+  (org-block ((t (:extend t))))
+  (org-ellipsis ((t (:foreground nil :inherit font-lock-comment-face :weight light :height ,fk/default-font-size))))
+  (org-checkbox ((t (:foreground "white"))))
+  (org-block-begin-line ((t (:extend t))))
+  (org-block-end-line ((t (:extend t))))
+  (org-level-4 ((t (:height ,(+ fk/default-font-size 5) :weight bold ))))
+  (org-level-3 ((t (:height ,(+ fk/default-font-size 10) :weight bold ))))
+  (org-level-2 ((t (:height ,(+ fk/default-font-size 15) :weight bold ))))
+  (org-level-1 ((t (:height ,(+ fk/default-font-size 20) :weight bold ))))
+  (org-drawer ((t (:foreground nil :inherit font-lock-comment-face))))
+  :bind
+  (
+   :map org-mode-map
+   ("C-c C-e" . org-edit-special)
+   ("M-n" . org-next-visible-heading)
+   ("M-p" . org-previous-visible-heading)
+   ("C-c C-f". fk/org-imenu)
+   ("C-x C-1" . outline-hide-other)
+   ;; ("" . org-shiftright) TODO: find proper keybinding
+   ;; ("" . org-shiftleft)
+   ;; ("" . org-metaright)
+   ;; ("" . org-metaleft)
+   ;; ("" . org-metaup)
+   ;; ("" . org-metadown
+   :map org-src-mode-map
+   ("C-c C-c" . org-edit-src-exit))
   :config
-  (set-face-attribute 'org-block nil :extend t)
-  (set-face-attribute 'org-ellipsis nil :foreground nil :inherit 'font-lock-comment-face :weight 'normal)
-  (set-face-attribute 'org-checkbox nil :foreground "white")
-  (set-face-attribute 'org-block-begin-line nil :extend t)
-  (set-face-attribute 'org-block-end-line nil :extend t)
+  (add-to-list 'org-emphasis-alist '("#" (:box '(:line-width -1))))  ; FIXME: does not work.
   (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
-                                                           (C . t)
                                                            (emacs-lisp . t)
-                                                           (js . t)
                                                            (shell . t)))
   ;; Beautify org mode
-  (use-package org-bullets
-    :custom
-    (org-bullets-bullet-list '("⁖"))
-    :hook (org-mode . org-bullets-mode))
-
+  ;; TODO: make this with prettify-symbols-mode
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
@@ -1909,37 +2151,26 @@ else call `dired-find-file'"
                           '(("^ *\\([+]\\) "
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "◦"))))))
   (defface org-checkbox-done-text
-    '((t (:inherit 'font-lock-comment-face :strike-through t)))
+    '((t (:inherit 'font-lock-comment-face :slant normal)))
     "Face for the text part of a checked org-mode checkbox.")
 
-  ;; (font-lock-add-keywords
-  ;;  'org-mode
-  ;;  `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
-  ;;     1 'org-checkbox-done-text prepend))
-  ;;  'append)
+  (font-lock-add-keywords
+   'org-mode
+   `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
+      1 'org-checkbox-done-text prepend))
+   'append)
   :hook
   ;; TODO: bunlar yerine prettify + box face'i ile yap
+  (org-mode . prettify-symbols-mode)
   (org-mode . (lambda () (setq prettify-symbols-alist
                                '(("[ ]" . "☐")
                                  ("[X]" . "☑") ;; ✔
                                  ("[-]" . "⬕"))))) ;; ◪, ⬔
   (org-babel-after-execute . org-redisplay-inline-images))
-
-
-;; (use-package org-table-auto-align-mode
-;;   :load-path (lambda () (concat user-emacs-directory "load/org-table-auto-align-mode"))
-;;   :hook org-mode)
-
-(use-package toc-org
-  :straight
-  (:host github :repo "KaratasFurkan/toc-org" :branch "insert-silently")
-  :custom
-  (toc-org-max-depth 10)
-  (toc-org-insert-silently t)
-  :hook (org-mode . toc-org-mode))
 #+END_SRC
 
-*** org-imenu
+*** Custom Functions
+**** org-imenu
 #+BEGIN_SRC emacs-lisp
 (defun fk/org-imenu ()
   "Go to a heading with helm-imenu and expand the heading."
@@ -1948,43 +2179,42 @@ else call `dired-find-file'"
   (show-subtree))
 #+END_SRC
 
-*** org-screenshot
+**** org-screenshot
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'org
-  (defun fk/org-screenshot ()
-    ;; fork from: https://delta.re/org-screenshot/
-    ;; https://github.com/kadircancetin/.emacs.d
-    "Take a screenshot into a time stamped unique-named file in the
+(defun fk/org-screenshot ()
+  ;; fork from: https://delta.re/org-screenshot/
+  ;; https://github.com/kadircancetin/.emacs.d
+  "Take a screenshot into a time stamped unique-named file in the
   same directory as the org-buffer and insert a link to this file."
-    (interactive)
-    (when (eq major-mode 'org-mode)
-      (suspend-frame)
-      (run-at-time
-       "500 millisec" nil ;; I have animation when minimize window
-       (lambda ()
-         (org-display-inline-images)
-         (setq filename
-               (concat
-                (make-temp-name
-                 (concat (file-name-nondirectory (buffer-file-name))
-                         "_imgs/"
-                         (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
-         (unless (file-exists-p (file-name-directory filename))
-           (make-directory (file-name-directory filename)))
-                                        ; take screenshot
-         (if (eq system-type 'darwin)
-             (call-process "screencapture" nil nil nil "-i" filename))
-         (if (eq system-type 'gnu/linux)
-             (call-process "import" nil nil nil filename))
-                                        ; insert into file if correctly taken
-         (if (file-exists-p filename)
-             (insert (concat "[[file:" filename "]]")))
-         (org-remove-inline-images)
-         (org-display-inline-images)
-         (other-frame 0))))))
+  (interactive)
+  (when (eq major-mode 'org-mode)
+    (suspend-frame)
+    (run-at-time
+     "500 millisec" nil  ; I have animation when minimize window
+     (lambda ()
+       (org-display-inline-images)
+       (setq filename
+             (concat
+              (make-temp-name
+               (concat (file-name-nondirectory (buffer-file-name))
+                       "_imgs/"
+                       (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+       (unless (file-exists-p (file-name-directory filename))
+         (make-directory (file-name-directory filename)))
+       ;; take screenshot
+       (if (eq system-type 'darwin)
+           (call-process "screencapture" nil nil nil "-i" filename))
+       (if (eq system-type 'gnu/linux)
+           (call-process "import" nil nil nil filename))
+       ;; insert into file if correctly taken
+       (if (file-exists-p filename)
+           (insert (concat "[[file:" filename "]]")))
+       (org-remove-inline-images)
+       (org-display-inline-images)
+       (other-frame 0)))))
 #+END_SRC
 
-*** org-indent-src-block
+**** org-indent-src-block
 #+BEGIN_SRC emacs-lisp
 (defun fk/org-indent-src-block ()
   (interactive)
@@ -1993,10 +2223,49 @@ else call `dired-find-file'"
   (org-edit-src-exit))
 #+END_SRC
 
+*** Org Bullets
+#+BEGIN_SRC emacs-lisp
+(use-package org-bullets
+  :custom
+  (org-bullets-bullet-list '("⁖"))
+  :hook (org-mode . org-bullets-mode))
+#+END_SRC
+
+*** Toc Org
+#+BEGIN_SRC emacs-lisp
+(use-package toc-org
+  :straight (:host github :repo "KaratasFurkan/toc-org" :branch "insert-silently")
+  :custom
+  (toc-org-max-depth 10)
+  (toc-org-insert-silently t)
+  :hook (org-mode . toc-org-mode))
+#+END_SRC
+
+*** TODO Org Table Auto Align
+#+BEGIN_SRC emacs-lisp
+;; (use-package org-table-auto-align-mode ; NOTE: breaks undo
+;;   :load-path (lambda () (concat user-emacs-directory "load/org-table-auto-align-mode"))
+;;   :hook org-mode)
+#+END_SRC
+
 *** ob-async
 #+BEGIN_SRC emacs-lisp
 (use-package ob-async
   :after org)
+#+END_SRC
+
+*** Org Pomodoro
+#+BEGIN_SRC emacs-lisp
+(use-package org-pomodoro
+  :commands org-pomodoro)
+#+END_SRC
+
+** Markdown
+#+BEGIN_SRC emacs-lisp
+(use-package markdown-mode
+  :mode ("\\.md\\'" . markdown-mode)
+  :custom
+  (markdown-header-scaling t))
 #+END_SRC
 
 ** Version Control
@@ -2005,43 +2274,60 @@ else call `dired-find-file'"
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :commands magit
-  :config
   :bind*
   (
    :map version-control
    ("v" . magit-status)
    ("s" . magit-status)
-   ("t" . helm-magit-todos)))
+   :map magit-mode-map
+   ("o" . (lambda () (interactive)
+            (call-interactively 'magit-diff-visit-file-other-window)
+            (recenter-top-bottom)))
+   ("C-c C-f" . magit-find-file))
+  :config
+  (add-to-list 'git-commit-setup-hook 'git-commit-turn-on-flyspell))
 #+END_SRC
 
 **** Magit Todos
 #+BEGIN_SRC emacs-lisp
 (use-package magit-todos
   :commands helm-magit-todos
-  :hook (magit-mode . magit-todos-mode))  ; TODO: does it run some functions every time ???
-                                          ; maybe :after magit, :config magit-todos-mode ???
+  :bind*
+  (
+   :map version-control
+   ("t" . helm-magit-todos))
+  :hook (magit-mode . magit-todos-mode))
 #+END_SRC
 
 **** Magit Forge
 Pull Requests, Issues etc.
 #+BEGIN_SRC emacs-lisp
 (use-package forge
-  :after magit)  ; TODO: will slow loading magit?
+  :after magit
+  :config
+  (defadvice magit-pull-from-upstream (after forge-pull activate)
+    (forge-pull)))
 #+END_SRC
 
 *** diff-hl
 #+BEGIN_SRC emacs-lisp
 (use-package diff-hl
+  :defer nil
   :custom
   (diff-hl-global-modes '(not org-mode))
   :custom-face
   (diff-hl-insert ((t (:background "#224022"))))
   (diff-hl-change ((t (:background "#492949" :foreground "mediumpurple1"))))
   (diff-hl-delete ((t (:background "#492929" :foreground "orangered2"))))
+  :bind
+  (
+   :map version-control
+   ("n" . diff-hl-next-hunk)
+   ("p" . diff-hl-previous-hunk)
+   ("r" . diff-hl-revert-hunk))
   :config
   (global-diff-hl-mode)
   :hook
-  (after-init . diff-hl-mode)
   (diff-hl-mode . diff-hl-flydiff-mode))
 #+END_SRC
 
@@ -2057,7 +2343,8 @@ Pull Requests, Issues etc.
    :map vterm-mode-map
    ("C-c C-e" . vterm-copy-mode)
    ("M-m" . nil)
-   ("/" . vterm--self-insert)
+   ("M-u" . nil)
+   ("<f1>" . nil)
    :map vterm-copy-mode-map
    ("C-c C-e" . vterm-copy-mode)
    ("C-c C-c" . vterm-copy-mode))
@@ -2123,14 +2410,64 @@ Pull Requests, Issues etc.
   (google-translate-default-target-language "tr")
   :bind*
   (
+   :map text
    :prefix-map google-translate
-   :prefix "M-m t g"
+   :prefix "g"
    ("g" . google-translate-at-point)
    ("G" . google-translate-at-point-reverse)
    ("r" . google-translate-at-point-reverse)
    ("q" . google-translate-query-translate)
    ("Q" . google-translate-query-translate-reverse)
    ("s" . google-translate-smooth-translate)))
+#+END_SRC
+
+** Docker
+#+BEGIN_SRC emacs-lisp
+(use-package dockerfile-mode
+  :mode "Dockerfile\\'")
+
+(use-package docker-compose-mode
+  :mode "docker-compose\\'")
+#+END_SRC
+
+** Yaml
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode
+  :mode "\\.yaml\\'"
+  :hook
+  (yaml-mode . highlight-indent-guides-mode))
+#+END_SRC
+
+** PDF
+*** PDF Tools
+#+BEGIN_SRC emacs-lisp
+(use-package pdf-tools
+  :mode ("\\.pdf\\'" . pdf-view-mode)
+  :magic ("%PDF" . pdf-view-mode)
+  :custom
+  (pdf-view-display-size 'fit-page)
+  :bind
+  (
+   :map pdf-view-mode-map
+   ("O" . pdf-occur)
+   ("d" . pdf-view-midnight-minor-mode)
+   ("t" . (lambda (beg end) (interactive "r") (google-translate-at-point))))
+  :hook
+  (pdf-view-mode . pdf-links-minor-mode)
+  (pdf-view-mode . pdf-isearch-minor-mode)
+  (pdf-view-mode . pdf-outline-minor-mode)
+  (pdf-view-mode . pdf-history-minor-mode)
+  :config
+  (with-eval-after-load 'pdf-links
+    (define-key pdf-links-minor-mode-map (kbd "f") 'pdf-links-action-perform)))
+#+END_SRC
+
+*** Interleave
+#+BEGIN_SRC emacs-lisp
+(use-package interleave
+  :commands interleave-mode
+  :custom
+  (interleave-disable-narrowing t))
 #+END_SRC
 
 * Fun
@@ -2182,20 +2519,6 @@ Pull Requests, Issues etc.
   :commands minimap-mode)
 #+END_SRC
 
-** Olivetti
-#+BEGIN_SRC emacs-lisp
-(use-package olivetti
-  :commands olivetti-mode
-  :custom
-  (olivetti-body-width 95)
-  (olivetti-enable-visual-line-mode nil)
-  :bind*
-  (
-   :map windows
-   ("c" . olivetti-mode)
-   ("v" . visual-line-mode)))
-#+END_SRC
-
 ** Helm System Packages
 #+BEGIN_SRC emacs-lisp
 (use-package helm-system-packages
@@ -2207,7 +2530,13 @@ Pull Requests, Issues etc.
 (use-package dimmer
   :commands dimmer-mode
   :custom
-  (dimmer-fraction 0.7))
+  (dimmer-fraction 0.7)
+  :config
+  (dimmer-configure-company-box)
+  (dimmer-configure-which-key)
+  (dimmer-configure-helm)
+  (dimmer-configure-magit)
+  (dimmer-configure-posframe))
 #+END_SRC
 
 ** Focus

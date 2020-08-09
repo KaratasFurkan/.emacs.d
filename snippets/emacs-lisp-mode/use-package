@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: use-package
+# name: usepackage
 # key: u
 # --
 (use-package ${1:package})
