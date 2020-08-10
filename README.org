@@ -961,7 +961,6 @@ Change default window dividers to a better built-in alternative.
   (defun fk/olivetti-reset ()
     "Reset all windows' margins and face-remaps."
     (olivetti-mode -1)
-    (olivetti-reset-all-windows)
     (dolist (window (window-list))
       (with-selected-window window
         (face-remap-remove-relative (cons 'fringe fk/olivetti-fringe-face)))))
