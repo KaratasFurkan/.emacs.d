@@ -874,11 +874,9 @@ Change default window dividers to a better built-in alternative.
 ** Emacs Dashboard
 #+BEGIN_SRC emacs-lisp
 (use-package dashboard
-  :straight (:host github :repo "KaratasFurkan/emacs-dashboard")
   :custom
   (dashboard-startup-banner 'logo)
   (dashboard-set-heading-icons t)
-  (dashboard-projectile-vc t)
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
   (dashboard-items '((recents  . 10)
@@ -1735,8 +1733,13 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 *** Projectile
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
+  :custom
+  (projectile-switch-project-action (lambda ()
+                                      (let ((magit-display-buffer-function
+                                             'magit-display-buffer-same-window-except-diff-v1))
+                                        (magit))))
   :config
-  (require 'tramp)  ; TEMP: error: "Symbol's value as variable is void tramp-methods"
+  ;;(require 'tramp)  ; TEMP: error: "Symbol's value as variable is void tramp-methods"
   (projectile-mode))
 #+END_SRC
 
