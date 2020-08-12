@@ -285,13 +285,20 @@ initialization.
   "Export code blocks from the literate config file
 asynchronously."
   (interactive)
+  ;; prevent emacs from killing until tangle-process finished
+  (defvar tangle-process nil)
+  (add-to-list 'kill-emacs-query-functions
+               (lambda ()
+                 (or (not (process-live-p tangle-process))
+                     (y-or-n-p
+                      (message "\"tangle-config\" is running; kill it? ")))))
+  ;; tangle config asynchronously
   (let* ((tangle-config (format "(org-babel-tangle nil \"%s\")" config-el))
-         (process (start-process
-                   "tangle-config" nil
-                   "emacs" config-org "--batch" "--eval" tangle-config))
-         (filter (defun echo-process-output (process output)
-                   "Echo process output."
-                   (message (s-trim output)))))
+         (process (setq tangle-process
+                        (start-process
+                         "tangle-config" nil
+                         "emacs" config-org "--batch" "--eval" tangle-config)))
+         (filter (lambda (process output) (message (s-trim output)))))
     (set-process-filter process filter)))
 #+END_SRC
 
