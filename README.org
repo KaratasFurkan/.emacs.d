@@ -621,8 +621,8 @@ size. This function also handles icons and modeline font sizes."
       (treemacs-resize-icons new-size))
     (when (fboundp 'company-box-icons-resize)
       (company-box-icons-resize new-size)))
-  (if diff-hl-mode
-      (diff-hl-maybe-redefine-bitmaps)))
+  (when diff-hl-mode
+    (diff-hl-maybe-redefine-bitmaps)))
 #+END_SRC
 
 **** increase-font-size
@@ -720,7 +720,7 @@ size. This function also handles icons and modeline font sizes."
 (use-package doom-modeline
   :custom
   (doom-modeline-buffer-encoding nil)
-  (doom-modeline-vcs-max-length 50)
+  (doom-modeline-vcs-max-length 20)
   :custom-face
   (mode-line ((t (:background ,fk/dark-color))))
   (mode-line-inactive ((t (:background ,(doom-darken fk/background-color 0.05)))))
@@ -741,6 +741,7 @@ size. This function also handles icons and modeline font sizes."
 
 ** Window Dividers
 Change default window dividers to a better built-in alternative.
+(Note: ":tangle early-init.el")
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
 (setq window-divider-default-places t
       window-divider-default-bottom-width 1
@@ -1480,11 +1481,13 @@ from melpa.
   (persp-state-default-file (no-littering-expand-var-file-name "perspective.el"))
   :custom-face
   (persp-selected-face ((t (:foreground nil :inherit 'doom-modeline-warning))))
-  :bind
+  :bind*
   (
    :map persp-mode-map
    ("C-M-o" . persp-next)
-   ("C-x p" . persp-switch))
+   ("C-x p" . persp-switch)
+   ("C-x C-p" . persp-switch-quick)
+   ("M-P" . persp-switch-last))
   :config
   (persp-mode)
   :hook
@@ -2090,7 +2093,9 @@ else call `dired-find-file'"
   :bind*
   (
    :map windows
-   ("t" . sidebar-toggle))
+   ("t" . dired-sidebar-toggle-sidebar))
+  :hook
+  (dired-sidebar-mode . fk/darken-background)
   :config
   (defun sidebar-toggle ()
     "Toggle both `dired-sidebar' and `ibuffer-sidebar'."
@@ -2112,10 +2117,11 @@ else call `dired-find-file'"
 *** Dired Show Readme
 #+BEGIN_SRC emacs-lisp
 (use-package dired-show-readme
-  :straight
-  (dired-show-readme :host gitlab :repo "kisaragi-hiu/dired-show-readme")
-  :hook
-  (dired-mode . dired-show-readme-mode))
+  :straight (:host gitlab :repo "kisaragi-hiu/dired-show-readme")
+  :commands dired-show-readme-mode
+  ;; :hook
+  ;; (dired-mode . dired-show-readme-mode)
+  )
 #+END_SRC
 
 ** TODO Org
@@ -2304,8 +2310,10 @@ else call `dired-find-file'"
             (call-interactively 'magit-diff-visit-file-other-window)
             (recenter-top-bottom)))
    ("C-c C-f" . magit-find-file))
-  :config
-  (add-to-list 'git-commit-setup-hook 'git-commit-turn-on-flyspell))
+  :hook
+  ;;(magit-mode . magit-toggle-margin) FIXME: does not work
+  ;;(magit-mode . magit-toggle-margin-details)
+  (git-commit-setup . git-commit-turn-on-flyspell))
 #+END_SRC
 
 **** Magit Todos
@@ -2455,7 +2463,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (use-package restclient
   :mode ("\\.http\\'" . restclient-mode)
   :custom
-  (restclient-log-request nil))
+  (restclient-log-request nil)
+  :config
+  (setcdr (assoc "application/json" restclient-content-type-modes) 'json-mode))
 #+END_SRC
 
 *** Company Restclient
@@ -2476,10 +2486,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 ** TODO EAF
 #+BEGIN_SRC emacs-lisp
-;; FIXME: does not load with straight
-;;(use-package eaf
-;;  :straight
-;;  (:host github :repo "manateelazycat/emacs-application-framework" :depth 1))
+;; FIXME: does not load
+;; (use-package eaf
+;;   :straight
+;;   (:host github :repo "manateelazycat/emacs-application-framework" :depth 1 :no-build t))
 #+END_SRC
 
 ** Google Translate
