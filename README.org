@@ -2351,6 +2351,66 @@ Pull Requests, Issues etc.
   (diff-hl-mode . diff-hl-flydiff-mode))
 #+END_SRC
 
+*** Smerge + Hydra
+#+BEGIN_SRC emacs-lisp
+(use-package hydra-posframe
+  :straight (:host github :repo "Ladicle/hydra-posframe")
+  :after hydra
+  :custom
+  (hydra-posframe-border-width 20)
+  (hydra-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
+  :custom-face
+  (hydra-posframe-face ((t (:background ,fk/dark-color))))
+  (hydra-posframe-border-face ((t (:background ,fk/dark-color))))
+  :config (hydra-posframe-enable))
+
+;; Source: https://github.com/alphapapa/unpackaged.el#smerge-mode
+(use-package smerge-mode
+  :after hydra
+  :custom-face
+  (hydra-face-blue ((t (:foreground "#46D9FF" :bold t))))
+  :config
+  (defhydra smerge-hydra
+    (
+     :color red
+     :hint nil
+     :pre (progn (flycheck-mode -1) (setq-local global-hl-line-mode nil))
+     :post (progn (smerge-auto-leave) (setq-local global-hl-line-mode t)))
+    "
+^Move^       ^Keep^               ^Diff^                 ^Other^
+^^-----------^^-------------------^^---------------------^^-------
+_n_ext       _b_ase               _<_: upper/base        _C_ombine
+_p_rev       _u_pper              _=_: upper/lower       _r_esolve
+^^           _l_ower              _>_: base/lower        _k_ill current
+^^           _a_ll                _R_efine
+^^           _RET_: current       _E_diff
+"
+    ("n" (lambda () (interactive) (smerge-next) (recenter (round (* 0.2 (window-height))) t)))
+    ("p" (lambda () (interactive) (smerge-prev) (recenter (round (* 0.2 (window-height))) t)))
+    ("b" smerge-keep-base)
+    ("u" smerge-keep-upper)
+    ("l" smerge-keep-lower)
+    ("a" smerge-keep-all)
+    ("RET" smerge-keep-current)
+    ("\C-m" smerge-keep-current)
+    ("<" smerge-diff-base-upper)
+    ("=" smerge-diff-upper-lower)
+    (">" smerge-diff-base-lower)
+    ("R" smerge-refine)
+    ("E" smerge-ediff)
+    ("C" smerge-combine-with-next)
+    ("r" smerge-resolve)
+    ("k" smerge-kill-current)
+    ("ZZ" (lambda ()
+            (interactive)
+            (save-buffer)
+            (bury-buffer))
+     "Save and bury buffer" :color blue)
+    ("q" nil "cancel" :color blue))
+  :hook
+  (smerge-mode . smerge-hydra/body))
+#+END_SRC
+
 ** Terminal Emulation
 *** Vterm
 #+BEGIN_SRC emacs-lisp
