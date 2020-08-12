@@ -2288,14 +2288,6 @@ else call `dired-find-file'"
   :commands org-pomodoro)
 #+END_SRC
 
-** Markdown
-#+BEGIN_SRC emacs-lisp
-(use-package markdown-mode
-  :mode ("\\.md\\'" . markdown-mode)
-  :custom
-  (markdown-header-scaling t))
-#+END_SRC
-
 ** Version Control
 *** Magit
 **** Magit
@@ -2449,23 +2441,6 @@ Pull Requests, Issues etc.
    ("s" . google-translate-smooth-translate)))
 #+END_SRC
 
-** Docker
-#+BEGIN_SRC emacs-lisp
-(use-package dockerfile-mode
-  :mode "Dockerfile\\'")
-
-(use-package docker-compose-mode
-  :mode "docker-compose\\'")
-#+END_SRC
-
-** Yaml
-#+BEGIN_SRC emacs-lisp
-(use-package yaml-mode
-  :mode "\\.yaml\\'"
-  :hook
-  (yaml-mode . highlight-indent-guides-mode))
-#+END_SRC
-
 ** PDF
 *** PDF Tools
 #+BEGIN_SRC emacs-lisp
@@ -2496,6 +2471,41 @@ Pull Requests, Issues etc.
   :commands interleave-mode
   :custom
   (interleave-disable-narrowing t))
+#+END_SRC
+
+* File Modes
+** Markdown
+#+BEGIN_SRC emacs-lisp
+(use-package markdown-mode
+  :mode "\\.md\\'"
+  :custom (markdown-header-scaling t))
+#+END_SRC
+
+** Fish
+#+BEGIN_SRC emacs-lisp
+(use-package fish-mode
+  :mode "\\.fish\\'")
+#+END_SRC
+
+** Docker
+*** Dockerfile
+#+BEGIN_SRC emacs-lisp
+(use-package dockerfile-mode
+  :mode "Dockerfile\\'")
+#+END_SRC
+
+*** Docker Compose
+#+BEGIN_SRC emacs-lisp
+(use-package docker-compose-mode
+  :mode "docker-compose\\'")
+#+END_SRC
+
+** Yaml
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode
+  :mode "\\.yaml\\'"
+  :hook
+  (yaml-mode . highlight-indent-guides-mode))
 #+END_SRC
 
 * Fun
