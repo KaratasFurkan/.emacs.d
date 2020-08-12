@@ -2387,7 +2387,7 @@ Pull Requests, Issues etc.
     (
      :color red
      :hint nil
-     :pre (progn (flycheck-mode -1) (setq-local global-hl-line-mode nil))
+     :pre (setq-local global-hl-line-mode nil)
      :post (progn (smerge-auto-leave) (setq-local global-hl-line-mode t)))
     "
 ^Move^       ^Keep^               ^Diff^                 ^Other^
