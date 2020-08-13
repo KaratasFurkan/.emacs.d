@@ -228,6 +228,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#pdf][PDF]]
     - [[#pdf-tools][PDF Tools]]
     - [[#interleave][Interleave]]
+  - [[#emacs-screencast][Emacs Screencast]]
 - [[#file-modes][File Modes]]
   - [[#markdown][Markdown]]
   - [[#fish][Fish]]
@@ -979,6 +980,7 @@ Change default window dividers to a better built-in alternative.
         (face-remap-remove-relative (cons 'fringe fk/olivetti-fringe-face)))))
 
   (define-minor-mode fk/olivetti-single-window-mode
+    ;; TODO: keep olivetti mode if split horizontally
     "Toggle olivetti-mode when there is only one window visible."
     :global t
     (if fk/olivetti-single-window-mode
@@ -2560,6 +2562,17 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :commands interleave-mode
   :custom
   (interleave-disable-narrowing t))
+#+END_SRC
+
+** Emacs Screencast
+#+BEGIN_SRC emacs-lisp
+(use-package gif-screencast
+  :straight (:host gitlab :repo "ambrevar/emacs-gif-screencast")
+  :bind
+  (
+   :map gif-screencast-mode-map
+   ("<f8>". gif-screencast-toggle-pause)
+   ("<f9>". gif-screencast-stop)))
 #+END_SRC
 
 * File Modes
