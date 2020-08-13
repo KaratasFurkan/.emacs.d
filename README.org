@@ -247,6 +247,8 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#helm-system-packages][Helm System Packages]]
   - [[#dimmer][Dimmer]]
   - [[#focus][Focus]]
+- [[#experimentals][Experimentals]]
+  - [[#tree-sitter][Tree Sitter]]
 - [[#todos][TODOs]]
   - [[#explore][Explore]]
     - [[#packages-29][Packages]]
@@ -2670,6 +2672,24 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :commands focus-mode
   :config
   (add-to-list 'focus-mode-to-thing '(python-mode . paragraph)))
+#+END_SRC
+
+* Experimentals
+** Tree Sitter
+#+BEGIN_SRC emacs-lisp
+(use-package tree-sitter
+  :straight
+  (tree-sitter :host github
+               :repo "ubolonton/emacs-tree-sitter"
+               :files ("lisp/*.el")))
+
+(use-package tree-sitter-langs
+  :straight
+  (tree-sitter-langs :host github
+                     :repo "ubolonton/emacs-tree-sitter"
+                     :files ("langs/*.el" "langs/queries"))
+  :hook
+  (python-mode . tree-sitter-hl-mode))
 #+END_SRC
 
 * TODOs
