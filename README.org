@@ -1734,12 +1734,21 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
   :custom
-  (projectile-switch-project-action (lambda ()
-                                      (let ((magit-display-buffer-function
-                                             'magit-display-buffer-same-window-except-diff-v1))
-                                        (magit))))
+  (projectile-project-search-path (f-directories "~/projects"))
+  ;; Open magit when switching project
+  (projectile-switch-project-action
+   (lambda ()
+     (let ((magit-display-buffer-function
+            'magit-display-buffer-same-window-except-diff-v1))
+       (magit))))
+  ;; Do not include straight repos (emacs packages) to project list
+  (projectile-ignored-project-function
+   (lambda (project-root)
+     (when (string-prefix-p (expand-file-name "straight" user-emacs-directory)
+                            project-root)
+       t)))
   :config
-  ;;(require 'tramp)  ; TEMP: error: "Symbol's value as variable is void tramp-methods"
+  (require 'tramp)  ; TEMP: error: "Symbol's value as variable is void tramp-methods"
   (projectile-mode))
 #+END_SRC
 
@@ -2378,7 +2387,7 @@ Pull Requests, Issues etc.
   :custom-face
   (hydra-posframe-face ((t (:background ,fk/dark-color))))
   (hydra-posframe-border-face ((t (:background ,fk/dark-color))))
-  :config (hydra-posframe-enable))
+  :config (hydra-posframe-mode))
 
 ;; Source: https://github.com/alphapapa/unpackaged.el#smerge-mode
 (use-package smerge-mode
