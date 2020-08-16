@@ -938,8 +938,7 @@ Change default window dividers to a better built-in alternative.
 #+BEGIN_SRC emacs-lisp
 (use-package symbol-overlay
   :commands (symbol-overlay-mode symbol-overlay-put)
-  ;;:hook (prog-mode . symbol-overlay-mode)
-  )
+  :hook (prog-mode . symbol-overlay-mode))
 #+END_SRC
 
 ** Olivetti
@@ -1167,13 +1166,11 @@ company-yasnippet' to all company backends."
 *** Company Box
 #+BEGIN_SRC emacs-lisp
 (use-package company-box
-  :straight (:host github :repo "gcentauri/company-box")
   :custom
   (company-box-show-single-candidate t)
-  (company-box-backends-colors nil) ;; Same colors for all backends
-  :custom-face
-  (company-box-selection ((t (:inherit company-tooltip-selection :extend t))))
-  :hook (company-mode . company-box-mode))
+  (company-box-backends-colors '((company-yasnippet . (:annotation 'default))))
+  :hook
+  (company-mode . company-box-mode))
 #+END_SRC
 
 *** Company Statistics
@@ -1248,13 +1245,13 @@ company-yasnippet' to all company backends."
 *** split-window-and-switch
 #+BEGIN_SRC emacs-lisp
 (defun fk/split-window-below-and-switch ()
-  "Split the window horizontally, then switch to the new window."
+  "Split the window below, then switch to the new window."
   (interactive)
   (split-window-below)
   (other-window 1))
 
 (defun fk/split-window-right-and-switch ()
-  "Split the window vertically, then switch to the new window."
+  "Split the window right, then switch to the new window."
   (interactive)
   (split-window-right)
   (other-window 1))
@@ -1754,6 +1751,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
   :custom
+  (projectile-auto-discover nil)
   (projectile-project-search-path (f-directories "~/projects"))
   ;; Open magit when switching project
   (projectile-switch-project-action
@@ -1764,9 +1762,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ;; Do not include straight repos (emacs packages) to project list
   (projectile-ignored-project-function
    (lambda (project-root)
-     (when (string-prefix-p (expand-file-name "straight" user-emacs-directory)
-                            project-root)
-       t)))
+     (string-prefix-p (expand-file-name "straight" user-emacs-directory) project-root)))
   :config
   (require 'tramp)  ; TEMP: error: "Symbol's value as variable is void tramp-methods"
   (projectile-mode))
@@ -1847,6 +1843,16 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+END_SRC
 
 **** TODO LSP Mode
+#+BEGIN_SRC emacs-lisp
+;; (use-package lsp-mode)
+;; (use-package lsp-ui)
+;; (use-package lsp-pyright
+;;   :straight (:host github :repo "emacs-lsp/lsp-pyright")
+;;   :hook (python-mode . (lambda ()
+;;                          (require 'lsp-pyright)
+;;                          (lsp))))
+#+END_SRC
+
 *** YASnippet-snippets
 #+BEGIN_SRC emacs-lisp
 ;; TODO: do not override my snippets
@@ -1908,7 +1914,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   :config
   ;;;; Smart f-strings
   ;; https://github.com/ubolonton/emacs-tree-sitter/issues/52
-  (defun fk/python-f-string-ify (&rest _)
+  (defun fk/python-f-string-ify ()
     ;; Does nothing if major-mode is not python or point is not on a string.
     (when-let* ((python-mode-p (eq major-mode 'python-mode))
                 (str (tree-sitter-node-at-point 'string))
@@ -1926,6 +1932,30 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
               (goto-char (ts-node-start-position str))
               (when (char-equal (char-after) ?f)
                 (delete-char 1))))))))
+  ;; Experiment to implement without tree-sitter dependency, does not work yet
+  ;; deletes whole string when delete active region
+  ;; (defun fk/python-f-string-ify ()
+  ;; Does nothing if major-mode is not python or point is not on a string.
+  ;; (when-let* ((python-mode-p (eq major-mode 'python-mode))
+  ;;             (is-string (nth 3 (syntax-ppss))))
+  ;;   (let* ((beg-of-string (nth 8 (syntax-ppss)))
+  ;;          (end-of-string (save-excursion
+  ;;                           (goto-char beg-of-string)
+  ;;                           (forward-sexp)
+  ;;                           (point)))
+  ;;          (string (buffer-substring-no-properties beg-of-string end-of-string))
+  ;;          (is-f-string (char-equal (char-before beg-of-string) ?f))
+  ;;          (should-f-string (and (s-contains-p "{" string)
+  ;;                                (s-contains-p "}" string))))
+  ;;     (if should-f-string
+  ;;         (unless is-f-string
+  ;;           (save-excursion
+  ;;             (goto-char beg-of-string)
+  ;;             (insert "f")))
+  ;;       (when is-f-string
+  ;;         (save-excursion
+  ;;           (goto-char beg-of-string)
+  ;;           (backward-delete-char 1)))))))
 
   ;; When not using wrap-region or anything that changes "{" keybinding
   ;; (define-key python-mode-map (kbd "{") (lambda ()
@@ -1938,6 +1968,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (defadvice delete-char (after smart-f-string activate)
     (fk/python-f-string-ify))
   (defadvice delete-active-region (after smart-f-string activate)
+    (fk/python-f-string-ify))
+  (defadvice kill-region (after smart-f-string activate)
     (fk/python-f-string-ify)))
 #+END_SRC
 
@@ -2660,7 +2692,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (use-package yaml-mode
   :mode "\\.yaml\\'"
   :hook
-  (yaml-mode . highlight-indent-guides-mode))
+  (yaml-mode . highlight-indent-guides-mode)
+  (yaml-mode . display-line-numbers-mode))
 #+END_SRC
 
 * Fun
