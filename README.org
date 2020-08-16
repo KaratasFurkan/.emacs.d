@@ -948,7 +948,8 @@ Change default window dividers to a better built-in alternative.
   :defer nil
   :init
   (defvar fk/olivetti-fringe-face '(:background "#2a2f39"))  ; TODO: why '(:background fk/dark-color2) does not work?
-  (defvar fk/olivetti-excluded-buffers '("*dashboard*" " *which-key*"))
+  (defvar fk/olivetti-excluded-buffers '("*dashboard*" " *which-key*"
+                                         "*helm" " *Minibuf-1*"))
   :custom
   (olivetti-body-width 100)
   (olivetti-enable-visual-line-mode nil)
@@ -960,21 +961,36 @@ Change default window dividers to a better built-in alternative.
    :map windows
    :prefix-map olivetti
    :prefix "o"
+   ("o" . fk/olivetti-single-window-mode)
    ("e" . olivetti-expand)
    ("s" . olivetti-shrink))
   :hook
   (olivetti-mode . (lambda () (face-remap-add-relative 'fringe fk/olivetti-fringe-face)))
   :config
+  (defun fk/windows-vertical-p ()
+    "Return t if windows placed vertically."
+    (interactive)
+    (not (catch 'horizontal
+           (dolist (window (window-list))
+             (when (not (= (car (window-edges window)) 0))
+               (throw 'horizontal t))))))
+
   (defun fk/activate-olivetti-if-single-window ()
     "Activate olivetti-mode if there is only one window visible."
-    (if (= (count-windows) 1)
-        (unless (member (buffer-name) fk/olivetti-excluded-buffers)
+    (if (or (= (count-windows) 1)
+            (fk/windows-vertical-p))
+        (unless (or (member (buffer-name) fk/olivetti-excluded-buffers)
+                    (catch 'found
+                      (dolist (prefix fk/olivetti-excluded-buffers)
+                        (when (string-prefix-p prefix (buffer-name))
+                          (throw 'found t)))))
           (olivetti-mode))
       (fk/olivetti-reset)))
 
   (defun fk/olivetti-reset ()
     "Reset all windows' margins and face-remaps."
     (olivetti-mode -1)
+    (olivetti-reset-all-windows)
     (dolist (window (window-list))
       (with-selected-window window
         (face-remap-remove-relative (cons 'fringe fk/olivetti-fringe-face)))))
