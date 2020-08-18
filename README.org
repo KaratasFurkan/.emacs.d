@@ -216,6 +216,8 @@ File explorer (treemacs), auto complete (company), git&github integration
       - [[#magit-forge][Magit Forge]]
     - [[#diff-hl][diff-hl]]
     - [[#smerge--hydra][Smerge + Hydra]]
+    - [[#git-link][Git Link]]
+    - [[#git-timemachine][Git Timemachine]]
   - [[#terminal-emulation][Terminal Emulation]]
     - [[#vterm][Vterm]]
     - [[#shell-pop][Shell Pop]]
@@ -2523,6 +2525,18 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     ("q" nil "cancel" :color blue))
   :hook
   (smerge-mode . smerge-hydra/body))
+#+END_SRC
+
+*** Git Link
+#+BEGIN_SRC emacs-lisp
+(use-package git-link
+  :commands git-link)
+#+END_SRC
+
+*** Git Timemachine
+#+BEGIN_SRC emacs-lisp
+(use-package git-timemachine
+  :commands git-timemachine)
 #+END_SRC
 
 ** Terminal Emulation
