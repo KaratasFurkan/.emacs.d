@@ -300,8 +300,7 @@ asynchronously."
   (add-to-list 'kill-emacs-query-functions
                (lambda ()
                  (or (not (process-live-p tangle-process))
-                     (y-or-n-p
-                      (message "\"tangle-config\" is running; kill it? ")))))
+                     (y-or-n-p "\"tangle-config\" is running; kill it? "))))
   ;; tangle config asynchronously
   (let* ((tangle-config (format "(org-babel-tangle nil \"%s\")" config-el))
          (process (setq tangle-process
@@ -949,8 +948,8 @@ Change default window dividers to a better built-in alternative.
   :defer nil
   :init
   (defvar fk/olivetti-fringe-face '(:background "#2a2f39"))  ; TODO: why '(:background fk/dark-color2) does not work?
-  (defvar fk/olivetti-excluded-buffers '("*dashboard*" " *which-key*"
-                                         "*helm" " *Minibuf-1*"))
+  (defvar fk/olivetti-excluded-buffers '("*dashboard*" " *which-key*" "*helm"
+                                         " *Minibuf-1*" "*vterm" "*fireplace*"))
   :custom
   (olivetti-body-width 100)
   (olivetti-enable-visual-line-mode nil)
@@ -989,6 +988,7 @@ Change default window dividers to a better built-in alternative.
       (fk/olivetti-reset)))
 
   (defun fk/olivetti-reset ()
+    ;; TODO: do not reset full-span windows
     "Reset all windows' margins and face-remaps."
     (olivetti-mode -1)
     (olivetti-reset-all-windows)
@@ -997,7 +997,6 @@ Change default window dividers to a better built-in alternative.
         (face-remap-remove-relative (cons 'fringe fk/olivetti-fringe-face)))))
 
   (define-minor-mode fk/olivetti-single-window-mode
-    ;; TODO: keep olivetti mode if split horizontally
     "Toggle olivetti-mode when there is only one window visible."
     :global t
     (if fk/olivetti-single-window-mode
@@ -2644,6 +2643,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
    :map pdf-view-mode-map
    ("O" . pdf-occur)
    ("d" . pdf-view-midnight-minor-mode)
+   ("s a" . pdf-view-auto-slice-minor-mode)
    ("t" . (lambda (beg end) (interactive "r") (google-translate-at-point))))
   :hook
   (pdf-view-mode . pdf-links-minor-mode)
@@ -2730,6 +2730,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 ** Fireplace
 #+BEGIN_SRC emacs-lisp
+;; TODO: find mp3 file does not work with straight
 (use-package fireplace
   :commands fireplace)
 #+END_SRC
