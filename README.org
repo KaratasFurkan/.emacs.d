@@ -1490,9 +1490,10 @@ from melpa.
   ("M-0" . treemacs-select-window)
   :hook
   (treemacs-mode . (lambda ()
-                     (let ((project-path (projectile-project-root)))
+                     (let* ((project-path (projectile-project-root))
+                            (project-name (treemacs--filename project-path)))
                        (unless (treemacs--find-project-for-path project-path)
-                         (treemacs-add-project project-path)))))
+                         (treemacs-add-project project-path project-name)))))
   (treemacs-mode . (lambda ()
                      (face-remap-add-relative 'default :height .75)
                      (face-remap-add-relative 'mode-line-inactive :background fk/dark-color)
