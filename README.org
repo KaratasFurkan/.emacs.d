@@ -106,6 +106,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#company][Company]]
     - [[#company-box][Company Box]]
     - [[#company-statistics][Company Statistics]]
+    - [[#company-prescient][Company Prescient]]
   - [[#yasnippet-snippet-completion][YASnippet (Snippet Completion)]]
   - [[#emmet--snippet-completion-for-html--css][Emmet- (Snippet Completion for HTML & CSS)]]
 - [[#search--navigation][Search & Navigation]]
@@ -1176,8 +1177,19 @@ company-yasnippet' to all company backends."
 
 *** Company Statistics
 #+BEGIN_SRC emacs-lisp
-(use-package company-statistics
-  :hook (company-mode . company-statistics-mode))
+;; (use-package company-statistics
+;;   :hook (company-mode . company-statistics-mode))
+#+END_SRC
+
+*** Company Prescient
+#+BEGIN_SRC emacs-lisp
+(use-package prescient
+  :defer t
+  :config (prescient-persist-mode))
+
+(use-package company-prescient
+  :after company
+  :config (company-prescient-mode))
 #+END_SRC
 
 ** YASnippet (Snippet Completion)
@@ -1476,9 +1488,11 @@ from melpa.
   (treemacs-width 20)
   :bind
   ("M-0" . treemacs-select-window)
-  ;;:config
-  ;;(treemacs-resize-icons 'fk/default-icon-size)
   :hook
+  (treemacs-mode . (lambda ()
+                     (let ((project-path (projectile-project-root)))
+                       (unless (treemacs--find-project-for-path project-path)
+                         (treemacs-add-project project-path)))))
   (treemacs-mode . (lambda ()
                      (face-remap-add-relative 'default :height .75)
                      (face-remap-add-relative 'mode-line-inactive :background fk/dark-color)
@@ -1508,7 +1522,12 @@ from melpa.
    ("C-M-o" . persp-next)
    ("C-x p" . persp-switch)
    ("C-x C-p" . persp-switch-quick)
-   ("M-P" . persp-switch-last))
+   ("M-P" . persp-switch-last)
+   :map perspective-map
+   ("p" . persp-switch)
+   ("k" . persp-kill)
+   ("l" . persp-switch-last)
+   ("q" . persp-switch-quick))
   :config
   (persp-mode)
   :hook
@@ -2679,7 +2698,12 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 #+BEGIN_SRC emacs-lisp
 (use-package markdown-mode
   :mode "\\.md\\'"
-  :custom (markdown-header-scaling t))
+  :custom (markdown-header-scaling t)
+  :bind
+  (
+   :map markdown-mode-map
+   ("M-n" . markdown-next-visible-heading)
+   ("M-p" . markdown-previous-visible-heading)))
 #+END_SRC
 
 ** Fish
