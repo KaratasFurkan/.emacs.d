@@ -90,6 +90,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#symbol-overlay][Symbol Overlay]]
   - [[#olivetti][Olivetti]]
   - [[#emojify][Emojify]]
+  - [[#tree-sitter][Tree Sitter]]
 - [[#completion][Completion]]
   - [[#better-defaults-2][Better Defaults]]
   - [[#which-key-keybinding-completion][Which Key (Keybinding Completion)]]
@@ -199,6 +200,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#dired-sidebar][Dired Sidebar]]
     - [[#ibuffer-sidebar][IBuffer Sidebar]]
     - [[#dired-show-readme][Dired Show Readme]]
+    - [[#dired-posframe][Dired Posframe]]
   - [[#org][Org]]
     - [[#org-1][Org]]
     - [[#custom-functions-5][Custom Functions]]
@@ -252,7 +254,6 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#dimmer][Dimmer]]
   - [[#focus][Focus]]
 - [[#experimentals][Experimentals]]
-  - [[#tree-sitter][Tree Sitter]]
 - [[#todos][TODOs]]
   - [[#explore][Explore]]
     - [[#packages-29][Packages]]
@@ -674,7 +675,7 @@ size. This function also handles icons and modeline font sizes."
   (font-lock-comment-face ((t (:slant italic))))
   (font-lock-string-face ((t (:foreground "PeachPuff3"))))
   (font-lock-function-name-face ((t (:foreground "LightGoldenrod"))))
-  (highlight ((t (:underline t :weight bold :background nil :foreground nil))))
+  (highlight ((t (:underline t :weight semi-bold :background nil :foreground nil))))
   (lazy-highlight ((t (:background nil :foreground nil :box (:line-width -1)))))
   :config
   (load-theme 'doom-spacegrey t)
@@ -1014,6 +1015,24 @@ Change default window dividers to a better built-in alternative.
   :commands emojify-mode)
 #+END_SRC
 
+** Tree Sitter
+#+BEGIN_SRC emacs-lisp
+(use-package tree-sitter
+  :straight
+  (tree-sitter :host github
+               :repo "ubolonton/emacs-tree-sitter"
+               :files ("lisp/*.el")))
+
+(use-package tree-sitter-langs
+  :straight
+  (tree-sitter-langs :host github
+                     :repo "ubolonton/emacs-tree-sitter"
+                     :files ("langs/*.el" "langs/queries"))
+  :config
+  ;; TODO: gives error when try to enable tree-sitter-hl-mode in web mode with html
+  (add-to-list 'tree-sitter-major-mode-language-alist '(web-mode . html)))
+#+END_SRC
+
 * Completion
 ** Better Defaults
 #+BEGIN_SRC emacs-lisp
@@ -1170,6 +1189,8 @@ company-yasnippet' to all company backends."
 (use-package company-box
   :custom
   (company-box-show-single-candidate t)
+  (company-box-frame-behavior 'point)
+  (company-box-icon-right-margin 0.5)
   (company-box-backends-colors '((company-yasnippet . (:annotation 'default))))
   :hook
   (company-mode . company-box-mode))
@@ -1489,11 +1510,12 @@ from melpa.
   :bind
   ("M-0" . treemacs-select-window)
   :hook
-  (treemacs-mode . (lambda ()
-                     (let* ((project-path (projectile-project-root))
-                            (project-name (treemacs--filename project-path)))
-                       (unless (treemacs--find-project-for-path project-path)
-                         (treemacs-add-project project-path project-name)))))
+  ;; TODO: test this
+  (treemacs-select . (lambda ()
+                       (let* ((project-path (projectile-project-root))
+                              (project-name (treemacs--filename project-path)))
+                         (unless (treemacs--find-project-for-path project-path)
+                           (treemacs-add-project project-path project-name)))))
   (treemacs-mode . (lambda ()
                      (face-remap-add-relative 'default :height .75)
                      (face-remap-add-relative 'mode-line-inactive :background fk/dark-color)
@@ -1524,6 +1546,7 @@ from melpa.
    ("C-x p" . persp-switch)
    ("C-x C-p" . persp-switch-quick)
    ("M-P" . persp-switch-last)
+   ("C-M-q" . persp-switch-last)
    :map perspective-map
    ("p" . persp-switch)
    ("k" . persp-kill)
@@ -1842,15 +1865,12 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 (use-package eglot
   :commands eglot
-  :init
-  (load-library "project")  ; TEMP: https://github.com/raxod502/straight.el/issues/531
   :custom
-  (eglot-ignored-server-capabilites '(:documentHighlightProvider
-                                      :signatureHelpProvider
-                                      :hoverProvider))
+  (eglot-ignored-server-capabilites '(:documentHighlightProvider))
   (eglot-stay-out-of '(flymake))
   (eglot-autoshutdown t)
   :hook
+  (eglot-managed-mode . eldoc-box-hover-mode)
   (eglot-managed-mode . fk/company-enable-snippets)
   (eglot-managed-mode . (lambda () (flymake-mode 0))))
 #+END_SRC
@@ -1929,9 +1949,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ;;(python-mode . (lambda () (fk/add-local-hook 'before-save-hook 'eglot-format-buffer)))
   (python-mode . eglot-ensure)
   (python-mode . fk/activate-pyvenv)
-  (python-mode . (lambda ()
-                   (load-library "tree-sitter-langs")
-                   (tree-sitter-hl-mode)))
+  (python-mode . tree-sitter-hl-mode)
   :config
   ;;;; Smart f-strings
   ;; https://github.com/ubolonton/emacs-tree-sitter/issues/52
@@ -2052,8 +2070,9 @@ TODO: seperate sections (html, css..)
    ("\\.ejs\\'"        . web-mode)
    ("\\.svelte\\'"     . web-mode)
    ("\\.djhtml\\'"     . web-mode))
-  ;;:hook
-  ;;(web-mode . (lambda () (fk/add-local-hook 'before-save-hook 'fk/indent-buffer)))
+  ;; :hook
+  ;; (web-mode . tree-sitter-hl-mode)
+  ;; (web-mode . (lambda () (fk/add-local-hook 'before-save-hook 'fk/indent-buffer)))
   )
 #+END_SRC
 
@@ -2249,6 +2268,13 @@ else call `dired-find-file'"
   ;; :hook
   ;; (dired-mode . dired-show-readme-mode)
   )
+#+END_SRC
+
+*** Dired Posframe
+#+BEGIN_SRC emacs-lisp
+(use-package dired-posframe
+  :straight (:host github :repo "conao3/dired-posframe.el")
+  :commands dired-posframe-mode)
 #+END_SRC
 
 ** TODO Org
@@ -2461,6 +2487,8 @@ Pull Requests, Issues etc.
   :after magit
   :config
   (defadvice magit-pull-from-upstream (after forge-pull activate)
+    (forge-pull))
+  (defadvice magit-fetch-all (after forge-pull activate)
     (forge-pull)))
 #+END_SRC
 
@@ -2501,6 +2529,7 @@ Pull Requests, Issues etc.
 
 ;; Source: https://github.com/alphapapa/unpackaged.el#smerge-mode
 (use-package smerge-mode
+  :straight (:type built-in)
   :after hydra
   :custom-face
   (hydra-face-blue ((t (:foreground "#46D9FF" :bold t))))
@@ -2814,19 +2843,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 #+END_SRC
 
 * Experimentals
-** Tree Sitter
 #+BEGIN_SRC emacs-lisp
-(use-package tree-sitter
-  :straight
-  (tree-sitter :host github
-               :repo "ubolonton/emacs-tree-sitter"
-               :files ("lisp/*.el")))
-
-(use-package tree-sitter-langs
-  :straight
-  (tree-sitter-langs :host github
-                     :repo "ubolonton/emacs-tree-sitter"
-                     :files ("langs/*.el" "langs/queries")))
 #+END_SRC
 
 * TODOs
