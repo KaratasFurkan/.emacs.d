@@ -173,6 +173,7 @@ File explorer (treemacs), auto complete (company), git&github integration
       - [[#lsp-mode][LSP Mode]]
         - [[#lsp-mode-1][LSP Mode]]
         - [[#lsp-ui][LSP UI]]
+        - [[#lsp-pyright-][LSP Pyright-]]
     - [[#yasnippet-snippets][YASnippet-snippets]]
     - [[#rainbow-delimiters][Rainbow Delimiters]]
   - [[#emacs-lisp][Emacs Lisp]]
@@ -1039,10 +1040,6 @@ Change default window dividers to a better built-in alternative.
   (tree-sitter-langs :host github
                      :repo "ubolonton/emacs-tree-sitter"
                      :files ("langs/*.el" "langs/queries"))
-  :hook
-  (python-mode . (lambda ()
-                   (require 'tree-sitter-langs)
-                   (tree-sitter-hl-mode)))
   :config
   ;; TODO: gives error when try to enable tree-sitter-hl-mode in web mode with html
   (add-to-list 'tree-sitter-major-mode-language-alist '(web-mode . html)))
@@ -1945,6 +1942,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (lsp-ui-peek-highlight ((t (:inherit nil :background nil :foreground nil :weight semi-bold :box (:line-width -1))))))
 #+END_SRC
 
+***** [[#lsp-pyright][LSP Pyright-]]
 *** YASnippet-snippets
 #+BEGIN_SRC emacs-lisp
 ;; TODO: do not override my snippets
@@ -2004,6 +2002,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ;;(python-mode . eglot-ensure)
   (python-mode . importmagic-mode)
   (python-mode . fk/activate-pyvenv)
+  (python-mode . (lambda () (require 'tree-sitter-langs) (tree-sitter-hl-mode)))
   (python-mode . (lambda () (setq-local fill-column 88)))
   :config
   ;;;; Smart f-strings
