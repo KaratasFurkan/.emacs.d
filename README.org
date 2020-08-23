@@ -171,6 +171,8 @@ File explorer (treemacs), auto complete (company), git&github integration
         - [[#eglot-1][Eglot]]
         - [[#eldoc-box][Eldoc Box]]
       - [[#lsp-mode][LSP Mode]]
+        - [[#lsp-mode-1][LSP Mode]]
+        - [[#lsp-ui][LSP UI]]
     - [[#yasnippet-snippets][YASnippet-snippets]]
     - [[#rainbow-delimiters][Rainbow Delimiters]]
   - [[#emacs-lisp][Emacs Lisp]]
@@ -181,6 +183,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#pyvenv][Pyvenv]]
     - [[#import-magic][Import Magic]]
     - [[#blacken][Blacken]]
+    - [[#lsp-pyright][LSP Pyright]]
   - [[#web-mode][Web Mode]]
     - [[#web-mode-1][Web Mode]]
     - [[#emmet-mode][Emmet Mode]]
@@ -537,6 +540,7 @@ Menu style keybindings like Spacemacs.
  ("M-m" . which-key-show-full-major-mode)
  :map fk/menu-map :prefix-map buffers         :prefix "b"
  :map fk/menu-map :prefix-map comments        :prefix "c"
+ :map fk/menu-map :prefix-map errors          :prefix "e"
  :map fk/menu-map :prefix-map files           :prefix "f"
  :map fk/menu-map :prefix-map text            :prefix "t"
  :map fk/menu-map :prefix-map version-control :prefix "v"
@@ -944,7 +948,9 @@ Change default window dividers to a better built-in alternative.
 #+BEGIN_SRC emacs-lisp
 (use-package symbol-overlay
   :commands (symbol-overlay-mode symbol-overlay-put)
-  :hook (prog-mode . symbol-overlay-mode))
+  :hook
+  (python-mode . (lambda () (symbol-overlay-mode -1)))  ; i use lsp highlight
+  (prog-mode . symbol-overlay-mode))
 #+END_SRC
 
 ** Olivetti
@@ -1021,16 +1027,22 @@ Change default window dividers to a better built-in alternative.
 ** Tree Sitter
 #+BEGIN_SRC emacs-lisp
 (use-package tree-sitter
+  :defer t
   :straight
   (tree-sitter :host github
                :repo "ubolonton/emacs-tree-sitter"
                :files ("lisp/*.el")))
 
 (use-package tree-sitter-langs
+  :defer t
   :straight
   (tree-sitter-langs :host github
                      :repo "ubolonton/emacs-tree-sitter"
                      :files ("langs/*.el" "langs/queries"))
+  :hook
+  (python-mode . (lambda ()
+                   (require 'tree-sitter-langs)
+                   (tree-sitter-hl-mode)))
   :config
   ;; TODO: gives error when try to enable tree-sitter-hl-mode in web mode with html
   (add-to-list 'tree-sitter-major-mode-language-alist '(web-mode . html)))
@@ -1819,7 +1831,14 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
   :custom
-  (flycheck-check-syntax-automatically '(save mode-enabled)))
+  (flycheck-check-syntax-automatically '(save mode-enabled))
+  :bind
+  (
+   :map errors
+   ("n" . flycheck-next-error)
+   ("p" . flycheck-previous-error)
+   ("l" . flycheck-list-errors)
+   ("v" . flycheck-verify-setup)))
 
 ;; Spacemacs' custom fringes
 
@@ -1889,8 +1908,41 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (eldoc-box-clear-with-C-g t))
 #+END_SRC
 
-**** TODO LSP Mode
+**** LSP Mode
+***** LSP Mode
 #+BEGIN_SRC emacs-lisp
+(use-package lsp-mode
+  :commands lsp
+  :custom
+  (lsp-auto-guess-root t)
+  (lsp-keymap-prefix "M-m l")
+  (lsp-modeline-diagnostics-enable nil)
+  (lsp-keep-workspace-alive nil)
+  (lsp-auto-execute-action nil)
+  (lsp-before-save-edits nil)
+  (lsp-eldoc-enable-hover nil)
+  (lsp-diagnostic-package :none)
+  ;; Maybe set in future:
+  ;;(lsp-enable-on-type-formatting nil)
+  :custom-face
+  (lsp-face-highlight-read ((t (:underline t :weight semi-bold :background nil :foreground nil))))
+  (lsp-face-highlight-write ((t (:underline t :weight semi-bold :background nil :foreground nil))))
+  (lsp-face-highlight-textual ((t (:underline t :weight semi-bold :background nil :foreground nil))))
+  :hook
+  (lsp-mode . lsp-enable-which-key-integration))
+#+END_SRC
+
+***** LSP UI
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-ui
+  :after lsp-mode
+  :custom
+  (lsp-ui-doc-position 'top)
+  (lsp-ui-sideline-delay 0.5)
+  (lsp-ui-doc-delay 0.5)
+  (lsp-ui-peek-fontify 'always)
+  :custom-face
+  (lsp-ui-peek-highlight ((t (:inherit nil :background nil :foreground nil :weight semi-bold :box (:line-width -1))))))
 #+END_SRC
 
 *** YASnippet-snippets
@@ -1940,15 +1992,19 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
    ("C-c i r" . python-indent-shift-right)
    ("C-c i l" . python-indent-shift-left))
   :hook
+  ;; With pyls:
   ;; pip install python-language-server pyls-black pyls-isort flake8
+  ;; With pyright
+  ;; sudo npm install -g pyright && pip install black flake8
   ;; NOTE: these hooks runs in reverse order
+  (python-mode . (lambda () (setq-local company-prescient-mode nil)))
   (python-mode . flycheck-mode)
-  (python-mode . (lambda () (setq-local fill-column 88)))
-  (python-mode . importmagic-mode)
+  (python-mode . lsp-deferred)
   ;;(python-mode . (lambda () (fk/add-local-hook 'before-save-hook 'eglot-format-buffer)))
-  (python-mode . eglot-ensure)
+  ;;(python-mode . eglot-ensure)
+  (python-mode . importmagic-mode)
   (python-mode . fk/activate-pyvenv)
-  (python-mode . tree-sitter-hl-mode)
+  (python-mode . (lambda () (setq-local fill-column 88)))
   :config
   ;;;; Smart f-strings
   ;; https://github.com/ubolonton/emacs-tree-sitter/issues/52
@@ -2038,6 +2094,15 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 (use-package blacken
   :commands blacken-mode)
+#+END_SRC
+
+*** LSP Pyright
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-pyright
+  :after lsp-mode
+  :custom
+  (lsp-pyright-auto-import-completions nil)
+  (lsp-pyright-typechecking-mode "off"))
 #+END_SRC
 
 ** TODO Web Mode
