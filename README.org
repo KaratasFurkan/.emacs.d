@@ -682,7 +682,7 @@ size. This function also handles icons and modeline font sizes."
   (font-lock-comment-face ((t (:slant italic))))
   (font-lock-string-face ((t (:foreground "PeachPuff3"))))
   (font-lock-function-name-face ((t (:foreground "LightGoldenrod"))))
-  (highlight ((t (:underline t :weight semi-bold :background nil :foreground nil))))
+  (highlight ((t (:underline t :background nil :foreground nil))))
   (lazy-highlight ((t (:background nil :foreground nil :box (:line-width -1)))))
   :config
   (load-theme 'doom-spacegrey t)
@@ -1925,9 +1925,9 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ;; Maybe set in future:
   ;;(lsp-enable-on-type-formatting nil)
   :custom-face
-  (lsp-face-highlight-read ((t (:underline t :weight semi-bold :background nil :foreground nil))))
-  (lsp-face-highlight-write ((t (:underline t :weight semi-bold :background nil :foreground nil))))
-  (lsp-face-highlight-textual ((t (:underline t :weight semi-bold :background nil :foreground nil))))
+  (lsp-face-highlight-read ((t (:underline t :background nil :foreground nil))))
+  (lsp-face-highlight-write ((t (:underline t :background nil :foreground nil))))
+  (lsp-face-highlight-textual ((t (:underline t :background nil :foreground nil))))
   :hook
   (lsp-mode . lsp-enable-which-key-integration))
 #+END_SRC
