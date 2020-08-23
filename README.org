@@ -1,6 +1,6 @@
 #+TITLE: My Literate Emacs Config
 
-* TODO Screenshots
+* Screenshots
 ** Initial Screen (Dashboard)
 [[./screenshots/dashboard.png]]
 
@@ -36,9 +36,8 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#notes-1][Notes]]
 - [[#performance-optimization][Performance Optimization]]
   - [[#garbage-collection][Garbage Collection]]
-    - [[#gc-before-helm-vb][GC before helm vb.]]
   - [[#file-handler][File Handler]]
-  - [[#emacs-start-up-profiler][Emacs Start Up Profiler]]
+  - [[#others][Others]]
 - [[#better-defaults][Better Defaults]]
   - [[#file-paths][File Paths]]
   - [[#general][General]]
@@ -396,11 +395,9 @@ file; follow link? (y or n)"= every time, to always answer =yes=, set
   (x-mode . first))
 #+END_SRC
 
-* TODO Performance Optimization
-TODO: Check this out
-https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly
-TODO: package-enable-at-startup nil????
-** TODO Garbage Collection
+* Performance Optimization
+A very nice source: https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly
+** Garbage Collection
 Make startup faster by reducing the frequency of garbage collection.
 Set gc-cons-threshold (the default is 800 kilobytes) to maximum value
 available, to prevent any garbage collection from happening during
@@ -411,50 +408,56 @@ Note: tangle to early-init.el to make startup even faster
 (setq gc-cons-threshold most-positive-fixnum)
 #+END_SRC
 
-Restore it to reasonable value after init.
+Restore it to reasonable value after init. Also stop garbage collection during
+minibuffer interaction (helm etc.).
 #+BEGIN_SRC emacs-lisp
-;; (defun fk/increase-gc-threshold ()
-;;   "Increase garbage collection threshold to speed-up emacs by reducing the
-;; frequency of garbage collection stops."
-;;   (setq gc-cons-threshold (* 1024 1024 20))
-;;   (setq gc-cons-percentage 0.3))
+(defconst 1mb 1048576)
+(defconst 20mb 20971520)
+(defconst 30mb 31457280)
+(defconst 50mb 52428800)
 
-;; (add-hook 'after-init-hook 'fk/increase-gc-threshold)
-
-(add-hook 'emacs-startup-hook (lambda () (setq gc-cons-threshold 20971520)))  ; 20mb
-#+END_SRC
-
-*** TODO GC before helm vb.
-#+BEGIN_SRC emacs-lisp
-(defun doom-defer-garbage-collection-h ()
+(defun fk/defer-garbage-collection ()
   (setq gc-cons-threshold most-positive-fixnum))
 
-(defun doom-restore-garbage-collection-h ()
-  ;; Defer it so that commands launched immediately after will enjoy the
-  ;; benefits.
-  (run-at-time
-   1 nil (lambda () (setq gc-cons-threshold 20971520))))
+(defun fk/restore-garbage-collection ()
+  (run-at-time 1 nil (lambda () (setq gc-cons-threshold 30mb))))
 
-(add-hook 'minibuffer-setup-hook #'doom-defer-garbage-collection-h)
-(add-hook 'minibuffer-exit-hook #'doom-restore-garbage-collection-h)
+(add-hook 'emacs-startup-hook 'fk/restore-garbage-collection)
+(add-hook 'minibuffer-setup-hook 'fk/defer-garbage-collection)
+(add-hook 'minibuffer-exit-hook 'fk/restore-garbage-collection)
+
+(setq read-process-output-max 1mb)  ;; lsp-mode's performance suggest
 #+END_SRC
 
-** TODO File Handler
+** File Handler
+(Note: ":tangle early-init.el")
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
-(defvar doom--file-name-handler-alist file-name-handler-alist)
+(defvar default-file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
 
-;; Alternatively, restore it even later:
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (setq file-name-handler-alist doom--file-name-handler-alist)))
+            (setq file-name-handler-alist default-file-name-handler-alist)))
 #+END_SRC
 
-** Emacs Start Up Profiler
-Benchmark Emacs startup time.
-#+BEGIN_SRC emacs-lisp
-(use-package esup
-  :commands esup)
+** Others
+Copied from Doom Emacs:
+(Note: ":tangle early-init.el")
+#+BEGIN_SRC emacs-lisp :tangle early-init.el
+;; In Emacs 27+, package initialization occurs before `user-init-file' is
+;; loaded, but after `early-init-file'. Doom handles package initialization, so
+;; we must prevent Emacs from doing it early!
+(setq package-enable-at-startup nil)
+(advice-add #'package--ensure-init-file :override #'ignore)
+
+;; Resizing the Emacs frame can be a terribly expensive part of changing the
+;; font. By inhibiting this, we easily halve startup times with fonts that are
+;; larger than the system default.
+(setq frame-inhibit-implied-resize t)
+
+;; Prevent unwanted runtime builds; packages are compiled ahead-of-time when
+;; they are installed and site files are compiled when gccemacs is installed.
+(setq comp-deferred-compilation nil)
 #+END_SRC
 
 * Better Defaults
@@ -953,7 +956,7 @@ Change default window dividers to a better built-in alternative.
   (defvar fk/olivetti-excluded-buffers '("*dashboard*" " *which-key*" "*helm"
                                          " *Minibuf-1*" "*vterm" "*fireplace*"))
   :custom
-  (olivetti-body-width 100)
+  (olivetti-body-width 120)
   (olivetti-enable-visual-line-mode nil)
   :bind*
   (
@@ -1872,7 +1875,10 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   :hook
   (eglot-managed-mode . eldoc-box-hover-mode)
   (eglot-managed-mode . fk/company-enable-snippets)
-  (eglot-managed-mode . (lambda () (flymake-mode 0))))
+  (eglot-managed-mode . (lambda () (flymake-mode 0)))
+  :config
+  (with-eval-after-load 'eglot
+    (load-library "project")))
 #+END_SRC
 
 ***** Eldoc Box
@@ -1885,13 +1891,6 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 
 **** TODO LSP Mode
 #+BEGIN_SRC emacs-lisp
-;; (use-package lsp-mode)
-;; (use-package lsp-ui)
-;; (use-package lsp-pyright
-;;   :straight (:host github :repo "emacs-lsp/lsp-pyright")
-;;   :hook (python-mode . (lambda ()
-;;                          (require 'lsp-pyright)
-;;                          (lsp))))
 #+END_SRC
 
 *** YASnippet-snippets
@@ -2277,7 +2276,7 @@ else call `dired-find-file'"
   :commands dired-posframe-mode)
 #+END_SRC
 
-** TODO Org
+** Org
 *** Org
 #+BEGIN_SRC emacs-lisp
 (use-package org
@@ -2428,7 +2427,7 @@ else call `dired-find-file'"
   :hook (org-mode . toc-org-mode))
 #+END_SRC
 
-*** TODO Org Table Auto Align
+*** Org Table Auto Align
 #+BEGIN_SRC emacs-lisp
 ;; (use-package org-table-auto-align-mode ; NOTE: breaks undo
 ;;   :load-path (lambda () (concat user-emacs-directory "load/org-table-auto-align-mode"))
@@ -2639,9 +2638,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 *** Company Restclient
 #+BEGIN_SRC emacs-lisp
 (use-package company-restclient
-  :after company restclient
-  :config
-  (add-to-list 'company-backends 'company-restclient))
+  :hook
+  (restclient-mode . (lambda ()
+                       (add-to-list 'company-backends 'company-restclient))))
 #+END_SRC
 
 *** ob-restclient
