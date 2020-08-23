@@ -1134,7 +1134,13 @@ Change default window dividers to a better built-in alternative.
   (helm-posframe-parameters '((left-fringe . 5)
                               (right-fringe . 5)))
   :config
-  (helm-posframe-enable))
+  (helm-posframe-enable)
+  ;; Remove annoying error message that displayed everytime after closing
+  ;; helm-posframe. The message is:
+  ;; Error during redisplay: (run-hook-with-args helm--delete-frame-function
+  ;; #<frame 0x5586330a1f90>) signaled (user-error "No recursive edit is in
+  ;; progress")
+  (remove-hook 'delete-frame-functions 'helm--delete-frame-function))
 #+END_SRC
 
 ** Company (Code & Text Completion)
