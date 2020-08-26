@@ -1159,6 +1159,7 @@ Change default window dividers to a better built-in alternative.
   (
    :map company-active-map
    ("RET" . nil)
+   ([return] . nil)
    ("TAB" . company-complete-selection)
    ("<tab>" . company-complete-selection)
    ("C-s" . company-complete-selection)  ; Mostly to use during yasnippet expansion
@@ -1209,7 +1210,7 @@ company-yasnippet' to all company backends."
   (company-box-show-single-candidate t)
   (company-box-frame-behavior 'point)
   (company-box-icon-right-margin 0.5)
-  (company-box-backends-colors '((company-yasnippet . (:annotation 'default))))
+  (company-box-backends-colors '((company-yasnippet . (:annotation default))))
   :hook
   (company-mode . company-box-mode))
 #+END_SRC
