@@ -685,6 +685,7 @@ size. This function also handles icons and modeline font sizes."
   (font-lock-function-name-face ((t (:foreground "LightGoldenrod"))))
   (highlight ((t (:underline t :background nil :foreground nil))))
   (lazy-highlight ((t (:background nil :foreground nil :box (:line-width -1)))))
+  (fixed-pitch ((t (:family "Noto Sans Mono"))))
   :config
   (load-theme 'doom-spacegrey t)
   (defconst fk/font-color (face-attribute 'default :foreground))
@@ -1242,6 +1243,7 @@ company-yasnippet' to all company backends."
   :defer nil
   :custom
   (yas-indent-line nil)
+  (yas-inhibit-overlay-modification-protection t)
   :custom-face
   (yas-field-highlight-face ((t (:inherit region))))
   :bind*
@@ -1357,7 +1359,7 @@ company-yasnippet' to all company backends."
   ;; Use with `helm-recentf'
   :straight (:type built-in)
   :custom
-  ;;(recentf-exclude '("^/tmp/" "^/usr/"))
+  (recentf-exclude `(,(expand-file-name "straight/" user-emacs-directory)))
   (recentf-max-saved-items 200))
 #+END_SRC
 
@@ -1399,7 +1401,7 @@ company-yasnippet' to all company backends."
 
 *** Dependents
 Those packages should load after ace-window to not install ace-window
-from melpa.
+from melpa. TODO: fix this
 **** Helm Icons
 #+BEGIN_SRC emacs-lisp
 (use-package helm-icons
@@ -1926,6 +1928,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (lsp-before-save-edits nil)
   (lsp-eldoc-enable-hover nil)
   (lsp-diagnostic-package :none)
+  (lsp-file-watch-threshold 1500)  ; pyright has more than 1000
   ;; Maybe set in future:
   ;;(lsp-enable-on-type-formatting nil)
   :custom-face
@@ -2002,7 +2005,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ;; With pyright
   ;; sudo npm install -g pyright && pip install black flake8
   ;; NOTE: these hooks runs in reverse order
-  (python-mode . (lambda () (setq-local company-prescient-mode nil)))
+  ;;(python-mode . (lambda () (setq-local company-prescient-mode nil)))
   (python-mode . flycheck-mode)
   (python-mode . lsp-deferred)
   ;;(python-mode . (lambda () (fk/add-local-hook 'before-save-hook 'eglot-format-buffer)))
