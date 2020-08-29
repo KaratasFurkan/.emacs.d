@@ -194,6 +194,8 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#json-mode][Json Mode]]
     - [[#prettier][Prettier]]
     - [[#auto-rename-tag][Auto Rename Tag]]
+  - [[#go][Go]]
+    - [[#go-mode][Go Mode]]
 - [[#tools][Tools]]
   - [[#dired][Dired]]
     - [[#dired-1][Dired]]
@@ -2210,6 +2212,29 @@ TODO: seperate sections (html, css..)
 (use-package auto-rename-tag
   :hook
   (web-mode . auto-rename-tag-mode))
+#+END_SRC
+
+** Go
+*** Go Mode
+#+BEGIN_SRC emacs-lisp
+(use-package go-mode
+  ;; install go & go-tools, for arch based linux:
+  ;; sudo pacman -S go go-tools
+  :mode "\\.go\\'"
+  :init
+  (defface golang-blue
+    '((((background dark)) :foreground "#69D7E4")
+      (((background light)) :foreground "#69D7E4"))
+    "Face for golang icon")
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\.go$" all-the-icons-fileicon "go" :height 1 :face golang-blue))
+  :custom
+  (gofmt-command "goimports")
+  :hook
+  (go-mode . flycheck-mode)
+  (go-mode . lsp-deferred)
+  (go-mode . (lambda () (require 'tree-sitter-langs) (tree-sitter-hl-mode)))
+  (go-mode . (lambda () (fk/add-local-hook 'before-save-hook 'gofmt))))
 #+END_SRC
 
 * TODO Tools
