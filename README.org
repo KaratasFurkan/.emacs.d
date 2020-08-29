@@ -1961,8 +1961,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 ***** [[#lsp-pyright][LSP Pyright-]]
 *** YASnippet-snippets
 #+BEGIN_SRC emacs-lisp
-;; TODO: do not override my snippets
 (use-package yasnippet-snippets
+  :straight (:host github :repo "KaratasFurkan/yasnippet-snippets" :branch "furkan")
   :after yasnippet)
 #+END_SRC
 

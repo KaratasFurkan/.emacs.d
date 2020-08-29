@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: file
-# key: file
-# --
-with open(${1:"${2:filename}"}${3:, "$4"}) as ${5:file}:
-    ${6:for line in $5:
-        $0}

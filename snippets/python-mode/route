@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: route
-# key: ro
-# --
-@app.route("/$1")
-def $1($2):
-    $0

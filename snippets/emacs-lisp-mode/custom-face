@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: custom-face
-# key: upc
-# --
-(${1:face} ((t (:${2:attribute}$0))))
