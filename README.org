@@ -511,7 +511,7 @@ Keep Emacs directory clean.
 
 (defun fk/add-local-hook (hook function)
   "Add buffer-local hook."
-  (add-hook hook function nil t))
+  (add-hook hook function :local t))
 #+END_SRC
 
 ** Helpful
@@ -951,8 +951,8 @@ Change default window dividers to a better built-in alternative.
 (use-package symbol-overlay
   :commands (symbol-overlay-mode symbol-overlay-put)
   :hook
-  (python-mode . (lambda () (symbol-overlay-mode -1)))  ; i use lsp highlight
-  (prog-mode . symbol-overlay-mode))
+  (emacs-lisp-mode . symbol-overlay-mode)
+  (web-mode . symbol-overlay-mode))
 #+END_SRC
 
 ** Olivetti
@@ -1168,6 +1168,8 @@ Change default window dividers to a better built-in alternative.
    ("C-p" . company-select-previous))
   :config
   (global-company-mode)
+
+  (add-to-list 'company-begin-commands 'backward-delete-char-untabify)
 
   ;; Show YASnippet snippets in company
 
@@ -1608,7 +1610,8 @@ from melpa. TODO: fix this
 (setq-default
  fill-column 80
  sentence-end-double-space nil
- indent-tabs-mode nil)  ; Use spaces instead of tabs
+ indent-tabs-mode nil  ; Use spaces instead of tabs
+ tab-width 4)
 #+END_SRC
 
 ** Custom Functions
@@ -1929,6 +1932,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (lsp-eldoc-enable-hover nil)
   (lsp-diagnostic-package :none)
   (lsp-file-watch-threshold 1500)  ; pyright has more than 1000
+  (lsp-enable-links nil)
   ;; Maybe set in future:
   ;;(lsp-enable-on-type-formatting nil)
   :custom-face
