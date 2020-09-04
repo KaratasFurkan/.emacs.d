@@ -962,9 +962,10 @@ Change default window dividers to a better built-in alternative.
 (use-package olivetti
   :defer nil
   :init
-  (defvar fk/olivetti-fringe-face '(:background "#2a2f39"))  ; TODO: why '(:background fk/dark-color2) does not work?
+  (defvar fk/olivetti-fringe-face `(:background ,fk/dark-color2))
   (defvar fk/olivetti-excluded-buffers '("*dashboard*" " *which-key*" "*helm"
-                                         " *Minibuf-1*" "*vterm" "*fireplace*"))
+                                         " *Minibuf-1*" "*vterm" "*fireplace*"
+                                         " *lsp-peek--buffer*"))
   :custom
   (olivetti-body-width 120)
   (olivetti-enable-visual-line-mode nil)
@@ -1955,7 +1956,34 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (lsp-ui-doc-delay 0.5)
   (lsp-ui-peek-fontify 'always)
   :custom-face
-  (lsp-ui-peek-highlight ((t (:inherit nil :background nil :foreground nil :weight semi-bold :box (:line-width -1))))))
+  (lsp-ui-peek-highlight ((t (:inherit nil :background nil :foreground nil :weight semi-bold :box (:line-width -1)))))
+  :config
+  ;;;; LSP UI posframe ;;;;
+  (defun lsp-ui-peek--peek-display (src1 src2)
+    (-let* ((win-width (frame-width))
+            (lsp-ui-peek-list-width (/ (frame-width) 2))
+            (string (-some--> (-zip-fill "" src1 src2)
+                      (--map (lsp-ui-peek--adjust win-width it) it)
+                      (-map-indexed 'lsp-ui-peek--make-line it)
+                      (-concat it (lsp-ui-peek--make-footer))))
+            )
+      (setq lsp-ui-peek--buffer (get-buffer-create " *lsp-peek--buffer*"))
+      (posframe-show lsp-ui-peek--buffer
+                     :string (mapconcat 'identity string "")
+                     :min-width (frame-width)
+                     :poshandler #'posframe-poshandler-frame-center)))
+
+  (defun lsp-ui-peek--peek-destroy ()
+    (when (bufferp lsp-ui-peek--buffer)
+      (posframe-delete lsp-ui-peek--buffer))
+    (setq lsp-ui-peek--buffer nil
+          lsp-ui-peek--last-xref nil)
+    (set-window-start (get-buffer-window) lsp-ui-peek--win-start))
+
+  (advice-add #'lsp-ui-peek--peek-new :override #'lsp-ui-peek--peek-display)
+  (advice-add #'lsp-ui-peek--peek-hide :override #'lsp-ui-peek--peek-destroy)
+  ;;;; LSP UI posframe ;;;;
+  )
 #+END_SRC
 
 ***** [[#lsp-pyright][LSP Pyright-]]
