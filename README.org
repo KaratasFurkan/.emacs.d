@@ -2280,14 +2280,18 @@ TODO: seperate sections (html, css..)
    :map dired-mode-map
    ("H" . dired-hide-details-mode)
    ("C-M-u" . dired-up-directory)
-   ("O" . browse-url-of-dired-file)             ; open with associated app
-   ("<mouse-1>" . fk/dired-left-click)          ; left click
-   ("<mouse-2>" . dired-up-directory)           ; middle click
+   ("O" . browse-url-of-dired-file)                  ; open with associated app
+   ("<mouse-1>" . fk/dired-left-click)               ; left click
+   ("<mouse-2>" . dired-up-directory)                ; middle click
    ("<mouse-3>" . (lambda (event) (interactive "e")  ; right click
                     (mouse-set-point event)
                     (dired-subtree-toggle)))
    ("RET" . fk/dired-smart-open)
    ("C-c C-e" . wdired-change-to-wdired-mode))
+  :hook
+  (dired-mode . dired-hide-details-mode)
+  ;; Fix `save-place' in dired when opening from bookmarks (mostly from dashboard)
+  (bookmark-after-jump . save-place-dired-hook)
   :config
   (defun fk/dired-left-click (event)
     "When file is a directory, open directory in dired. Otherwise, open file
@@ -2308,9 +2312,7 @@ else call `dired-find-file'"
     (if (> (file-attribute-size (file-attributes (dired-file-name-at-point)))
            50000000)
         (browse-url-of-dired-file)
-      (dired-find-file)))
-  :hook
-  (dired-mode . dired-hide-details-mode))
+      (dired-find-file))))
 #+END_SRC
 
 *** Dired-X
