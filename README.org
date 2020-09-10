@@ -1592,7 +1592,8 @@ from melpa. TODO: fix this
   :bind
   (([remap xref-find-definitions] . smart-jump-go)
    ([remap xref-pop-marker-stack] . smart-jump-back)
-   ([remap xref-find-references] . smart-jump-references))
+   ;;([remap xref-find-references] . smart-jump-references)
+   )
   :config
   (smart-jump-register :modes 'python-mode
                        :order 1
@@ -1957,6 +1958,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (lsp-ui-peek-fontify 'always)
   :custom-face
   (lsp-ui-peek-highlight ((t (:inherit nil :background nil :foreground nil :weight semi-bold :box (:line-width -1)))))
+  :bind
+  ([remap xref-find-references] . lsp-ui-peek-find-references)
   :config
   ;;;; LSP UI posframe ;;;;
   (defun lsp-ui-peek--peek-display (src1 src2)
