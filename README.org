@@ -1104,6 +1104,8 @@ Change default window dividers to a better built-in alternative.
    ("r" . helm-recentf)
    :map buffers
    ("b" . helm-buffers-list))
+  :hook
+  (helm-major-mode . fk/darken-background)
   :config
   (helm-mode)
   (savehist-mode)
@@ -1111,8 +1113,15 @@ Change default window dividers to a better built-in alternative.
                     "\\*eldoc" "\\*Compile-Log" "\\*xref" "\\*company"
                     "\\*aw-posframe" "\\*Warnings" "\\*Backtrace"))
     (add-to-list 'helm-boring-buffer-regexp-list regexp))
-  :hook
-  (helm-major-mode . fk/darken-background))
+
+  ;; "Waiting for process to die...done" fix (not sure)
+  (defun kadir/helm--collect-matches (orig-fun src-list &rest args)
+    (let ((matches
+           (cl-loop for src in src-list
+                    collect (helm-compute-matches src))))
+      (unless (eq matches t) matches)))
+
+  (advice-add 'helm--collect-matches :around #'kadir/helm--collect-matches))
 #+END_SRC
 
 *** [[#helm-projectile][Helm Projectile-]]
