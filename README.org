@@ -1454,12 +1454,15 @@ from melpa. TODO: fix this
 ** Helm Projectile
 #+BEGIN_SRC emacs-lisp
 (use-package helm-projectile
+  :custom
+  (helm-projectile-sources-list '(helm-source-projectile-buffers-list
+                                  helm-source-projectile-recentf-list
+                                  helm-source-projectile-files-list
+                                  helm-source-projectile-projects))
   :bind
   ("C-x f" . helm-projectile)
   :hook
-  (projectile-mode . helm-projectile-on)
-  :config
-  (add-to-list 'helm-projectile-sources-list 'helm-source-projectile-recentf-list))
+  (projectile-mode . helm-projectile-on))
 #+END_SRC
 
 ** Helm Ag
