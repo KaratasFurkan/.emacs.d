@@ -1457,7 +1457,9 @@ from melpa. TODO: fix this
   :bind
   ("C-x f" . helm-projectile)
   :hook
-  (projectile-mode . helm-projectile-on))
+  (projectile-mode . helm-projectile-on)
+  :config
+  (add-to-list 'helm-projectile-sources-list 'helm-source-projectile-recentf-list))
 #+END_SRC
 
 ** Helm Ag
