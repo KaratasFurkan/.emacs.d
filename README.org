@@ -1364,7 +1364,7 @@ company-yasnippet' to all company backends."
   ;; Use with `helm-recentf'
   :straight (:type built-in)
   :custom
-  (recentf-exclude `(,(expand-file-name "straight/" user-emacs-directory)))
+  (recentf-exclude `(,(expand-file-name "straight/" user-emacs-directory) "/usr/share/emacs/"))
   (recentf-max-saved-items 200))
 #+END_SRC
 
@@ -2434,7 +2434,7 @@ else call `dired-find-file'"
   (org-hide-emphasis-markers t)
   :custom-face
   (org-block ((t (:extend t))))
-  (org-ellipsis ((t (:foreground nil :inherit font-lock-comment-face :weight light :height ,fk/default-font-size))))
+  (org-ellipsis ((t (:foreground nil :inherit org-tag :weight light :height ,fk/default-font-size))))
   (org-checkbox ((t (:foreground "white"))))
   (org-block-begin-line ((t (:extend t))))
   (org-block-end-line ((t (:extend t))))
