@@ -1949,6 +1949,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (lsp-before-save-edits nil)
   (lsp-eldoc-enable-hover nil)
   (lsp-diagnostic-package :none)
+  (lsp-completion-provider :none)
   (lsp-file-watch-threshold 1500)  ; pyright has more than 1000
   (lsp-enable-links nil)
   ;; Maybe set in future:
