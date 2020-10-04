@@ -246,6 +246,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#pdf-tools][PDF Tools]]
     - [[#interleave][Interleave]]
   - [[#emacs-screencast][Emacs Screencast]]
+  - [[#plantuml][PlantUML]]
 - [[#file-modes][File Modes]]
   - [[#markdown][Markdown]]
   - [[#fish][Fish]]
@@ -554,6 +555,7 @@ Menu style keybindings like Spacemacs.
  :map fk/menu-map :prefix-map comments        :prefix "c"
  :map fk/menu-map :prefix-map errors          :prefix "e"
  :map fk/menu-map :prefix-map files           :prefix "f"
+ :map fk/menu-map :prefix-map org             :prefix "o"
  :map fk/menu-map :prefix-map text            :prefix "t"
  :map fk/menu-map :prefix-map version-control :prefix "v"
  :map fk/menu-map :prefix-map windows         :prefix "w")
@@ -2947,6 +2949,20 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
    ("<f9>". gif-screencast-stop)))
 #+END_SRC
 
+** PlantUML
+#+BEGIN_SRC emacs-lisp
+(use-package plantuml-mode
+  :mode "\\.plantuml\\'"
+  :custom
+  (plantuml-jar-path (concat no-littering-etc-directory "plantuml.jar"))
+  (plantuml-default-exec-mode 'jar)
+  (plantuml-indent-level 4)
+  :init
+  (with-eval-after-load "org"
+    (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
+    (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
+    (setq org-plantuml-jar-path plantuml-jar-path)))
+#+END_SRC
 * File Modes
 ** Markdown
 #+BEGIN_SRC emacs-lisp
