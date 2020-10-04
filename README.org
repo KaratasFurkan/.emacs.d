@@ -88,7 +88,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#helm-icons-][Helm Icons-]]
   - [[#symbol-overlay][Symbol Overlay]]
   - [[#olivetti][Olivetti]]
-  - [[#emojify][Emojify]]
+  - [[#emojify-][Emojify-]]
   - [[#tree-sitter][Tree Sitter]]
 - [[#completion][Completion]]
   - [[#better-defaults-2][Better Defaults]]
@@ -246,6 +246,11 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#pdf-tools][PDF Tools]]
     - [[#interleave][Interleave]]
   - [[#emacs-screencast][Emacs Screencast]]
+  - [[#slack][Slack]]
+    - [[#slack-1][Slack]]
+    - [[#emojify][Emojify]]
+    - [[#alert][Alert]]
+    - [[#helm-slack][Helm Slack]]
   - [[#plantuml][PlantUML]]
 - [[#file-modes][File Modes]]
   - [[#markdown][Markdown]]
@@ -1035,12 +1040,7 @@ Change default window dividers to a better built-in alternative.
   (fk/olivetti-single-window-mode))
 #+END_SRC
 
-** Emojify
-#+BEGIN_SRC emacs-lisp
-(use-package emojify
-  :commands emojify-mode)
-#+END_SRC
-
+** [[#emojify][Emojify-]]
 ** Tree Sitter
 #+BEGIN_SRC emacs-lisp
 (use-package tree-sitter
@@ -2947,6 +2947,56 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
    :map gif-screencast-mode-map
    ("<f8>". gif-screencast-toggle-pause)
    ("<f9>". gif-screencast-stop)))
+#+END_SRC
+
+** Slack
+*** Slack
+#+BEGIN_SRC emacs-lisp
+(use-package slack
+  :commands slack-start
+  :custom
+  (slack-buffer-function 'switch-to-buffer)
+  (slack-buffer-emojify t)
+  (slack-prefer-current-team t)
+  (slack-alert-icon (concat no-littering-etc-directory "slack/icon.svg"))
+  :custom-face
+  (slack-preview-face ((t (:inherit (fixed-pitch shadow org-block) :extend nil))))
+  :hook
+  (slack-message-buffer-mode . (lambda () (setq-local truncate-lines nil)))
+  (slack-message-buffer-mode . (lambda () (setq-local show-trailing-whitespace nil)))
+  (slack-message-buffer-mode . (lambda () (setq-local olivetti-body-width 80)))
+  :config
+  (slack-register-team
+   :name "hipo"
+   :default t
+   :token (auth-source-pick-first-password :host "slack")
+   :full-and-display-names t))
+#+END_SRC
+
+*** Emojify
+#+BEGIN_SRC emacs-lisp
+(use-package emojify
+  :commands emojify-mode)
+
+;; (use-package company-emoji
+;;   :after slack
+;;   :config
+;;   (add-to-list 'company-backends 'company-emoji))
+#+END_SRC
+
+*** Alert
+#+BEGIN_SRC emacs-lisp
+(use-package alert
+  :commands alert
+  :custom
+  (alert-default-style 'libnotify))
+#+END_SRC
+
+*** Helm Slack
+#+BEGIN_SRC emacs-lisp
+(use-package helm-slack
+  :straight (:host github :repo "yuya373/helm-slack")
+  :after slack)
 #+END_SRC
 
 ** PlantUML
