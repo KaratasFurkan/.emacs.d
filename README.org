@@ -2818,21 +2818,22 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
 ** Google Translate
 #+BEGIN_SRC emacs-lisp
-(use-package google-translate
+(use-package go-translate
+  :straight (:host github :repo "lorniu/go-translate")
   :custom
-  (google-translate-default-source-language "en")
-  (google-translate-default-target-language "tr")
+  (go-translate-local-language "tr")
+  (go-translate-target-language "en")
+  (go-translate-inputs-function 'go-translate-inputs-current-or-prompt)
+  (go-translate-buffer-follow-p t)
   :bind*
   (
    :map text
    :prefix-map google-translate
    :prefix "g"
-   ("g" . google-translate-at-point)
-   ("G" . google-translate-at-point-reverse)
-   ("r" . google-translate-at-point-reverse)
-   ("q" . google-translate-query-translate)
-   ("Q" . google-translate-query-translate-reverse)
-   ("s" . google-translate-smooth-translate)))
+   ("g" . go-translate-popup-current)
+   ("G" . go-translate)
+   ("b" . go-translate)
+   ("e" . go-translate-echo-area)))
 #+END_SRC
 
 ** PDF
@@ -2849,7 +2850,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
    ("O" . pdf-occur)
    ("d" . pdf-view-midnight-minor-mode)
    ("s a" . pdf-view-auto-slice-minor-mode)
-   ("t" . (lambda (beg end) (interactive "r") (google-translate-at-point))))
+   ("t" . (lambda (beg end) (interactive "r") (go-translate))))
   :hook
   (pdf-view-mode . pdf-links-minor-mode)
   (pdf-view-mode . pdf-isearch-minor-mode)
