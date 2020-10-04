@@ -118,6 +118,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#go-home-][go-home-]]
     - [[#split-window-and-switch][split-window-and-switch]]
     - [[#generate-random-scratch][generate-random-scratch]]
+    - [[#generate-random-org-scratch][generate-random-org-scratch]]
   - [[#keybindings-1][Keybindings]]
   - [[#recentf-recent-files][Recentf (Recent Files)]]
   - [[#winner-mode][Winner Mode]]
@@ -194,6 +195,8 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#json-mode][Json Mode]]
     - [[#prettier][Prettier]]
     - [[#auto-rename-tag][Auto Rename Tag]]
+  - [[#javascript][JavaScript]]
+    - [[#javascript-1][JavaScript]]
   - [[#go][Go]]
     - [[#go-mode][Go Mode]]
 - [[#tools][Tools]]
@@ -508,6 +511,8 @@ Keep Emacs directory clean.
 (global-auto-revert-mode)
 
 (save-place-mode)
+
+(global-so-long-mode)
 
 (bind-key* "M-r" 'repeat)
 
@@ -849,6 +854,7 @@ Change default window dividers to a better built-in alternative.
   :custom
   (shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :size 0.4)  ; I use helm-posframe now, this is unnecessary but i want to keep just in case
                    ("\\`\\*helpful.*?\\*\\'" :regexp t :align t :size 0.4)
+                   ("\\`\\*Go Translate*?\\*\\'" :regexp t :align t :size 0.4)
                    (help-mode :align t :size 0.4 :select t)))
   :config
   (shackle-mode))
@@ -885,7 +891,7 @@ Change default window dividers to a better built-in alternative.
 (use-package zoom
   :commands zoom-mode
   :custom
-  (zoom-size '(100 . 40)))
+  (zoom-size '(120 . 40)))
 #+END_SRC
 
 ** Emacs Dashboard
@@ -1335,6 +1341,16 @@ company-yasnippet' to all company backends."
   (emacs-lisp-mode))
 #+END_SRC
 
+*** generate-random-org-scratch
+#+BEGIN_SRC emacs-lisp
+(defun fk/generate-random-org-scratch ()
+  "Create and switch to a temporary scratch buffer with a random name and
+org-mode activated."
+  (interactive)
+  (switch-to-buffer (make-temp-name "scratch-"))
+  (org-mode))
+#+END_SRC
+
 ** Keybindings
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "<F1>") 'help-command)
@@ -1357,6 +1373,7 @@ company-yasnippet' to all company backends."
  :map buffers
  ("s" . fk/scratch)
  ("r" . fk/generate-random-scratch)
+ ("o" . fk/generate-random-org-scratch)
  ("h" . fk/home)
  ("m" . fk/messages))
 
@@ -1373,7 +1390,9 @@ company-yasnippet' to all company backends."
   ;; Use with `helm-recentf'
   :straight (:type built-in)
   :custom
-  (recentf-exclude `(,(expand-file-name "straight/" user-emacs-directory) "/usr/share/emacs/"))
+  (recentf-exclude `(,(expand-file-name "straight/" user-emacs-directory)
+                     "/usr/share/emacs/"
+                     ,(expand-file-name "~/.virtualenvs")))
   (recentf-max-saved-items 200))
 #+END_SRC
 
@@ -1537,7 +1556,7 @@ from melpa. TODO: fix this
 #+BEGIN_SRC emacs-lisp
 (use-package avy
   :bind
-  (("M-j" . avy-goto-word-or-subword-1)
+  (("M-j" . avy-goto-char-2)
    ("C-M-u" . avy-pop-mark)))
 #+END_SRC
 
@@ -2250,7 +2269,8 @@ TODO: seperate sections (html, css..)
   :hook
   ;;(web-mode . prettier-js-mode) ;; breaks django templates
   (css-mode . prettier-js-mode)
-  (json-mode . prettier-js-mode))
+  (json-mode . prettier-js-mode)
+  (js2-mode . prettier-js-mode))
 #+END_SRC
 
 *** Auto Rename Tag
@@ -2258,6 +2278,19 @@ TODO: seperate sections (html, css..)
 (use-package auto-rename-tag
   :hook
   (web-mode . auto-rename-tag-mode))
+#+END_SRC
+
+** JavaScript
+*** JavaScript
+#+BEGIN_SRC emacs-lisp
+(use-package js2-mode
+  :mode "\\.js\\'"
+  :custom
+  (js-indent-level 2)
+  :hook
+  (js2-mode . flycheck-mode)
+  ;;(js2-mode . (lambda () (require 'tree-sitter-langs) (tree-sitter-hl-mode)))
+  (js2-mode . lsp-deferred))
 #+END_SRC
 
 ** Go
@@ -2458,8 +2491,11 @@ else call `dired-find-file'"
   (org-level-2 ((t (:height ,(+ fk/default-font-size 15) :weight bold ))))
   (org-level-1 ((t (:height ,(+ fk/default-font-size 20) :weight bold ))))
   (org-drawer ((t (:foreground nil :inherit font-lock-comment-face))))
+  (org-table ((t (:foreground "white"))))
   :bind
   (
+   :map org
+   ("c" . org-capture)
    :map org-mode-map
    ("C-c C-e" . org-edit-special)
    ("M-n" . org-next-visible-heading)
@@ -2476,11 +2512,10 @@ else call `dired-find-file'"
    ("C-c C-c" . org-edit-src-exit))
   :config
   (add-to-list 'org-emphasis-alist '("#" (:box '(:line-width -1))))  ; FIXME: does not work.
-  (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
-                                                           (emacs-lisp . t)
-                                                           (shell . t)))
+  ;; (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
+  ;;                                                          (emacs-lisp . t)
+  ;;                                                          (shell . t)))
   ;; Beautify org mode
-  ;; TODO: make this with prettify-symbols-mode
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
@@ -2788,8 +2823,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :mode ("\\.http\\'" . restclient-mode)
   :custom
   (restclient-log-request nil)
-  :config
-  (setcdr (assoc "application/json" restclient-content-type-modes) 'json-mode))
+  ;;:config
+  ;;(setcdr (assoc "application/json" restclient-content-type-modes) 'json-mode)
+)
 #+END_SRC
 
 *** Company Restclient
