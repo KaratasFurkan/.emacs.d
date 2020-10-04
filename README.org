@@ -2518,9 +2518,14 @@ else call `dired-find-file'"
    ("C-c C-c" . org-edit-src-exit))
   :config
   (add-to-list 'org-emphasis-alist '("#" (:box '(:line-width -1))))  ; FIXME: does not work.
-  ;; (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
-  ;;                                                          (emacs-lisp . t)
-  ;;                                                          (shell . t)))
+
+  (defun fk/org-babel-load-languages ()
+    "Load languages I use."
+    (interactive)
+    (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
+                                                             (emacs-lisp . t)
+                                                             (shell . t))))
+
   ;; Beautify org mode
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
@@ -3013,6 +3018,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
     (setq org-plantuml-jar-path plantuml-jar-path)))
 #+END_SRC
+
 * File Modes
 ** Markdown
 #+BEGIN_SRC emacs-lisp
