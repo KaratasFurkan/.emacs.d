@@ -220,6 +220,10 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#org-table-auto-align][Org Table Auto Align]]
     - [[#ob-async][ob-async]]
     - [[#org-pomodoro][Org Pomodoro]]
+    - [[#org-roam][Org Roam]]
+      - [[#org-roam-1][Org Roam]]
+      - [[#org-roam-server][Org Roam Server]]
+      - [[#company-org-roam][Company Org Roam]]
   - [[#version-control][Version Control]]
     - [[#magit][Magit]]
       - [[#magit-1][Magit]]
@@ -2630,6 +2634,33 @@ else call `dired-find-file'"
 #+BEGIN_SRC emacs-lisp
 (use-package org-pomodoro
   :commands org-pomodoro)
+#+END_SRC
+
+*** Org Roam
+**** Org Roam
+#+BEGIN_SRC emacs-lisp
+(use-package org-roam
+  :defer nil
+  :custom
+  (org-roam-directory "~/org/roam/")
+  :bind
+  (
+   :map org
+   ("o" . org-roam-find-file)))
+#+END_SRC
+
+**** Org Roam Server
+#+BEGIN_SRC emacs-lisp
+;;(use-package org-roam-server
+;;  :after org-roam)
+#+END_SRC
+
+**** Company Org Roam
+#+BEGIN_SRC emacs-lisp
+(use-package company-org-roam
+  :after org-roam
+  :config
+  (add-to-list 'company-backends 'company-org-roam))
 #+END_SRC
 
 ** Version Control
