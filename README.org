@@ -252,6 +252,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#alert][Alert]]
     - [[#helm-slack][Helm Slack]]
   - [[#plantuml][PlantUML]]
+  - [[#xwwp-xwidget-webkit-enhancement][XWWP (Xwidget Webkit Enhancement)]]
 - [[#file-modes][File Modes]]
   - [[#markdown][Markdown]]
   - [[#fish][Fish]]
@@ -473,10 +474,6 @@ Copied from Doom Emacs:
 ;; font. By inhibiting this, we easily halve startup times with fonts that are
 ;; larger than the system default.
 (setq frame-inhibit-implied-resize t)
-
-;; Prevent unwanted runtime builds; packages are compiled ahead-of-time when
-;; they are installed and site files are compiled when gccemacs is installed.
-(setq comp-deferred-compilation nil)
 #+END_SRC
 
 * Better Defaults
@@ -987,16 +984,15 @@ Change default window dividers to a better built-in alternative.
   (olivetti-body-width 120)
   (olivetti-enable-visual-line-mode nil)
   :bind*
-  (
-   :map windows
-   ("c" . olivetti-mode)
-   ("v" . visual-line-mode)
-   :map windows
-   :prefix-map olivetti
-   :prefix "o"
-   ("o" . fk/olivetti-single-window-mode)
-   ("e" . olivetti-expand)
-   ("s" . olivetti-shrink))
+  ( :map windows
+    ("c" . olivetti-mode)
+    ("v" . visual-line-mode)
+    :map windows
+    :prefix-map olivetti
+    :prefix "o"
+    ("o" . fk/olivetti-single-window-mode)
+    ("e" . olivetti-expand)
+    ("s" . olivetti-shrink))
   :hook
   (olivetti-mode . (lambda () (face-remap-add-relative 'fringe fk/olivetti-fringe-face)))
   :config
@@ -1181,15 +1177,14 @@ Change default window dividers to a better built-in alternative.
   ;; Disable `single-candidate' and `echo-area' frontends
   (company-frontends '(company-box-frontend))
   :bind
-  (
-   :map company-active-map
-   ("RET" . nil)
-   ([return] . nil)
-   ("TAB" . company-complete-selection)
-   ("<tab>" . company-complete-selection)
-   ("C-s" . company-complete-selection)  ; Mostly to use during yasnippet expansion
-   ("C-n" . company-select-next)
-   ("C-p" . company-select-previous))
+  ( :map company-active-map
+    ("RET" . nil)
+    ([return] . nil)
+    ("TAB" . company-complete-selection)
+    ("<tab>" . company-complete-selection)
+    ("C-s" . company-complete-selection)  ; Mostly to use during yasnippet expansion
+    ("C-n" . company-select-next)
+    ("C-p" . company-select-previous))
   :config
   (global-company-mode)
 
@@ -1427,11 +1422,10 @@ org-mode activated."
   (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (aw-ignore-current t)
   :bind*
-  (
-   :map windows
-   ("w" . ace-window)
-   ("D" . ace-delete-window)
-   ("s" . ace-swap-window))
+  ( :map windows
+    ("w" . ace-window)
+    ("D" . ace-delete-window)
+    ("s" . ace-swap-window))
   :config
   (ace-window-posframe-mode)
   :custom-face
@@ -1553,9 +1547,8 @@ from melpa. TODO: fix this
 (use-package deadgrep
   :commands deadgrep
   :bind
-  (
-   :map deadgrep-mode-map
-   ("C-c C-e" . deadgrep-edit-mode)))
+  ( :map deadgrep-mode-map
+    ("C-c C-e" . deadgrep-edit-mode)))
 #+END_SRC
 
 ** Avy
@@ -1605,18 +1598,17 @@ from melpa. TODO: fix this
   :custom-face
   (persp-selected-face ((t (:foreground nil :inherit 'doom-modeline-warning))))
   :bind*
-  (
-   :map persp-mode-map
-   ("C-M-o" . persp-next)
-   ("C-x p" . persp-switch)
-   ("C-x C-p" . persp-switch-quick)
-   ("M-P" . persp-switch-last)
-   ("C-M-q" . persp-switch-last)
-   :map perspective-map
-   ("p" . persp-switch)
-   ("k" . persp-kill)
-   ("l" . persp-switch-last)
-   ("q" . persp-switch-quick))
+  ( :map persp-mode-map
+    ("C-M-o" . persp-next)
+    ("C-x p" . persp-switch)
+    ("C-x C-p" . persp-switch-quick)
+    ("M-P" . persp-switch-last)
+    ("C-M-q" . persp-switch-last)
+    :map perspective-map
+    ("p" . persp-switch)
+    ("k" . persp-kill)
+    ("l" . persp-switch-last)
+    ("q" . persp-switch-quick))
   :config
   (persp-mode)
   :hook
@@ -1721,10 +1713,9 @@ otherwise."
 
 (use-package string-inflection
   :bind
-  (
-   :map text
-   ("t" . string-inflection-all-cycle)
-   ("k" . string-inflection-kebab-case)))
+  ( :map text
+    ("t" . string-inflection-all-cycle)
+    ("k" . string-inflection-kebab-case)))
 #+END_SRC
 
 ** Paren
@@ -1842,15 +1833,14 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (comment-column 0)
   (comment-inline-offset 2)
   :bind*
-  (
-   :map comments
-   ("c" . comment-dwim)
-   ("k" . comment-kill)
-   ("l" . comment-line)
-   ("n" . (lambda () (interactive) (next-line) (comment-indent)))
-   ("N" . comment-indent-new-line)
-   ("b" . comment-box)
-   ("a" . fk/align-comments))
+  ( :map comments
+    ("c" . comment-dwim)
+    ("k" . comment-kill)
+    ("l" . comment-line)
+    ("n" . (lambda () (interactive) (next-line) (comment-indent)))
+    ("N" . comment-indent-new-line)
+    ("b" . comment-box)
+    ("a" . fk/align-comments))
   :hook
   (emacs-lisp-mode . (lambda ()
                        (setq-local comment-start "; ")
@@ -1885,12 +1875,11 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   :custom
   (flycheck-check-syntax-automatically '(save mode-enabled))
   :bind
-  (
-   :map errors
-   ("n" . flycheck-next-error)
-   ("p" . flycheck-previous-error)
-   ("l" . flycheck-list-errors)
-   ("v" . flycheck-verify-setup)))
+  ( :map errors
+    ("n" . flycheck-next-error)
+    ("p" . flycheck-previous-error)
+    ("l" . flycheck-list-errors)
+    ("v" . flycheck-verify-setup)))
 
 ;; Spacemacs' custom fringes
 
@@ -2048,9 +2037,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 (use-package elisp-slime-nav
   :bind
-  (
-   :map emacs-lisp-mode-map
-   ("M-." . elisp-slime-nav-find-elisp-thing-at-point)))
+  ( :map emacs-lisp-mode-map
+    ("M-." . elisp-slime-nav-find-elisp-thing-at-point)))
 #+END_SRC
 
 *** Aggressive Indent
@@ -2070,12 +2058,11 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (python-shell-interpreter-args "-i --simple-prompt")
   (python-indent-guess-indent-offset-verbose nil)
   :bind
-  (
-   :map python-mode-map
-   ("M-n" . python-nav-forward-block)
-   ("M-p" . python-nav-backward-block)
-   ("C-c i r" . python-indent-shift-right)
-   ("C-c i l" . python-indent-shift-left))
+  ( :map python-mode-map
+    ("M-n" . python-nav-forward-block)
+    ("M-p" . python-nav-backward-block)
+    ("C-c i r" . python-indent-shift-right)
+    ("C-c i l" . python-indent-shift-left))
   :hook
   ;; With pyls:
   ;; pip install python-language-server pyls-black pyls-isort flake8
@@ -2235,12 +2222,11 @@ TODO: seperate sections (html, css..)
   :custom-face
   (emmet-preview-input ((t (:inherit lazy-highlight))))
   :bind
-  (
-   :map emmet-mode-keymap
-   ([remap yas-expand] . emmet-expand-line)
-   ("M-n"  . emmet-next-edit-point)
-   ("M-p"  . emmet-prev-edit-point)
-   ("C-c p" . emmet-preview-mode))
+  ( :map emmet-mode-keymap
+    ([remap yas-expand] . emmet-expand-line)
+    ("M-n"  . emmet-next-edit-point)
+    ("M-p"  . emmet-prev-edit-point)
+    ("C-c p" . emmet-preview-mode))
   :hook
   ;;(rjsx-mode . (lambda () (setq emmet-expand-jsx-className? t)))
   (web-mode . emmet-mode)
@@ -2333,18 +2319,17 @@ TODO: seperate sections (html, css..)
   (dired-dwim-target t)
   (mouse-1-click-follows-link nil)
   :bind
-  (
-   :map dired-mode-map
-   ("H" . dired-hide-details-mode)
-   ("C-M-u" . dired-up-directory)
-   ("O" . browse-url-of-dired-file)                  ; open with associated app
-   ("<mouse-1>" . fk/dired-left-click)               ; left click
-   ("<mouse-2>" . dired-up-directory)                ; middle click
-   ("<mouse-3>" . (lambda (event) (interactive "e")  ; right click
-                    (mouse-set-point event)
-                    (dired-subtree-toggle)))
-   ("RET" . fk/dired-smart-open)
-   ("C-c C-e" . wdired-change-to-wdired-mode))
+  ( :map dired-mode-map
+    ("H" . dired-hide-details-mode)
+    ("C-M-u" . dired-up-directory)
+    ("O" . browse-url-of-dired-file)                  ; open with associated app
+    ("<mouse-1>" . fk/dired-left-click)               ; left click
+    ("<mouse-2>" . dired-up-directory)                ; middle click
+    ("<mouse-3>" . (lambda (event) (interactive "e")  ; right click
+                     (mouse-set-point event)
+                     (dired-subtree-toggle)))
+    ("RET" . fk/dired-smart-open)
+    ("C-c C-e" . wdired-change-to-wdired-mode))
   :hook
   (dired-mode . dired-hide-details-mode)
   ;; Fix `save-place' in dired when opening from bookmarks (mostly from dashboard)
@@ -2380,9 +2365,8 @@ else call `dired-find-file'"
   :custom
   (dired-omit-files "^\\..*$")
   :bind
-  (
-   :map dired-mode-map
-   ("h" . dired-omit-mode)))
+  ( :map dired-mode-map
+    ("h" . dired-omit-mode)))
 #+END_SRC
 
 *** Dired Icons
@@ -2411,10 +2395,9 @@ else call `dired-find-file'"
   :custom
   (dired-subtree-use-backgrounds nil)
   :bind
-  (
-   :map dired-mode-map
-   ("TAB" . dired-subtree-toggle))
-   ("<tab>" . dired-subtree-toggle)
+  ( :map dired-mode-map
+    ("TAB" . dired-subtree-toggle)
+    ("<tab>" . dired-subtree-toggle))
   :config
   ;; Fix "no icons in subtree" issue.
   (defadvice dired-subtree-toggle
@@ -2426,9 +2409,8 @@ else call `dired-find-file'"
 (use-package dired-sidebar
   :commands dired-sidebar-toggle-sidebar
   :bind*
-  (
-   :map windows
-   ("t" . dired-sidebar-toggle-sidebar))
+  ( :map windows
+    ("t" . dired-sidebar-toggle-sidebar))
   :hook
   (dired-sidebar-mode . fk/darken-background)
   :config
@@ -2444,9 +2426,8 @@ else call `dired-find-file'"
 (use-package ibuffer-sidebar
   :commands ibuffer-sidebar-toggle-sidebar
   :bind
-  (
-   :map ibuffer-mode-map
-   ("M-o" . nil)))
+  ( :map ibuffer-mode-map
+    ("M-o" . nil)))
 #+END_SRC
 
 *** Dired Show Readme
@@ -2499,23 +2480,22 @@ else call `dired-find-file'"
   (org-drawer ((t (:foreground nil :inherit font-lock-comment-face))))
   (org-table ((t (:foreground "white"))))
   :bind
-  (
-   :map org
-   ("c" . org-capture)
-   :map org-mode-map
-   ("C-c C-e" . org-edit-special)
-   ("M-n" . org-next-visible-heading)
-   ("M-p" . org-previous-visible-heading)
-   ("C-c C-f". fk/org-imenu)
-   ("C-x C-1" . outline-hide-other)
-   ;; ("" . org-shiftright) TODO: find proper keybinding
-   ;; ("" . org-shiftleft)
-   ;; ("" . org-metaright)
-   ;; ("" . org-metaleft)
-   ;; ("" . org-metaup)
-   ;; ("" . org-metadown
-   :map org-src-mode-map
-   ("C-c C-c" . org-edit-src-exit))
+  ( :map org
+    ("c" . org-capture)
+    :map org-mode-map
+    ("C-c C-e" . org-edit-special)
+    ("M-n" . org-next-visible-heading)
+    ("M-p" . org-previous-visible-heading)
+    ("C-c C-f". fk/org-imenu)
+    ("C-x C-1" . outline-hide-other)
+    ;; ("" . org-shiftright) TODO: find proper keybinding
+    ;; ("" . org-shiftleft)
+    ;; ("" . org-metaright)
+    ;; ("" . org-metaleft)
+    ;; ("" . org-metaup)
+    ;; ("" . org-metadown
+    :map org-src-mode-map
+    ("C-c C-c" . org-edit-src-exit))
   :config
   (add-to-list 'org-emphasis-alist '("#" (:box '(:line-width -1))))  ; FIXME: does not work.
 
@@ -2651,9 +2631,8 @@ else call `dired-find-file'"
   :custom
   (org-roam-directory "~/org/roam/")
   :bind
-  (
-   :map org
-   ("o" . org-roam-find-file)))
+  ( :map org
+    ("o" . org-roam-find-file)))
 #+END_SRC
 
 **** Org Roam Server
@@ -2677,15 +2656,14 @@ else call `dired-find-file'"
 (use-package magit
   :commands magit
   :bind*
-  (
-   :map version-control
-   ("v" . magit-status)
-   ("s" . magit-status)
-   :map magit-mode-map
-   ("o" . (lambda () (interactive)
-            (call-interactively 'magit-diff-visit-file-other-window)
-            (recenter-top-bottom)))
-   ("C-c C-f" . magit-find-file))
+  ( :map version-control
+    ("v" . magit-status)
+    ("s" . magit-status)
+    :map magit-mode-map
+    ("o" . (lambda () (interactive)
+             (call-interactively 'magit-diff-visit-file-other-window)
+             (recenter-top-bottom)))
+    ("C-c C-f" . magit-find-file))
   :hook
   ;;(magit-mode . magit-toggle-margin) FIXME: does not work
   ;;(magit-mode . magit-toggle-margin-details)
@@ -2697,9 +2675,8 @@ else call `dired-find-file'"
 (use-package magit-todos
   :commands helm-magit-todos
   :bind*
-  (
-   :map version-control
-   ("t" . helm-magit-todos))
+  ( :map version-control
+    ("t" . helm-magit-todos))
   :hook (magit-mode . magit-todos-mode))
 #+END_SRC
 
@@ -2726,11 +2703,10 @@ Pull Requests, Issues etc.
   (diff-hl-change ((t (:background "#492949" :foreground "mediumpurple1"))))
   (diff-hl-delete ((t (:background "#492929" :foreground "orangered2"))))
   :bind
-  (
-   :map version-control
-   ("n" . diff-hl-next-hunk)
-   ("p" . diff-hl-previous-hunk)
-   ("r" . diff-hl-revert-hunk))
+  ( :map version-control
+    ("n" . diff-hl-next-hunk)
+    ("p" . diff-hl-previous-hunk)
+    ("r" . diff-hl-revert-hunk))
   :config
   (global-diff-hl-mode)
   :hook
@@ -2824,15 +2800,14 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   ;; match with fk/darken-background
   (vterm-color-default ((t (:background ,fk/dark-color))))
   :bind
-  (
-   :map vterm-mode-map
-   ("C-c C-e" . vterm-copy-mode)
-   ("M-m" . nil)
-   ("M-u" . nil)
-   ("<f1>" . nil)
-   :map vterm-copy-mode-map
-   ("C-c C-e" . vterm-copy-mode)
-   ("C-c C-c" . vterm-copy-mode))
+  ( :map vterm-mode-map
+    ("C-c C-e" . vterm-copy-mode)
+    ("M-m" . nil)
+    ("M-u" . nil)
+    ("<f1>" . nil)
+    :map vterm-copy-mode-map
+    ("C-c C-e" . vterm-copy-mode)
+    ("C-c C-c" . vterm-copy-mode))
   :config
   :hook
   (vterm-mode . (lambda () (setq-local global-hl-line-mode nil
@@ -2900,14 +2875,13 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (go-translate-inputs-function 'go-translate-inputs-current-or-prompt)
   (go-translate-buffer-follow-p t)
   :bind*
-  (
-   :map text
-   :prefix-map google-translate
-   :prefix "g"
-   ("g" . go-translate-popup-current)
-   ("G" . go-translate)
-   ("b" . go-translate)
-   ("e" . go-translate-echo-area)))
+  ( :map text
+    :prefix-map google-translate
+    :prefix "g"
+    ("g" . go-translate-popup-current)
+    ("G" . go-translate)
+    ("b" . go-translate)
+    ("e" . go-translate-echo-area)))
 #+END_SRC
 
 ** PDF
@@ -2919,12 +2893,11 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :custom
   (pdf-view-display-size 'fit-page)
   :bind
-  (
-   :map pdf-view-mode-map
-   ("O" . pdf-occur)
-   ("d" . pdf-view-midnight-minor-mode)
-   ("s a" . pdf-view-auto-slice-minor-mode)
-   ("t" . (lambda (beg end) (interactive "r") (go-translate))))
+  ( :map pdf-view-mode-map
+    ("O" . pdf-occur)
+    ("d" . pdf-view-midnight-minor-mode)
+    ("s a" . pdf-view-auto-slice-minor-mode)
+    ("t" . (lambda (beg end) (interactive "r") (go-translate))))
   :hook
   (pdf-view-mode . pdf-links-minor-mode)
   (pdf-view-mode . pdf-isearch-minor-mode)
@@ -2948,10 +2921,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (use-package gif-screencast
   :straight (:host gitlab :repo "ambrevar/emacs-gif-screencast")
   :bind
-  (
-   :map gif-screencast-mode-map
-   ("<f8>". gif-screencast-toggle-pause)
-   ("<f9>". gif-screencast-stop)))
+  ( :map gif-screencast-mode-map
+    ("<f8>". gif-screencast-toggle-pause)
+    ("<f9>". gif-screencast-stop)))
 #+END_SRC
 
 ** Slack
@@ -3019,6 +2991,19 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     (setq org-plantuml-jar-path plantuml-jar-path)))
 #+END_SRC
 
+** XWWP (Xwidget Webkit Enhancement)
+#+BEGIN_SRC emacs-lisp
+(use-package xwidget
+  :straight (:type built-in)
+  :commands xwidget-webkit-browse-url)
+
+(use-package xwwp
+  :commands (xwwp xwwp-browse-url-other-window)
+  :bind
+  ( :map xwidget-webkit-mode-map
+    ("f" . xwwp-follow-link)))
+#+END_SRC
+
 * File Modes
 ** Markdown
 #+BEGIN_SRC emacs-lisp
@@ -3026,10 +3011,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :mode "\\.md\\'"
   :custom (markdown-header-scaling t)
   :bind
-  (
-   :map markdown-mode-map
-   ("M-n" . markdown-next-visible-heading)
-   ("M-p" . markdown-previous-visible-heading)))
+  ( :map markdown-mode-map
+    ("M-n" . markdown-next-visible-heading)
+    ("M-p" . markdown-previous-visible-heading)))
 #+END_SRC
 
 ** Fish
