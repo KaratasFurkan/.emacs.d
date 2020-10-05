@@ -288,8 +288,8 @@ git clone https://github.com/KaratasFurkan/.emacs.d.git
 
 Open Emacs and let the configuration install necessary packages.
 
-Note: I use emacs 27.0.91, most of this configuration will work in old versions
-too but some parts needs emacs27+.
+Note: I use emacs 28.0.50 with feature/native-comp branch, most of this
+configuration will work in old versions too but some parts needs emacs27+.
 
 ** init.el
 init.el is just used to load literate config.
@@ -2357,6 +2357,7 @@ with associated application."
 
   ;; TODO: change this to "open video (maybe some other types too) files with
   ;; associated apps".
+  (advice-add 'browse-url :override 'browse-url-xdg-open)  ; I had to add this in emacs28
   (defun fk/dired-smart-open ()
     "If file size bigger than 50mb, open with associated system application,
 else call `dired-find-file'"
