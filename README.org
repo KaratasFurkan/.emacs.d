@@ -2177,7 +2177,15 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   :after lsp-mode
   :custom
   (lsp-pyright-auto-import-completions nil)
-  (lsp-pyright-typechecking-mode "off"))
+  (lsp-pyright-typechecking-mode "off")
+  :config
+  (let ((process (start-process "pyright-updates" nil
+                                "bash" "-c" "npm outdated -g | grep pyright | wc -l"))
+        (filter (lambda (process output)
+                  (pcase output
+                    ("0\n" (message "Pyright is up to date."))
+                    ("1\n" (message "A pyright update is available."))))))
+    (set-process-filter process filter)))
 #+END_SRC
 
 ** TODO Web Mode
