@@ -2355,7 +2355,18 @@ else call `dired-find-file'"
     (if (> (file-attribute-size (file-attributes (dired-file-name-at-point)))
            50000000)
         (browse-url-of-dired-file)
-      (dired-find-file))))
+      (dired-find-file)))
+
+  ;; Dired in single buffer (prevent dired from opening a lot of buffers)
+  (put 'dired-find-alternate-file 'disabled nil)
+
+  (defun fk/dired-up-directory ()
+    "`dired-up-directory' in same buffer."
+    (interactive)
+    (find-alternate-file ".."))
+
+  (advice-add 'dired-up-directory :override 'fk/dired-up-directory)
+  (advice-add 'dired-find-file :override 'dired-find-alternate-file))
 #+END_SRC
 
 *** Dired-X
