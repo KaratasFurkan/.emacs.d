@@ -1360,8 +1360,9 @@ org-mode activated."
 (global-set-key (kbd "C-x C-k") 'kill-current-buffer)
 (global-set-key (kbd "M-l") 'move-to-window-line-top-bottom)
 ;; Split & Switch
-(global-set-key (kbd "C-x 2") 'fk/split-window-below-and-switch)
-(global-set-key (kbd "C-x 3") 'fk/split-window-right-and-switch)
+(global-set-key (kbd "C-1") 'delete-other-windows)
+(global-set-key (kbd "C-2") 'fk/split-window-below-and-switch)
+(global-set-key (kbd "C-3") 'fk/split-window-right-and-switch)
 ;; Scroll less than default
 (global-set-key (kbd "C-v") (lambda () (interactive) (scroll-up-command 15)))
 (global-set-key (kbd "M-v") (lambda () (interactive) (scroll-down-command 15)))
