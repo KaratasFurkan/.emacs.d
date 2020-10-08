@@ -2700,6 +2700,9 @@ else call `dired-find-file'"
 #+BEGIN_SRC emacs-lisp
 (use-package magit-todos
   :commands helm-magit-todos
+  :custom
+  (magit-todos-ignored-keywords '("DONE"))
+  (magit-todos-exclude-globs '("*jquery*.js" "*min.js" "*min.css"))
   :bind*
   ( :map version-control
     ("t" . helm-magit-todos))
