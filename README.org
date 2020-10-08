@@ -1230,7 +1230,7 @@ company-yasnippet' to all company backends."
 (use-package company-box
   :custom
   (company-box-show-single-candidate t)
-  (company-box-frame-behavior 'point)
+  ;;(company-box-frame-behavior 'point)
   (company-box-icon-right-margin 0.5)
   (company-box-backends-colors '((company-yasnippet . (:annotation default))))
   :hook
@@ -1570,7 +1570,7 @@ from melpa. TODO: fix this
   :bind
   ("M-0" . treemacs-select-window)
   :hook
-  ;; TODO: test this
+  ;; Add current project to treemacs if not already added
   (treemacs-select . (lambda ()
                        (let* ((project-path (projectile-project-root))
                               (project-name (treemacs--filename project-path)))
@@ -1619,21 +1619,22 @@ from melpa. TODO: fix this
 
 ** Smart Jump
 #+BEGIN_SRC emacs-lisp
-(use-package smart-jump
-  :custom
-  (dumb-jump-aggressive t)
-  :bind
-  (([remap xref-find-definitions] . smart-jump-go)
-   ([remap xref-pop-marker-stack] . smart-jump-back)
-   ;;([remap xref-find-references] . smart-jump-references)
-   )
-  :config
-  (smart-jump-register :modes 'python-mode
-                       :order 1
-                       smart-jump-xref-fallback)
-  (smart-jump-register :modes 'python-mode
-                       :order 2
-                       smart-jump-simple-fallback))
+;; (use-package smart-jump
+;;   :custom
+;;   (dumb-jump-aggressive t)
+;;   :bind
+;;   (([remap xref-find-definitions] . smart-jump-go)
+;;    ([remap xref-pop-marker-stack] . smart-jump-back)
+;;    ;;([remap xref-find-references] . smart-jump-references)
+;;    )
+;;   :config
+;;   ;; TODO: this is not work anymore, write your own smart-jump
+;;   (smart-jump-register :modes 'python-mode
+;;                        :order 1
+;;                        smart-jump-xref-fallback)
+;;   (smart-jump-register :modes 'python-mode
+;;                        :order 2
+;;                        smart-jump-simple-fallback))
 #+END_SRC
 
 ** [[#dired-sidebar][Dired Sidebar-]]
@@ -1667,6 +1668,10 @@ otherwise."
 #+BEGIN_SRC emacs-lisp
 (keyboard-translate ?\C-h ?\C-?)  ; C-h as DEL, (F1 as `help-command')
 (global-set-key (kbd "C-w") 'fk/backward-kill-word-or-region)
+
+(bind-keys*
+ :map text
+ ("s" . sort-lines))
 #+END_SRC
 
 ** Undo Tree
@@ -1867,7 +1872,6 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
    (lambda (project-root)
      (string-prefix-p (expand-file-name "straight" user-emacs-directory) project-root)))
   :config
-  (require 'tramp)  ; TEMP: error: "Symbol's value as variable is void tramp-methods"
   (projectile-mode))
 #+END_SRC
 
@@ -2071,7 +2075,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ;; With pyright
   ;; sudo npm install -g pyright && pip install black flake8
   ;; NOTE: these hooks runs in reverse order
-  ;;(python-mode . (lambda () (setq-local company-prescient-mode nil)))
+  (python-mode . (lambda () (setq-local company-prescient-mode nil)))
   (python-mode . flycheck-mode)
   (python-mode . lsp-deferred)
   ;;(python-mode . (lambda () (fk/add-local-hook 'before-save-hook 'eglot-format-buffer)))
@@ -2394,20 +2398,20 @@ else call `dired-find-file'"
 *** Dired Icons
 #+BEGIN_SRC emacs-lisp
 (use-package all-the-icons-dired
-  :init
+  :hook (dired-mode . all-the-icons-dired-mode)
+  :config
   (add-to-list 'all-the-icons-icon-alist
                '("\\.mkv" all-the-icons-faicon "film"
                  :face all-the-icons-blue))
   (add-to-list 'all-the-icons-icon-alist
                '("\\.srt" all-the-icons-octicon "file-text"
                  :v-adjust 0.0 :face all-the-icons-dcyan))
-  :config
+
   ;; Turn off all-the-icons-dired-mode before wdired-mode
   (defadvice wdired-change-to-wdired-mode (before turn-off-icons activate)
     (all-the-icons-dired-mode -1))
   (defadvice wdired-change-to-dired-mode (after turn-on-icons activate)
-    (all-the-icons-dired-mode 1))
-  :hook (dired-mode . all-the-icons-dired-mode))
+    (all-the-icons-dired-mode 1)))
 #+END_SRC
 
 *** Dired Subtree
