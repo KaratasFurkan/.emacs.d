@@ -1867,10 +1867,11 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
      (let ((magit-display-buffer-function
             'magit-display-buffer-same-window-except-diff-v1))
        (magit))))
-  ;; Do not include straight repos (emacs packages) to project list
+  ;; Do not include straight repos (emacs packages) and emacs directory itself
+  ;; to project list
   (projectile-ignored-project-function
    (lambda (project-root)
-     (string-prefix-p (expand-file-name "straight" user-emacs-directory) project-root)))
+     (string-prefix-p (expand-file-name user-emacs-directory) project-root)))
   :config
   (projectile-mode))
 #+END_SRC
@@ -2080,13 +2081,16 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (python-mode . lsp-deferred)
   ;;(python-mode . (lambda () (fk/add-local-hook 'before-save-hook 'eglot-format-buffer)))
   ;;(python-mode . eglot-ensure)
-  (python-mode . importmagic-mode)
+  ;; importmagic runs ~100mb ipython process per python file, and it does not
+  ;; always find imports, 60%-70% maybe. I stop using this, but still want to keep.
+  ;;(python-mode . importmagic-mode)
   (python-mode . fk/activate-pyvenv)
   (python-mode . (lambda () (require 'tree-sitter-langs) (tree-sitter-hl-mode)))
   (python-mode . (lambda () (setq-local fill-column 88)))
   :config
   ;;;; Smart f-strings
   ;; https://github.com/ubolonton/emacs-tree-sitter/issues/52
+  ;; TODO: Create a mode from this
   (defun fk/python-f-string-ify ()
     ;; Does nothing if major-mode is not python or point is not on a string.
     (when-let* ((python-mode-p (eq major-mode 'python-mode))
@@ -2166,6 +2170,9 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 (use-package importmagic
   ;; pip install importmagic epc
+  ;;
+  ;; importmagic runs ~100mb ipython process per python file, and it does not
+  ;; always find imports, 60%-70% maybe. I stop using this, but still want to keep.
   :commands importmagic-mode)
 #+END_SRC
 
@@ -2408,6 +2415,7 @@ else call `dired-find-file'"
                  :v-adjust 0.0 :face all-the-icons-dcyan))
 
   ;; Turn off all-the-icons-dired-mode before wdired-mode
+  ;; TODO: disable icons just before save, not during wdired-mode
   (defadvice wdired-change-to-wdired-mode (before turn-off-icons activate)
     (all-the-icons-dired-mode -1))
   (defadvice wdired-change-to-dired-mode (after turn-on-icons activate)
@@ -3042,7 +3050,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :bind
   ( :map markdown-mode-map
     ("M-n" . markdown-next-visible-heading)
-    ("M-p" . markdown-previous-visible-heading)))
+    ("M-p" . markdown-previous-visible-heading))
+  :hook
+  (markdown-mode . emojify-mode))
 #+END_SRC
 
 ** Fish
