@@ -1395,6 +1395,7 @@ org-mode activated."
   (recentf-exclude `(,(expand-file-name "straight/" user-emacs-directory)
                      "/usr/share/emacs/"
                      "/usr/local/share/emacs/"
+                     "emacs/src/"
                      ,(expand-file-name "~/.virtualenvs")))
   (recentf-max-saved-items 200))
 #+END_SRC
