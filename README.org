@@ -317,19 +317,14 @@ initialization.
 asynchronously."
   (interactive)
   ;; prevent emacs from killing until tangle-process finished
-  (defvar tangle-process nil)
   (add-to-list 'kill-emacs-query-functions
                (lambda ()
-                 (or (not (process-live-p tangle-process))
+                 (or (not (process-live-p (get-process "tangle-process")))
                      (y-or-n-p "\"tangle-config\" is running; kill it? "))))
   ;; tangle config asynchronously
-  (let* ((tangle-config (format "(org-babel-tangle nil \"%s\")" config-el))
-         (process (setq tangle-process
-                        (start-process
-                         "tangle-config" nil
-                         "emacs" config-org "--batch" "--eval" tangle-config)))
-         (filter (lambda (process output) (message (s-trim output)))))
-    (set-process-filter process filter)))
+  (fk/async-process
+   (format "emacs %s --batch --eval '(org-babel-tangle nil \"%s\")'" config-org config-el)
+   "tangle-process"))
 #+END_SRC
 
 If the current org file is the literate config file, add a local hook to tangle
@@ -526,6 +521,30 @@ Keep Emacs directory clean.
 (defun fk/add-local-hook (hook function)
   "Add buffer-local hook."
   (add-hook hook function :local t))
+
+(defun fk/async-process (command &optional name filter)
+  "Start an async process by running the COMMAND string with bash. Return the
+process object for it.
+
+NAME is name for the process. Default is \"async-process\".
+
+FILTER is function that runs after the process is finished, its args should be
+\"(process output)\". Default is just messages the output."
+  (make-process
+   :command `("bash" "-c" ,command)
+   :name (if name name
+           "async-process")
+   :filter (if filter filter
+             (lambda (process output) (message (s-trim output))))))
+
+;; Examples:
+;;
+;; (fk/async-process "ls")
+;;
+;; (fk/async-process "ls" "my ls process"
+;;                   (lambda (process output) (message "Output:\n\n%s" output)))
+;;
+;; (fk/async-process "unknown command")
 #+END_SRC
 
 ** Helpful
@@ -2191,13 +2210,12 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (lsp-pyright-auto-import-completions nil)
   (lsp-pyright-typechecking-mode "off")
   :config
-  (let ((process (start-process "pyright-updates" nil
-                                "bash" "-c" "npm outdated -g | grep pyright | wc -l"))
-        (filter (lambda (process output)
-                  (pcase output
-                    ("0\n" (message "Pyright is up to date."))
-                    ("1\n" (message "A pyright update is available."))))))
-    (set-process-filter process filter)))
+  (fk/async-process
+   "npm outdated -g | grep pyright | wc -l" nil
+   (lambda (process output)
+     (pcase output
+       ("0\n" (message "Pyright is up to date."))
+       ("1\n" (message "A pyright update is available."))))))
 #+END_SRC
 
 ** TODO Web Mode
