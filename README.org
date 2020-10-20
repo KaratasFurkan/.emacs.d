@@ -77,7 +77,6 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#all-the-icons][All The Icons]]
   - [[#highlight-indent-guides][Highlight Indent Guides]]
   - [[#shackle][Shackle]]
-  - [[#golden-ratio][Golden Ratio]]
   - [[#zoom][Zoom]]
   - [[#emacs-dashboard][Emacs Dashboard]]
   - [[#stripe-buffer][Stripe Buffer]]
@@ -209,6 +208,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#ibuffer-sidebar][IBuffer Sidebar]]
     - [[#dired-show-readme][Dired Show Readme]]
     - [[#dired-posframe][Dired Posframe]]
+    - [[#dired-recent][Dired Recent]]
   - [[#org][Org]]
     - [[#org-1][Org]]
     - [[#custom-functions-5][Custom Functions]]
@@ -260,6 +260,8 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#dockerfile][Dockerfile]]
     - [[#docker-compose][Docker Compose]]
   - [[#yaml][Yaml]]
+  - [[#requirementstxt-pip][requirements.txt (pip)]]
+  - [[#pdf-][PDF-]]
 - [[#fun][Fun]]
   - [[#play-free-software-song][Play Free Software Song]]
   - [[#selectric-mode][Selectric Mode]]
@@ -887,34 +889,10 @@ Change default window dividers to a better built-in alternative.
   (shackle-mode))
 #+END_SRC
 
-** Golden Ratio
+** Zoom
 #+BEGIN_SRC emacs-lisp
 ;; TODO: Add a function to set window width to fill column width
 ;; according to current major mode
-(use-package golden-ratio
-  :commands golden-ratio-mode
-  :custom
-  (golden-ratio-max-width 90)
-  :config
-  (add-to-list 'golden-ratio-exclude-buffer-regexp "^\\*[hH]elm.*")
-  (add-to-list 'golden-ratio-exclude-buffer-regexp "^\\*vterm.*")
-  (with-eval-after-load 'winum
-    (dolist (funcs '(winum-select-window-1
-                     winum-select-window-2
-                     winum-select-window-3
-                     winum-select-window-4
-                     winum-select-window-5
-                     winum-select-window-6
-                     winum-select-window-7
-                     winum-select-window-8
-                     winum-select-window-9
-                     avy-pop-mark))
-      (add-to-list 'golden-ratio-extra-commands funcs))))
-#+END_SRC
-
-** Zoom
-#+BEGIN_SRC emacs-lisp
-;; (Better?) Golden Ratio Alternative.
 (use-package zoom
   :commands zoom-mode
   :custom
@@ -1538,8 +1516,7 @@ from melpa. TODO: fix this
   ("C-M-r" . xref-find-references))
 
 (use-package helm-xref
-  :init
-  (require 'helm-xref))  ; this package has no autoloads :(
+  :after helm xref)
 #+END_SRC
 
 ** Helm Swoop
@@ -1624,8 +1601,7 @@ from melpa. TODO: fix this
     ("C-M-o" . persp-next)
     ("C-x p" . persp-switch)
     ("C-x C-p" . persp-switch-quick)
-    ("M-P" . persp-switch-last)
-    ("C-M-q" . persp-switch-last)
+    ("M-q" . persp-switch-last)
     :map perspective-map
     ("p" . persp-switch)
     ("k" . persp-kill)
@@ -1789,7 +1765,9 @@ otherwise."
 ** Fill-Unfill Paragraph
 #+BEGIN_SRC emacs-lisp
 (use-package unfill
-  :bind ("M-q" . unfill-toggle))
+  :bind
+  ( :map text
+    ("f" . unfill-toggle)))
 #+END_SRC
 
 ** Expand Region
@@ -1887,6 +1865,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
      (let ((magit-display-buffer-function
             'magit-display-buffer-same-window-except-diff-v1))
        (magit))))
+  ;; Ignore emacs project (source codes)
+  (projectile-ignored-projects '("~/emacs/"))
   ;; Do not include straight repos (emacs packages) and emacs directory itself
   ;; to project list
   (projectile-ignored-project-function
@@ -2358,6 +2338,7 @@ TODO: seperate sections (html, css..)
   (dired-listing-switches "-lAhp --group-directories-first")
   (dired-dwim-target t)
   (mouse-1-click-follows-link nil)
+  (wdired-allow-to-change-permissions 'advanced)
   :bind
   ( :map dired-mode-map
     ("H" . dired-hide-details-mode)
@@ -2500,13 +2481,23 @@ else call `dired-find-file'"
   :commands dired-posframe-mode)
 #+END_SRC
 
+*** Dired Recent
+#+BEGIN_SRC emacs-lisp
+(use-package dired-recent
+  :after dired
+  :bind
+  ( :map files
+    ("d" . dired-recent-open))
+  :config
+  (dired-recent-mode))
+#+END_SRC
+
 ** Org
 *** Org
 #+BEGIN_SRC emacs-lisp
 (use-package org
   :straight (:type built-in)
   :custom
-  (org-agenda-files '("~/Org/agenda.org"))
   (org-confirm-babel-evaluate nil)
   (org-ellipsis "↴") ;; ↴, ▼, ▶, ⤵
   (org-src-window-setup 'current-window)
@@ -2659,6 +2650,7 @@ else call `dired-find-file'"
 
 *** Org Table Auto Align
 #+BEGIN_SRC emacs-lisp
+;; TODO: make this snippet a package
 ;; (use-package org-table-auto-align-mode ; NOTE: breaks undo
 ;;   :load-path (lambda () (concat user-emacs-directory "load/org-table-auto-align-mode"))
 ;;   :hook org-mode)
@@ -2730,6 +2722,8 @@ else call `dired-find-file'"
   :custom
   (magit-todos-ignored-keywords '("DONE"))
   (magit-todos-exclude-globs '("*jquery*.js" "*min.js" "*min.css"))
+  (magit-todos-max-items 30)
+  (magit-todos-auto-group-items 30)
   :bind*
   ( :map version-control
     ("t" . helm-magit-todos))
@@ -3102,6 +3096,12 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (yaml-mode . display-line-numbers-mode))
 #+END_SRC
 
+** requirements.txt (pip)
+#+BEGIN_SRC emacs-lisp
+(use-package pip-requirements)
+#+END_SRC
+
+** [[#pdf][PDF-]]
 * Fun
 ** Play Free Software Song
 #+BEGIN_SRC emacs-lisp
