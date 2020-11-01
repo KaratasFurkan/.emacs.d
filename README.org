@@ -216,6 +216,7 @@ File explorer (treemacs), auto complete (company), git&github integration
       - [[#org-imenu][org-imenu]]
       - [[#org-screenshot][org-screenshot]]
       - [[#org-indent-src-block][org-indent-src-block]]
+      - [[#org-sort-by-priority][org-sort-by-priority]]
     - [[#org-bullets][Org Bullets]]
     - [[#toc-org][Toc Org]]
     - [[#org-table-auto-align][Org Table Auto Align]]
@@ -225,6 +226,7 @@ File explorer (treemacs), auto complete (company), git&github integration
       - [[#org-roam-1][Org Roam]]
       - [[#org-roam-server][Org Roam Server]]
       - [[#company-org-roam][Company Org Roam]]
+    - [[#org-fancy-priorities][Org Fancy Priorities]]
   - [[#version-control][Version Control]]
     - [[#magit][Magit]]
       - [[#magit-1][Magit]]
@@ -2564,6 +2566,7 @@ else call `dired-find-file'"
                             "* %?\nCREATED: %U")))
   (org-refile-targets '(("todos.org" :level . 1)
                         ("someday.org" :level . 1)))
+  (org-default-priority ?A)
   ;;;; Getting Things Done ;;;;
   :custom-face
   (org-block ((t (:extend t))))
@@ -2587,6 +2590,7 @@ else call `dired-find-file'"
     ("C-c C-f". fk/org-imenu)
     ("C-x C-1" . outline-hide-other)
     ("C-c C-r" . org-refile)
+    ("C-c C-p" . org-priority-down)
     :map org-src-mode-map
     ("C-c C-c" . org-edit-src-exit))
   :config
@@ -2622,7 +2626,8 @@ else call `dired-find-file'"
                                '(("[ ]" . "☐")
                                  ("[X]" . "☑") ;; ✔
                                  ("[-]" . "◿"))))) ;; ◪, ⬔
-  (org-babel-after-execute . org-redisplay-inline-images))
+  (org-babel-after-execute . org-redisplay-inline-images)
+  (org-after-refile-insert . (lambda () (fk/org-sort-by-priority) (save-buffer))))
 #+END_SRC
 
 *** Custom Functions
@@ -2677,6 +2682,18 @@ else call `dired-find-file'"
   (org-edit-special)
   (fk/indent-buffer)
   (org-edit-src-exit))
+#+END_SRC
+
+**** org-sort-by-priority
+#+BEGIN_SRC emacs-lisp
+(defun fk/org-sort-by-priority ()
+  "Sort entries in level=2 by priority."
+  (interactive)
+  (org-map-entries (lambda () (condition-case nil
+                                  (org-sort-entries nil ?p)
+                                (error nil)))
+                   "LEVEL=1")
+  (org-set-startup-visibility))
 #+END_SRC
 
 *** Org Bullets
@@ -2741,6 +2758,18 @@ else call `dired-find-file'"
   :after org-roam
   :config
   (add-to-list 'company-backends 'company-org-roam))
+#+END_SRC
+
+*** Org Fancy Priorities
+#+BEGIN_SRC emacs-lisp
+(use-package org-fancy-priorities
+  :custom
+  (org-fancy-priorities-list '("[!!!]" "[!!]" "[!]"))
+  (org-priority-faces '((?A . (:foreground "orangered2" :weight extrabold :height 1.3))  ; org-mode
+                        (?B . (:foreground "orange" :weight extrabold :height 1.3))
+                        (?C . (:foreground "Burlywood" :weight extrabold :height 1.3))))
+  :hook
+  (org-mode . org-fancy-priorities-mode))
 #+END_SRC
 
 ** Version Control
