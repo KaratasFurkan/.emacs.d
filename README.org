@@ -139,6 +139,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#smart-jump][Smart Jump]]
   - [[#dired-sidebar-][Dired Sidebar-]]
   - [[#ibuffer-sidebar-][IBuffer Sidebar-]]
+  - [[#block-nav][Block Nav]]
 - [[#text-editing][Text Editing]]
   - [[#better-defaults-4][Better Defaults]]
   - [[#custom-functions-3][Custom Functions]]
@@ -1635,6 +1636,32 @@ from melpa. TODO: fix this
 
 ** [[#dired-sidebar][Dired Sidebar-]]
 ** [[#ibuffer-sidebar][IBuffer Sidebar-]]
+** Block Nav
+#+BEGIN_SRC emacs-lisp
+(use-package block-nav
+  :straight (:host github :repo "nixin72/block-nav.el")
+  :config
+  ;; (defun fk/block-nav-activate (file keymap)
+  ;;   (with-eval-after-load file
+  ;;     (define-key keymap (kbd "M-n") 'block-nav-next-block)
+  ;;     (define-key keymap (kbd "M-p") 'block-nav-previous-block)))
+  ;; (fk/block-nav-activate 'python 'python-mode-map)
+  ;; (fk/block-nav-activate 'yaml-mode 'yaml-mode-map)
+  ;; (fk/block-nav-activate 'docker-compose-mode 'docker-compose-mode-map)
+  (with-eval-after-load 'python
+    (define-key python-mode-map (kbd "M-n") 'block-nav-next-block)
+    (define-key python-mode-map (kbd "M-p") 'block-nav-previous-block))
+  (with-eval-after-load 'yaml-mode
+    (define-key yaml-mode-map (kbd "M-n") 'block-nav-next-block)
+    (define-key yaml-mode-map (kbd "M-p") 'block-nav-previous-block))
+  (with-eval-after-load 'docker-compose-mode
+    (define-key docker-compose-mode-map (kbd "M-n") 'block-nav-next-block)
+    (define-key docker-compose-mode-map (kbd "M-p") 'block-nav-previous-block))
+  (with-eval-after-load 'elisp-mode
+    (define-key emacs-lisp-mode-map (kbd "M-n") 'block-nav-next-block)
+    (define-key emacs-lisp-mode-map (kbd "M-p") 'block-nav-previous-block)))
+#+END_SRC
+
 * Text Editing
 ** Better Defaults
 #+BEGIN_SRC emacs-lisp
@@ -2066,8 +2093,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (python-indent-guess-indent-offset-verbose nil)
   :bind
   ( :map python-mode-map
-    ("M-n" . python-nav-forward-block)
-    ("M-p" . python-nav-backward-block)
+    ;;("M-n" . python-nav-forward-block)
+    ;;("M-p" . python-nav-backward-block)
     ("C-c i r" . python-indent-shift-right)
     ("C-c i l" . python-indent-shift-left))
   :hook
