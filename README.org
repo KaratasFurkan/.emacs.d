@@ -2553,6 +2553,18 @@ else call `dired-find-file'"
   (org-tags-column 0)
   (org-imenu-depth 20)
   (org-hide-emphasis-markers t)
+  ;;;; Getting Things Done ;;;;
+  (org-directory "~/org")  ; This is default already but lets declare explicitly
+  (org-agenda-files `(,(expand-file-name "agenda.org" org-directory)))
+  (org-display-custom-times t)
+  (org-time-stamp-custom-formats '("<%d/%m/%Y %A>" . "<%d/%m/%Y %A %H:%M>"))
+  (org-bookmark-names-plist '())  ; Do not create bookmarks
+  (org-capture-templates '(("i" "Capture to inbox" entry
+                            (file "inbox.org")
+                            "* %?\nCREATED: %U")))
+  (org-refile-targets '(("todos.org" :level . 1)
+                        ("someday.org" :level . 1)))
+  ;;;; Getting Things Done ;;;;
   :custom-face
   (org-block ((t (:extend t))))
   (org-ellipsis ((t (:foreground nil :inherit org-tag :weight light :height ,fk/default-font-size))))
@@ -2567,19 +2579,14 @@ else call `dired-find-file'"
   (org-table ((t (:foreground "white"))))
   :bind
   ( :map org
-    ("c" . org-capture)
+    ("c" . (lambda () (interactive) (org-capture :keys "i")))
     :map org-mode-map
     ("C-c C-e" . org-edit-special)
     ("M-n" . org-next-visible-heading)
     ("M-p" . org-previous-visible-heading)
     ("C-c C-f". fk/org-imenu)
     ("C-x C-1" . outline-hide-other)
-    ;; ("" . org-shiftright) TODO: find proper keybinding
-    ;; ("" . org-shiftleft)
-    ;; ("" . org-metaright)
-    ;; ("" . org-metaleft)
-    ;; ("" . org-metaup)
-    ;; ("" . org-metadown
+    ("C-c C-r" . org-refile)
     :map org-src-mode-map
     ("C-c C-c" . org-edit-src-exit))
   :config
