@@ -129,6 +129,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#helm-projectile][Helm Projectile]]
   - [[#helm-ag][Helm Ag]]
   - [[#helm-xref][Helm Xref]]
+  - [[#dumb-jump][Dumb Jump]]
   - [[#helm-swoop][Helm Swoop]]
   - [[#deadgrep][Deadgrep]]
   - [[#avy][Avy]]
@@ -136,7 +137,6 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#treemacs-1][Treemacs]]
     - [[#treemacs-projectile][Treemacs Projectile]]
   - [[#persp-mode][Persp Mode]]
-  - [[#smart-jump][Smart Jump]]
   - [[#dired-sidebar-][Dired Sidebar-]]
   - [[#ibuffer-sidebar-][IBuffer Sidebar-]]
   - [[#block-nav][Block Nav]]
@@ -1515,15 +1515,40 @@ from melpa. TODO: fix this
   :custom
   (xref-prompt-for-identifier nil)
   :bind
-  ("C-9" . xref-find-definitions)
   ("C-M-j" . xref-find-definitions)
+  ("C-M-k" . xref-pop-marker-stack)
+  ("C-9" . xref-find-definitions)
   ("C-8" . xref-pop-marker-stack)
-  ("C-M-S-j" . xref-pop-marker-stack)
+  ("C-M-S-j" . xref-find-definitions-other-window)
   ("C-M-9" . xref-find-definitions-other-window)
   ("C-M-r" . xref-find-references))
 
 (use-package helm-xref
   :after helm xref)
+#+END_SRC
+
+** Dumb Jump
+#+BEGIN_SRC emacs-lisp
+(use-package dumb-jump
+  :custom
+  (dumb-jump-aggressive t)
+  :bind
+  (([remap xref-find-definitions] . fk/smart-jump-go)
+   ([remap xref-pop-marker-stack] . fk/smart-jump-back))
+  :config
+  (defun fk/smart-jump-go ()
+    "Fallback `dumb-jump-go' if `xref-find-definitions' cannot find the source."
+    (interactive)
+    (condition-case nil
+        (call-interactively 'xref-find-definitions)
+      (error (call-interactively 'dumb-jump-go))))
+
+  (defun fk/smart-jump-back ()
+    "Fallback `dumb-jump-back' if xref-pop-marker-stack cannot return back."
+    (interactive)
+    (condition-case nil
+        (call-interactively 'xref-pop-marker-stack)
+      (error (call-interactively 'dumb-jump-back)))))
 #+END_SRC
 
 ** Helm Swoop
@@ -1618,26 +1643,6 @@ from melpa. TODO: fix this
   (persp-mode)
   :hook
   (kill-emacs . persp-state-save))
-#+END_SRC
-
-** Smart Jump
-#+BEGIN_SRC emacs-lisp
-;; (use-package smart-jump
-;;   :custom
-;;   (dumb-jump-aggressive t)
-;;   :bind
-;;   (([remap xref-find-definitions] . smart-jump-go)
-;;    ([remap xref-pop-marker-stack] . smart-jump-back)
-;;    ;;([remap xref-find-references] . smart-jump-references)
-;;    )
-;;   :config
-;;   ;; TODO: this is not work anymore, write your own smart-jump
-;;   (smart-jump-register :modes 'python-mode
-;;                        :order 1
-;;                        smart-jump-xref-fallback)
-;;   (smart-jump-register :modes 'python-mode
-;;                        :order 2
-;;                        smart-jump-simple-fallback))
 #+END_SRC
 
 ** [[#dired-sidebar][Dired Sidebar-]]
@@ -1829,7 +1834,6 @@ otherwise."
 ** General
 *** Better Defaults
 #+BEGIN_SRC emacs-lisp
-(define-key prog-mode-map (kbd "M-.") 'xref-find-definitions)
 #+END_SRC
 
 *** Custom Functions
