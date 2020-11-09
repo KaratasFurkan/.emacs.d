@@ -951,12 +951,27 @@ Change default window dividers to a better built-in alternative.
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
-  (show-week-agenda-p t)
-  (dashboard-items '((recents  . 5)
-                     (projects . 5)
-                     (bookmarks . 5)
+  (dashboard-week-agenda t)
+  (dashboard-item-shortcuts '((recents . "r")
+                              (bookmarks . "b")
+                              (projects . "p")
+                              (agenda . "a")))
+  (dashboard-items '((recents  . 10)
+                     (projects . 10)
+                     ;;(bookmarks . 5)
                      ;;(agenda . 5))
                      ))
+  (dashboard-set-navigator t)
+  ;; Format: "(icon title help action face prefix suffix)"
+  (dashboard-navigator-buttons
+   `(((,(all-the-icons-octicon "mark-github" :height 1.1 :v-adjust 0.0)
+       "Github"
+       "Browse github"
+       (lambda (&rest _) (browse-url "https://github.com/")))
+      (,(all-the-icons-faicon "briefcase" :height 1.1 :v-adjust 0.0)
+       "Codebase"
+       "My assigned tickets"
+       (lambda (&rest _) (browse-url "https://hipo.codebasehq.com/tickets"))))))
   :custom-face
   (dashboard-heading-face ((t (:weight bold))))
   :config
@@ -964,9 +979,12 @@ Change default window dividers to a better built-in alternative.
   (defun fk/home ()
     "Switch to home (dashboard) buffer."
     (interactive)
-    (switch-to-buffer "*dashboard*"))
+    (if (get-buffer dashboard-buffer-name)
+        (switch-to-buffer dashboard-buffer-name)
+      (dashboard-refresh-buffer)))
   :hook
-  (dashboard-mode . (lambda () (setq cursor-type nil)))
+  (dashboard-mode . (lambda () (setq-local cursor-type nil)))
+  (dashboard-mode . (lambda () (setq-local show-trailing-whitespace nil)))
   (dashboard-mode . (lambda () (face-remap-add-relative 'hl-line :weight 'bold))))
 #+END_SRC
 
