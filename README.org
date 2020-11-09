@@ -406,7 +406,8 @@ file; follow link? (y or n)"= every time, to always answer =yes=, set
 
 ;; Key Chord functionality in use-package
 (use-package use-package-chords
-  :config (key-chord-mode 1))
+  :hook
+  (dashboard-after-initialize . (lambda () (key-chord-mode 1))))
 #+END_SRC
 
 *** Notes
@@ -447,7 +448,7 @@ minibuffer interaction (helm etc.).
 (defun fk/restore-garbage-collection ()
   (run-at-time 1 nil (lambda () (setq gc-cons-threshold 30mb))))
 
-(add-hook 'emacs-startup-hook 'fk/restore-garbage-collection)
+(add-hook 'emacs-startup-hook 'fk/restore-garbage-collection 100)
 (add-hook 'minibuffer-setup-hook 'fk/defer-garbage-collection)
 (add-hook 'minibuffer-exit-hook 'fk/restore-garbage-collection)
 
@@ -462,7 +463,7 @@ minibuffer interaction (helm etc.).
 
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (setq file-name-handler-alist default-file-name-handler-alist)))
+            (setq file-name-handler-alist default-file-name-handler-alist)) 100)
 #+END_SRC
 
 ** Others
@@ -670,6 +671,8 @@ I use this to darken non-file buffers like treemacs, helm etc.
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+;; Do not show default modeline until doom-modeline is loaded
+(setq-default mode-line-format nil)
 #+END_SRC
 
 ** Font
@@ -815,6 +818,9 @@ size. This function also handles icons and modeline font sizes."
 *** Doom Modeline
 #+BEGIN_SRC emacs-lisp
 (use-package doom-modeline
+  :init
+  ;; show doom-modeline at the same time with dashboard
+  (add-hook 'emacs-startup-hook 'doom-modeline-mode -100)
   :custom
   (doom-modeline-buffer-encoding nil)
   (doom-modeline-vcs-max-length 20)
@@ -823,9 +829,8 @@ size. This function also handles icons and modeline font sizes."
   (mode-line-inactive ((t (:background ,fk/dark-color5))))
   (mode-line-highlight ((t (:inherit doom-modeline-bar :foreground "black"))))
   (doom-modeline-buffer-path ((t (:inherit font-lock-comment-face :slant normal))))
-  :config
-  (column-number-mode)
-  (doom-modeline-mode))
+  :hook
+  (dashboard-after-initialize . column-number-mode))
 #+END_SRC
 
 *** Anzu
@@ -854,8 +859,8 @@ Change default window dividers to a better built-in alternative.
   (page-break-lines-char ?—)
   :custom-face
   (page-break-lines ((t (:weight extra-light))))
-  :config
-  (global-page-break-lines-mode))
+  :hook
+  (dashboard-after-initialize . global-page-break-lines-mode))
 #+END_SRC
 
 ** [[#trailing-white-space][Trailing White Space-]]
@@ -880,8 +885,8 @@ Change default window dividers to a better built-in alternative.
                            ("HOLD" . "#dc752f")
                            ("FIXME" . "#dc752f")
                            ("XXX+" . "#dc752f")))
-  :config
-  (global-hl-todo-mode))
+  :hook
+  (dashboard-after-initialize . global-hl-todo-mode))
 #+END_SRC
 
 ** Beacon
@@ -901,8 +906,7 @@ Change default window dividers to a better built-in alternative.
 #+BEGIN_SRC emacs-lisp
 ;; Prerequisite for a few packages (e.g. treemacs, all-the-icons-dired)
 ;; "M-x all-the-icons-install-fonts" to install fonts at the first time.
-(use-package all-the-icons
-  :commands all-the-icons-install-fonts)
+(use-package all-the-icons)
 #+END_SRC
 
 ** Highlight Indent Guides
@@ -927,8 +931,8 @@ Change default window dividers to a better built-in alternative.
                    ("\\`\\*helpful.*?\\*\\'" :regexp t :align t :size 0.4)
                    ("\\`\\*Go Translate*?\\*\\'" :regexp t :align t :size 0.4)
                    (help-mode :align t :size 0.4 :select t)))
-  :config
-  (shackle-mode))
+  :hook
+  (dashboard-after-initialize . shackle-mode))
 #+END_SRC
 
 ** Zoom
@@ -964,14 +968,21 @@ Change default window dividers to a better built-in alternative.
   (dashboard-set-navigator t)
   ;; Format: "(icon title help action face prefix suffix)"
   (dashboard-navigator-buttons
-   `(((,(all-the-icons-octicon "mark-github" :height 1.1 :v-adjust 0.0)
+   `((;; Github
+      (,(all-the-icons-octicon "mark-github" :height 1.1 :v-adjust 0.0)
        "Github"
        "Browse github"
        (lambda (&rest _) (browse-url "https://github.com/")))
-      (,(all-the-icons-faicon "briefcase" :height 1.1 :v-adjust 0.0)
+      ;; Codebase
+      (,(all-the-icons-faicon "briefcase" :height 1.1 :v-adjust -0.1)
        "Codebase"
        "My assigned tickets"
-       (lambda (&rest _) (browse-url "https://hipo.codebasehq.com/tickets"))))))
+       (lambda (&rest _) (browse-url "https://hipo.codebasehq.com/tickets")))
+      ;; Perspective
+      (,(all-the-icons-octicon "history" :height 1.1 :v-adjust 0.0)
+       "Reload last session"
+       "Reload last session"
+       (lambda (&rest _) (persp-state-load persp-state-default-file))))))
   :custom-face
   (dashboard-heading-face ((t (:weight bold))))
   :config
@@ -1051,7 +1062,7 @@ Change default window dividers to a better built-in alternative.
     ("s" . olivetti-shrink))
   :hook
   (olivetti-mode . (lambda () (face-remap-add-relative 'fringe fk/olivetti-fringe-face)))
-  (emacs-startup . fk/olivetti-single-window-mode)
+  (dashboard-after-initialize . fk/olivetti-single-window-mode)
   :config
   (defvar fk/default-olivetti-fringe-face `(:background ,fk/dark-color2))
   (defvar fk/darker-olivetti-fringe-face `(:background ,fk/dark-color9))
@@ -1142,16 +1153,15 @@ Change default window dividers to a better built-in alternative.
   :custom-face
   (which-key-posframe ((t (:background ,fk/dark-color))))
   (which-key-posframe-border ((t (:background "gray"))))
-  :config
-  (which-key-mode)
-  (which-key-posframe-mode))
+  :hook
+  (dashboard-after-initialize . which-key-posframe-mode)
+  (dashboard-after-initialize . which-key-mode))
 #+END_SRC
 
 ** Helm (General Completion & Selection)
 *** Helm
 #+BEGIN_SRC emacs-lisp
 (use-package helm
-  :defer nil
   :custom
   (helm-M-x-always-save-history t)
   (helm-display-function 'pop-to-buffer)
@@ -1174,9 +1184,6 @@ Change default window dividers to a better built-in alternative.
    ("<tab>" . helm-execute-persistent-action)
    ("C-z" . helm-select-action)
    ("C-w" . backward-kill-word)  ; Fix C-w
-   :map helm-buffer-map
-   ("M-d" . helm-buffer-run-kill-buffers)
-   ("C-M-d" . helm-buffer-run-kill-persistent)
    :map files
    ("f" . helm-find-files)
    ("r" . helm-recentf)
@@ -1184,14 +1191,19 @@ Change default window dividers to a better built-in alternative.
    :map buffers
    ("b" . helm-buffers-list))
   :hook
+  (dashboard-after-initialize . helm-mode)
+  (helm-mode . savehist-mode)
   (helm-major-mode . fk/darken-background)
   :config
-  (helm-mode)
-  (savehist-mode)
-  (dolist (regexp '("\\*epc con" "\\*helm" "\\*EGLOT" "\\*straight" "\\*Flymake"
-                    "\\*eldoc" "\\*Compile-Log" "\\*xref" "\\*company"
-                    "\\*aw-posframe" "\\*Warnings" "\\*Backtrace"))
-    (add-to-list 'helm-boring-buffer-regexp-list regexp))
+  (with-eval-after-load 'helm-buffers
+    (dolist (regexp '("\\*epc con" "\\*helm" "\\*EGLOT" "\\*straight" "\\*Flymake"
+                      "\\*eldoc" "\\*Compile-Log" "\\*xref" "\\*company"
+                      "\\*aw-posframe" "\\*Warnings" "\\*Backtrace"))
+      (add-to-list 'helm-boring-buffer-regexp-list regexp))
+    (bind-keys
+     :map helm-buffer-map
+     ("M-d" . helm-buffer-run-kill-buffers)
+     ("C-M-d" . helm-buffer-run-kill-persistent)))
 
   ;; "Waiting for process to die...done" fix
   (defun kadir/helm--collect-matches (orig-fun src-list &rest args)
@@ -1239,7 +1251,6 @@ Change default window dividers to a better built-in alternative.
 *** Company
 #+BEGIN_SRC emacs-lisp
 (use-package company
-  :defer nil
   :custom
   (company-idle-delay 0)
   (company-minimum-prefix-length 1)
@@ -1257,9 +1268,9 @@ Change default window dividers to a better built-in alternative.
     ("C-s" . company-complete-selection)  ; Mostly to use during yasnippet expansion
     ("C-n" . company-select-next)
     ("C-p" . company-select-previous))
+  :hook
+  (dashboard-after-initialize . global-company-mode)
   :config
-  (global-company-mode)
-
   (add-to-list 'company-begin-commands 'backward-delete-char-untabify)
 
   ;; Show YASnippet snippets in company
@@ -1327,7 +1338,6 @@ company-yasnippet' to all company backends."
   ;; jump to next field, even when company window is active. If there
   ;; is need to complete company's selection, use `C-s'
   ;; (`company-complete-selection').
-  :defer nil
   :custom
   (yas-indent-line nil)
   (yas-inhibit-overlay-modification-protection t)
@@ -1342,9 +1352,8 @@ company-yasnippet' to all company backends."
    ("TAB" . (lambda () (interactive) (company-abort) (yas-next-field)))
    ("<tab>" . (lambda () (interactive) (company-abort) (yas-next-field))))
   :hook
-  (snippet-mode . (lambda () (setq-local require-final-newline nil)))
-  :config
-  (yas-global-mode))
+  (dashboard-after-initialize . yas-global-mode)
+  (snippet-mode . (lambda () (setq-local require-final-newline nil))))
 #+END_SRC
 
 ** [[#emmet-mode][Emmet-]] (Snippet Completion for HTML & CSS)
@@ -1684,7 +1693,6 @@ from melpa. TODO: fix this
 ** Persp Mode
 #+BEGIN_SRC emacs-lisp
 (use-package perspective
-  :defer nil
   :custom
   (persp-mode-prefix-key (kbd "M-m p"))
   (persp-state-default-file (no-littering-expand-var-file-name "perspective.el"))
@@ -1701,9 +1709,8 @@ from melpa. TODO: fix this
     ("k" . persp-kill)
     ("l" . persp-switch-last)
     ("q" . persp-switch-quick))
-  :config
-  (persp-mode)
   :hook
+  (dashboard-after-initialize . persp-mode)
   (kill-emacs . persp-state-save))
 #+END_SRC
 
@@ -1773,12 +1780,11 @@ otherwise."
 ** Undo Tree
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
-  :defer nil
   :bind
   (("C-u" . undo-tree-undo)
    ("C-S-u" . undo-tree-redo))
-  :config
-  (global-undo-tree-mode))
+  :hook
+  (dashboard-after-initialize . global-undo-tree-mode))
 #+END_SRC
 
 ** Trailing White Space
@@ -1798,8 +1804,8 @@ otherwise."
   (show-trailing-whitespace t)  ; not from whitespace-cleanup-mode.el
   :custom-face
   (trailing-whitespace ((t (:background ,fk/light-color7))))  ; not from whitespace-cleanup-mode.el
-  :config
-  (global-whitespace-cleanup-mode))
+  :hook
+  (dashboard-after-initialize . global-whitespace-cleanup-mode))
 #+END_SRC
 
 ** Case Switching
@@ -1829,8 +1835,8 @@ otherwise."
   (show-paren-when-point-inside-paren t)
   :custom-face
   (show-paren-match ((t (:background nil :weight bold :foreground "white"))))
-  :config
-  (show-paren-mode))
+  :hook
+  (dashboard-after-initialize . show-paren-mode))
 #+END_SRC
 
 ** Multiple Cursors
@@ -1851,8 +1857,9 @@ otherwise."
 ** Wrap Region
 #+BEGIN_SRC emacs-lisp
 (use-package wrap-region
+  :hook
+  (dashboard-after-initialize . wrap-region-global-mode)
   :config
-  (wrap-region-global-mode)
   (wrap-region-add-wrapper "=" "=" nil 'org-mode)
   (wrap-region-add-wrapper "*" "*" nil 'org-mode)
   (wrap-region-add-wrapper "_" "_" nil 'org-mode)
@@ -1877,9 +1884,7 @@ otherwise."
   (expand-region-fast-keys-enabled nil)
   (expand-region-subword-enabled t)
   :bind
-  ("C-t" . er/expand-region)
-  :chords
-  ("jk" . er/expand-region))  ; just to try
+  ("C-t" . er/expand-region))
 #+END_SRC
 
 ** Flyspell Popup
@@ -1955,6 +1960,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 *** Projectile
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
+  :after f
   :custom
   (projectile-auto-discover nil)
   (projectile-project-search-path (f-directories "~/projects"))
@@ -1971,8 +1977,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (projectile-ignored-project-function
    (lambda (project-root)
      (string-prefix-p (expand-file-name user-emacs-directory) project-root)))
-  :config
-  (projectile-mode))
+  :hook
+  (dashboard-after-initialize . projectile-mode))
 #+END_SRC
 
 *** Flycheck
@@ -2897,7 +2903,6 @@ else call `dired-find-file'"
 **** Org Roam
 #+BEGIN_SRC emacs-lisp
 (use-package org-roam
-  :defer nil
   :custom
   (org-roam-directory "~/org/roam/")
   :bind
@@ -3067,7 +3072,6 @@ Pull Requests, Issues etc.
 *** diff-hl
 #+BEGIN_SRC emacs-lisp
 (use-package diff-hl
-  :defer nil
   :custom
   (diff-hl-global-modes '(not org-mode))
   :custom-face
@@ -3079,14 +3083,16 @@ Pull Requests, Issues etc.
     ("n" . diff-hl-next-hunk)
     ("p" . diff-hl-previous-hunk)
     ("r" . diff-hl-revert-hunk))
-  :config
-  (global-diff-hl-mode)
   :hook
+  (dashboard-after-initialize . global-diff-hl-mode)
   (diff-hl-mode . diff-hl-flydiff-mode))
 #+END_SRC
 
 *** Smerge + Hydra
 #+BEGIN_SRC emacs-lisp
+(use-package hydra
+  :after smerge)
+
 (use-package hydra-posframe
   :straight (:host github :repo "Ladicle/hydra-posframe")
   :after hydra
@@ -3097,11 +3103,13 @@ Pull Requests, Issues etc.
   (hydra-face-blue ((t (:foreground "#46D9FF" :bold t))))
   (hydra-posframe-face ((t (:background ,fk/dark-color))))
   (hydra-posframe-border-face ((t (:background ,fk/dark-color))))
-  :config (hydra-posframe-mode))
+  :config
+  (hydra-posframe-mode))
 
 ;; Source: https://github.com/alphapapa/unpackaged.el#smerge-mode
 (use-package smerge-mode
   :straight (:type built-in)
+  :after magit
   :config
   (defhydra smerge-hydra
     (
@@ -3284,6 +3292,7 @@ the `docker-container-prompt-regexp'."
 *** Company Restclient
 #+BEGIN_SRC emacs-lisp
 (use-package company-restclient
+  :after restclient
   :hook
   (restclient-mode . (lambda ()
                        (add-to-list 'company-backends 'company-restclient))))
@@ -3496,7 +3505,10 @@ the `docker-container-prompt-regexp'."
 
 ** requirements.txt (pip)
 #+BEGIN_SRC emacs-lisp
-(use-package pip-requirements)
+(use-package pip-requirements
+  :mode (("\\.pip\\'" . pip-requirements-mode)
+         ("requirements[^z-a]*\\.txt\\'" . pip-requirements-mode)
+         ("requirements\\.in" . pip-requirements-mode)))
 #+END_SRC
 
 ** [[#pdf][PDF-]]
