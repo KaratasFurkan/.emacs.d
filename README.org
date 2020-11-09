@@ -2270,10 +2270,11 @@ beginning of the string that has curly brackets in it."
 
 
   ;; Grep functions for Django
+
   (defun fk/helm-ag-search-with-glob (glob &optional query)
     (interactive)
     (let ((helm-ag-base-command (concat helm-ag-base-command " --glob " glob)))
-      (fk/helm-do-ag-project-root-or-current-dir (or query "^class"))))
+      (fk/helm-do-ag-project-root-or-current-dir (or query "^class "))))
 
   (defun fk/django-search-models ()
     (interactive)
@@ -2322,7 +2323,31 @@ beginning of the string that has curly brackets in it."
    ("a" . fk/django-search-admins)
    ("p" . fk/django-search-permissions)
    ("x" . fk/django-search-mixins)
-   ("u" . fk/django-search-urls)))
+   ("u" . fk/django-search-urls))
+
+  ;; Utility functions for Django
+
+  (defun fk/django-copy-path-of-test-at-point ()
+    "Add path of the test at point to kill-ring. Returns the path."
+    (interactive)
+    (let* ((defuns (seq-subseq (split-string (which-function) "\\.") 0 2))
+           (class (car defuns))
+           (func (let ((f (-second-item defuns))) (and f (string-match "^test" f) f)))
+           (module (fk/django-get-module))
+           (path (concat module (and module class ".") class (and class func ".") func)))
+      (kill-new path)))
+
+  (defun fk/django-get-module ()
+    "pony-get-module originally."
+    (let* ((root (projectile-project-root))
+           (path (file-name-sans-extension (or buffer-file-name (expand-file-name default-directory)))))
+      (when (string-match (projectile-project-root) path)
+        (let ((path-to-class (substring path (match-end 0))))
+          (mapconcat 'identity (split-string path-to-class "/") ".")))))
+
+  (bind-keys*
+   :map django
+   ("c" . fk/django-copy-path-of-test-at-point)))
 #+END_SRC
 
 *** Pyvenv
