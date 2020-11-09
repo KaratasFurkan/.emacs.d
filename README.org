@@ -228,6 +228,7 @@ File explorer (treemacs), auto complete (company), git&github integration
       - [[#company-org-roam][Company Org Roam]]
     - [[#org-fancy-priorities][Org Fancy Priorities]]
     - [[#org-tree-slide][Org Tree Slide]]
+    - [[#org-export-twitter-bootstrap][Org Export Twitter Bootstrap]]
   - [[#version-control][Version Control]]
     - [[#magit][Magit]]
       - [[#magit-1][Magit]]
@@ -249,6 +250,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#pdf][PDF]]
     - [[#pdf-tools][PDF Tools]]
     - [[#interleave][Interleave]]
+    - [[#pdf-continuous-scroll-mode][PDF Continuous Scroll Mode]]
   - [[#emacs-screencast][Emacs Screencast]]
   - [[#slack][Slack]]
     - [[#slack-1][Slack]]
@@ -2963,6 +2965,12 @@ else call `dired-find-file'"
   :commands epresent-run)
 #+END_SRC
 
+*** Org Export Twitter Bootstrap
+#+BEGIN_SRC emacs-lisp
+(use-package ox-twbs
+  :after org)
+#+END_SRC
+
 ** Version Control
 *** Magit
 **** Magit
@@ -3303,6 +3311,14 @@ the `docker-container-prompt-regexp'."
   :commands interleave-mode
   :custom
   (interleave-disable-narrowing t))
+#+END_SRC
+
+*** PDF Continuous Scroll Mode
+#+BEGIN_SRC emacs-lisp
+(use-package pdf-continuous-scroll-mode
+  :straight (:host github :repo "dalanicolai/pdf-continuous-scroll-mode.el")
+  ;; M-x pdf-view-fit-width-to-window and disable olivetti before run this
+  :commands pdf-continuous-scroll-mode)
 #+END_SRC
 
 ** Emacs Screencast
