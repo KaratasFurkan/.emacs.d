@@ -50,6 +50,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#custom-functions][Custom Functions]]
     - [[#disable-all-themes][disable-all-themes]]
     - [[#darken-background][darken-background]]
+    - [[#presentation-mode][presentation-mode]]
   - [[#remove-redundant-ui][Remove Redundant UI]]
   - [[#font][Font]]
     - [[#font-1][Font]]
@@ -227,6 +228,7 @@ File explorer (treemacs), auto complete (company), git&github integration
       - [[#org-roam-server][Org Roam Server]]
       - [[#company-org-roam][Company Org Roam]]
     - [[#org-fancy-priorities][Org Fancy Priorities]]
+    - [[#org-tree-slide][Org Tree Slide]]
   - [[#version-control][Version Control]]
     - [[#magit][Magit]]
       - [[#magit-1][Magit]]
@@ -277,6 +279,8 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#helm-system-packages][Helm System Packages]]
   - [[#dimmer][Dimmer]]
   - [[#focus][Focus]]
+  - [[#command-log-mode][Command Log Mode]]
+  - [[#keypression][Keypression]]
 - [[#experimentals][Experimentals]]
 - [[#todos][TODOs]]
   - [[#explore][Explore]]
@@ -635,6 +639,35 @@ I use this to darken non-file buffers like treemacs, helm etc.
   (face-remap-add-relative 'default :background fk/dark-color))
 #+END_SRC
 
+*** presentation-mode
+#+BEGIN_SRC emacs-lisp
+(define-minor-mode fk/presentation-mode
+  "A global minor mode for presentations. Make things easy to see."
+  :global t
+  (if fk/presentation-mode
+      (progn
+        (fk/adjust-font-size 20)
+        (dimmer-mode 1)
+        (setq zoom-size '(100 . 30))
+        (zoom-mode 1)
+        (setq default-window-divider-default-bottom-width window-divider-default-bottom-width
+              default-window-divider-default-right-width window-divider-default-right-width)
+        (setq window-divider-default-bottom-width 7
+              window-divider-default-right-width 7)
+        (window-divider-mode 1)
+        (setq fk/olivetti-fringe-face fk/darker-olivetti-fringe-face)
+        (olivetti-mode 1))
+    (fk/adjust-font-size 0)
+    (dimmer-mode -1)
+    (setq zoom-size fk/zoom-default-size)
+    (zoom-mode -1)
+    (setq window-divider-default-bottom-width default-window-divider-default-bottom-width
+          window-divider-default-right-width default-window-divider-default-right-width)
+    (window-divider-mode 1)
+    (setq fk/olivetti-fringe-face fk/default-olivetti-fringe-face)
+    (olivetti-mode 1)))
+#+END_SRC
+
 ** Remove Redundant UI
 (Note: ":tangle early-init.el")
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
@@ -646,12 +679,20 @@ I use this to darken non-file buffers like treemacs, helm etc.
 ** Font
 *** Font
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
+(defconst fk/default-font-family "Source Code Pro")
 (defconst fk/default-font-size 90)
 (defconst fk/default-icon-size 15)
 
+(defconst fk/variable-pitch-font-family "Noto Serif")
+(defconst fk/variable-pitch-font-size 140)
+
 (set-face-attribute 'default nil
-                    :family "Source Code Pro"
+                    :family fk/default-font-family
                     :height fk/default-font-size)
+
+(set-face-attribute 'variable-pitch nil
+                    :family fk/variable-pitch-font-family
+                    :height fk/variable-pitch-font-size)
 
 (set-face-attribute 'fixed-pitch-serif nil
                     ;; Characters with fixed pitch face do not shown when height
@@ -899,8 +940,10 @@ Change default window dividers to a better built-in alternative.
 ;; according to current major mode
 (use-package zoom
   :commands zoom-mode
+  :preface
+  (defvar fk/zoom-default-size '(120 . 40))
   :custom
-  (zoom-size '(120 . 40)))
+  (zoom-size fk/zoom-default-size))
 #+END_SRC
 
 ** Emacs Dashboard
@@ -2645,7 +2688,8 @@ else call `dired-find-file'"
   (org-level-2 ((t (:height 1.2 :weight bold))))
   (org-level-1 ((t (:height 1.3 :weight bold))))
   (org-drawer ((t (:foreground nil :inherit font-lock-comment-face))))
-  (org-table ((t (:foreground "white"))))
+  (org-table ((t (:inherit fixed-pitch :foreground "white"))))
+  (org-document-title ((t (:height 1.5))))
   :bind
   ( :map org
     ("c" . (lambda () (interactive) (org-capture :keys "i")))
@@ -2661,6 +2705,7 @@ else call `dired-find-file'"
     ("C-c C-c" . org-edit-src-exit))
   :config
   (add-to-list 'org-emphasis-alist '("#" (:box '(:line-width -1))))  ; FIXME: does not work.
+  (setf (cdr (assoc "*" org-emphasis-alist)) '((:weight extra-bold :underline t :foreground "#DDDDDD")))
 
   (defun fk/org-babel-load-languages ()
     "Load languages I use."
@@ -2693,6 +2738,7 @@ else call `dired-find-file'"
                                  ("[X]" . "☑") ;; ✔
                                  ("[-]" . "◿"))))) ;; ◪, ⬔
   (org-babel-after-execute . org-redisplay-inline-images)
+  (org-mode . (lambda () (fk/add-local-hook 'before-save-hook 'org-redisplay-inline-images)))
   (org-after-refile-insert . (lambda () (fk/org-sort-by-priority) (save-buffer))))
 #+END_SRC
 
@@ -2836,6 +2882,83 @@ else call `dired-find-file'"
                         (?C . (:foreground "Burlywood" :weight extrabold :height 1.3))))
   :hook
   (org-mode . org-fancy-priorities-mode))
+#+END_SRC
+
+*** Org Tree Slide
+#+BEGIN_SRC emacs-lisp
+(use-package org-tree-slide
+  :commands org-tree-slide-mode
+  :custom
+  (org-tree-slide-activate-message "")
+  (org-tree-slide-deactivate-message "")
+  (org-tree-slide-breadcrumbs "    >    ")
+  (org-tree-slide-heading-emphasis t)
+  (org-tree-slide-slide-in-waiting 0.025)
+  :custom-face
+  (org-tree-slide-heading-level-1 ((t (:height 1.8 :weight bold))))
+  (org-tree-slide-heading-level-2 ((t (:height 1.5 :weight bold))))
+  (org-tree-slide-heading-level-3 ((t (:height 1.5 :weight bold))))
+  (org-tree-slide-heading-level-4 ((t (:height 1.5 :weight bold))))
+  :bind
+  ( :map org
+    ("s" . org-tree-slide-mode)
+    :map org-tree-slide-mode-map
+    ("<f8>" . org-tree-slide-content)
+    ("<f9>" . org-tree-slide-move-previous-tree)
+    ("<f10>" . org-tree-slide-move-next-tree)
+    ("C-n" . (lambda () (interactive) (if cursor-type
+                                          (next-line)
+                                        (setq-local cursor-type t)
+                                        (next-line)))))
+  :hook
+  (org-tree-slide-play . (lambda () (setq-local beacon-mode nil)))
+  (org-tree-slide-stop . (lambda () (setq-local beacon-mode t)))
+  (org-tree-slide-before-narrow . (lambda () (setq-local cursor-type nil)))
+  (org-tree-slide-stop . (lambda () (setq-local cursor-type t)))
+  (org-tree-slide-play . variable-pitch-mode)
+  (org-tree-slide-stop . (lambda () (variable-pitch-mode -1)))
+  (org-tree-slide-play . fk/hide-org-metalines-toggle)
+  (org-tree-slide-stop . fk/hide-org-metalines-toggle)
+  (org-tree-slide-before-narrow . org-remove-inline-images)
+  (org-tree-slide-after-narrow . org-display-inline-images)
+  (org-tree-slide-play . fk/org-tree-slide-update-modeline)
+  (org-tree-slide-stop . fk/org-tree-slide-update-modeline)
+  (org-tree-slide-play . (lambda () (setq-local olivetti-body-width 95) (olivetti-mode 1)))
+  (org-tree-slide-stop . (lambda () (setq-local olivetti-body-width 120) (olivetti-mode 1)))
+  ;; Fun
+  (org-tree-slide-after-narrow . (lambda () (when (fk/buffer-contains-substring "turkish-mode")
+                                              (fk/async-process
+                                               "ffplay -nodisp -nostats -hide_banner -volume 10 -t 4.7 ./olurum_turkiyem.mp3"))))
+  :config
+  (defun fk/buffer-contains-substring (string)
+    (save-excursion
+      (save-match-data
+        (goto-char (point-min))
+        (and-let* ((pos (search-forward string nil t))
+                   (visible (not (outline-invisible-p pos))))))))
+
+  (setq fk/org-meta-line-hide-p nil)
+  (setq fk/org-meta-line-face-remap nil)
+
+  (defun fk/hide-org-metalines-toggle ()
+    "Hide or unhide meta lines starting with \"#+\" in org-mode."
+    (interactive)
+    (if fk/org-meta-line-hide-p
+        (face-remap-remove-relative fk/org-meta-line-face-remap)
+      (setq fk/org-meta-line-face-remap (face-remap-add-relative 'org-meta-line
+                                                                 :foreground fk/background-color)))
+    (setq fk/org-meta-line-hide-p (not fk/org-meta-line-hide-p)))
+
+  (defun fk/org-tree-slide-update-modeline ()
+    "Show current page in modeline."
+    (let ((slide-position '(:eval (format " %s " (org-tree-slide--count-slide (point))))))
+      (if (org-tree-slide--active-p)
+          (setq-local global-mode-string (append global-mode-string (list slide-position)))
+        (setq-local global-mode-string (delete slide-position global-mode-string))))))
+
+;; Alternative
+(use-package epresent
+  :commands epresent-run)
 #+END_SRC
 
 ** Version Control
@@ -3377,13 +3500,25 @@ the `docker-container-prompt-regexp'."
 (use-package dimmer
   :commands dimmer-mode
   :custom
-  (dimmer-fraction 0.7)
+  (dimmer-fraction 0.5)
   :config
   (dimmer-configure-company-box)
   (dimmer-configure-which-key)
   (dimmer-configure-helm)
   (dimmer-configure-magit)
-  (dimmer-configure-posframe))
+  (dimmer-configure-posframe)
+  ;; I tried to fix lsp-ui-doc but it seems did not work
+  (defun dimmer-lsp-ui-doc-p ()
+    "Return non-nil if current buffer is a lsp-ui-doc buffer."
+    (string-prefix-p " *lsp-ui-doc-" (buffer-name)))
+
+  (defun dimmer-configure-lsp-ui-doc ()
+    "Convenience setting for lsp-ui-doc users.
+This predicate prevents dimming the buffer you are editing when
+lsp-ui-doc pops up a documentation."
+    (add-to-list
+     'dimmer-prevent-dimming-predicates #'dimmer-lsp-ui-doc-p))
+  (dimmer-configure-lsp-ui-doc))
 #+END_SRC
 
 ** Focus
@@ -3392,6 +3527,23 @@ the `docker-container-prompt-regexp'."
   :commands focus-mode
   :config
   (add-to-list 'focus-mode-to-thing '(python-mode . paragraph)))
+#+END_SRC
+
+** Command Log Mode
+#+BEGIN_SRC emacs-lisp
+(use-package command-log-mode
+  :commands command-log-mode)
+#+END_SRC
+
+** Keypression
+#+BEGIN_SRC emacs-lisp
+(use-package keypression
+  :commands keypression-mode
+  :custom
+  (keypression-cast-command-name t)
+  (keypression-combine-same-keystrokes t)
+  ;;(keypression-use-child-frame t) ; broken
+  (keypression-font-face-attribute '(:width normal :height 150 :weight bold)))
 #+END_SRC
 
 * Experimentals
