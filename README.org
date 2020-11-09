@@ -3001,15 +3001,84 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     ("M-m" . nil)
     ("M-u" . nil)
     ("<f1>" . nil)
+    ("C-c C-n" . fk/vterm-next-prompt)
+    ("C-c C-p" . fk/vterm-previous-prompt)
     :map vterm-copy-mode-map
     ("C-c C-e" . vterm-copy-mode)
-    ("C-c C-c" . vterm-copy-mode))
+    ("C-c C-c" . vterm-copy-mode)
+    ("C-c C-n" . fk/vterm-next-prompt)
+    ("C-c C-p" . fk/vterm-previous-prompt))
   :hook
   (vterm-mode . (lambda () (setq-local global-hl-line-mode nil
                                        show-trailing-whitespace nil)))
   (vterm-copy-mode . (lambda ()
                        (face-remap-add-relative 'hl-line :background fk/background-color)
-                       (call-interactively 'hl-line-mode))))
+                       (call-interactively 'hl-line-mode)))
+  :config
+  (defvar docker-container-prompt-regexp "^root@[A-z0-9]*:/[^#]*# ")
+
+  (defface docker-container-prompt-face
+    '((t (:foreground "#A3BE8C")))
+    "Face for docker container prompt in vterm.")
+
+  ;; NOTE: https://github.com/akermu/emacs-libvterm/pull/430 this PR is needed.
+  (font-lock-add-keywords
+   'vterm-mode
+   `((,docker-container-prompt-regexp 0 'docker-container-prompt-face t))
+   'set)
+
+  (defun fk/docker-container-next-prompt ()
+    "Move to end of next docker-container prompt in the buffer. According to the
+`docker-container-prompt-regexp'."
+    (interactive)
+    (search-forward-regexp docker-container-prompt-regexp nil t))
+
+  (defun fk/docker-container-prev-prompt ()
+    "Move to end of previous docker-container prompt in the buffer. According to
+the `docker-container-prompt-regexp'."
+    (interactive)
+    (beginning-of-line)  ; not to catch same prompt
+    (when (search-backward-regexp docker-container-prompt-regexp nil t)
+      ;; to go to the end of the prompt
+      (search-forward-regexp docker-container-prompt-regexp nil t)))
+
+  (defun fk/vterm-next-prompt ()
+    "Move to end of next prompt in the buffer. In addition to
+`vterm-next-prompt', this catches docker containers prompts too."
+    (interactive)
+    (if-let*
+        ((current-line (line-number-at-pos))
+         (prompt-by-regexp (save-excursion
+                             (when (or (fk/docker-container-next-prompt)
+                                       ;; to not return nil at the last prompt
+                                       (= (line-number-at-pos) (1- (line-number-at-pos (point-max)))))
+                               (point))))
+         (prompt-by-vterm (save-excursion
+                            (call-interactively 'vterm-next-prompt)
+                            (point)))
+         (is-next-docker-prompt (or (< prompt-by-regexp prompt-by-vterm)
+                                    (> current-line (line-number-at-pos prompt-by-vterm))
+                                    (= current-line (line-number-at-pos prompt-by-vterm)))))
+        (fk/docker-container-next-prompt)
+      (call-interactively 'vterm-next-prompt)))
+
+  (defun fk/vterm-previous-prompt ()
+    "Move to end of previous prompt in the buffer. In addition to
+`vterm-previous-prompt', this catches docker containers prompts too."
+    (interactive)
+    (if-let*
+        ((current-line (line-number-at-pos))
+         (prompt-by-regexp (save-excursion
+                             (when (fk/docker-container-prev-prompt)
+                               (point))))
+         (prompt-by-vterm (save-excursion
+                            (call-interactively 'vterm-previous-prompt)
+                            (point)))
+         (is-prev-docker-prompt (or (> prompt-by-regexp prompt-by-vterm)
+                                    (< current-line (line-number-at-pos prompt-by-vterm))
+                                    (= current-line (line-number-at-pos prompt-by-vterm)))))
+        (fk/docker-container-prev-prompt)
+      (call-interactively 'vterm-previous-prompt))))
 #+END_SRC
 
 *** Shell Pop
