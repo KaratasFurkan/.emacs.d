@@ -105,7 +105,6 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#company-code--text-completion][Company (Code & Text Completion)]]
     - [[#company][Company]]
     - [[#company-box][Company Box]]
-    - [[#company-statistics][Company Statistics]]
     - [[#company-prescient][Company Prescient]]
   - [[#yasnippet-snippet-completion][YASnippet (Snippet Completion)]]
   - [[#emmet--snippet-completion-for-html--css][Emmet- (Snippet Completion for HTML & CSS)]]
@@ -560,11 +559,6 @@ FILTER is function that runs after the process is finished, its args should be
 A better, more detailed *help* buffer.
 #+BEGIN_SRC emacs-lisp
 (use-package helpful
-  ;; TODO: setup shackle
-  ;; :init
-  ;; (defalias 'describe-function 'helpful-callable)
-  ;; (defalias 'describe-variable 'helpful-variable)
-  ;; (defalias 'describe-key 'helpful-key)
   :bind
   (([remap describe-function] . helpful-callable)
    ([remap describe-variable] . helpful-variable)
@@ -603,7 +597,7 @@ emacs will ask root user's password if needed.
 
 * Appearance
 ** Notes
-- To start Emacs maximized (which i prefer): =$ emacs -mm=
+- To start Emacs maximized: =$ emacs -mm=
 - To start Emacs fullscreen: =$ emacs -fs=
 
 ** Better Defaults
@@ -824,7 +818,7 @@ size. This function also handles icons and modeline font sizes."
   (doom-modeline-vcs-max-length 20)
   :custom-face
   (mode-line ((t (:background ,fk/dark-color))))
-  (mode-line-inactive ((t (:background ,(doom-darken fk/background-color 0.05)))))
+  (mode-line-inactive ((t (:background ,fk/dark-color5))))
   (mode-line-highlight ((t (:inherit doom-modeline-bar :foreground "black"))))
   (doom-modeline-buffer-path ((t (:inherit font-lock-comment-face :slant normal))))
   :config
@@ -905,7 +899,8 @@ Change default window dividers to a better built-in alternative.
 #+BEGIN_SRC emacs-lisp
 ;; Prerequisite for a few packages (e.g. treemacs, all-the-icons-dired)
 ;; "M-x all-the-icons-install-fonts" to install fonts at the first time.
-(use-package all-the-icons)
+(use-package all-the-icons
+  :commands all-the-icons-install-fonts)
 #+END_SRC
 
 ** Highlight Indent Guides
@@ -1021,12 +1016,6 @@ Change default window dividers to a better built-in alternative.
 ** Olivetti
 #+BEGIN_SRC emacs-lisp
 (use-package olivetti
-  :defer nil
-  :init
-  (defvar fk/olivetti-fringe-face `(:background ,fk/dark-color2))
-  (defvar fk/olivetti-excluded-buffers '("*dashboard*" " *which-key*" "*helm"
-                                         " *Minibuf-1*" "*vterm" "*fireplace*"
-                                         " *lsp-peek--buffer*"))
   :custom
   (olivetti-body-width 120)
   (olivetti-enable-visual-line-mode nil)
@@ -1042,7 +1031,15 @@ Change default window dividers to a better built-in alternative.
     ("s" . olivetti-shrink))
   :hook
   (olivetti-mode . (lambda () (face-remap-add-relative 'fringe fk/olivetti-fringe-face)))
+  (emacs-startup . fk/olivetti-single-window-mode)
   :config
+  (defvar fk/default-olivetti-fringe-face `(:background ,fk/dark-color2))
+  (defvar fk/darker-olivetti-fringe-face `(:background ,fk/dark-color9))
+  (defvar fk/olivetti-fringe-face fk/default-olivetti-fringe-face)
+  (defvar fk/olivetti-excluded-buffers '("*dashboard*" " *which-key*" "*helm"
+                                         " *Minibuf-1*" "*vterm" "*fireplace*"
+                                         " *lsp-peek--buffer*"))
+
   (defun fk/windows-vertical-p ()
     "Return t if windows placed vertically."
     (interactive)
@@ -1050,6 +1047,11 @@ Change default window dividers to a better built-in alternative.
            (dolist (window (window-list))
              (when (not (= (car (window-edges window)) 0))
                (throw 'horizontal t))))))
+
+  ;; Calculate the necessary `olivetti-body-width' according to
+  ;; `fill-column' and `line-number-display-width' values.
+  ;; (defadvice olivetti-mode (before get-fill-column-width activate)
+  ;;   (setq-local olivetti-body-width (+ fill-column (line-number-display-width))))
 
   (defun fk/activate-olivetti-if-single-window ()
     "Activate olivetti-mode if there is only one window visible."
@@ -1070,17 +1072,18 @@ Change default window dividers to a better built-in alternative.
     (olivetti-reset-all-windows)
     (dolist (window (window-list))
       (with-selected-window window
-        (face-remap-remove-relative (cons 'fringe fk/olivetti-fringe-face)))))
+        (face-remap-remove-relative (cons 'fringe fk/default-olivetti-fringe-face))
+        (face-remap-remove-relative (cons 'fringe fk/darker-olivetti-fringe-face)))))
 
   (define-minor-mode fk/olivetti-single-window-mode
     "Toggle olivetti-mode when there is only one window visible."
     :global t
     (if fk/olivetti-single-window-mode
-        (add-hook 'window-configuration-change-hook 'fk/activate-olivetti-if-single-window)
+        (progn
+          (fk/activate-olivetti-if-single-window)
+          (add-hook 'window-configuration-change-hook 'fk/activate-olivetti-if-single-window))
       (remove-hook 'window-configuration-change-hook 'fk/activate-olivetti-if-single-window)
-      (fk/olivetti-reset)))
-
-  (fk/olivetti-single-window-mode))
+      (fk/olivetti-reset))))
 #+END_SRC
 
 ** [[#emojify][Emojify-]]
@@ -1157,6 +1160,7 @@ Change default window dividers to a better built-in alternative.
    :map files
    ("f" . helm-find-files)
    ("r" . helm-recentf)
+   ("b" . helm-bookmarks)
    :map buffers
    ("b" . helm-buffers-list))
   :hook
@@ -1169,7 +1173,7 @@ Change default window dividers to a better built-in alternative.
                     "\\*aw-posframe" "\\*Warnings" "\\*Backtrace"))
     (add-to-list 'helm-boring-buffer-regexp-list regexp))
 
-  ;; "Waiting for process to die...done" fix (not sure)
+  ;; "Waiting for process to die...done" fix
   (defun kadir/helm--collect-matches (orig-fun src-list &rest args)
     (let ((matches
            (cl-loop for src in src-list
@@ -1283,12 +1287,6 @@ company-yasnippet' to all company backends."
   (company-box-backends-colors '((company-yasnippet . (:annotation default))))
   :hook
   (company-mode . company-box-mode))
-#+END_SRC
-
-*** Company Statistics
-#+BEGIN_SRC emacs-lisp
-;; (use-package company-statistics
-;;   :hook (company-mode . company-statistics-mode))
 #+END_SRC
 
 *** Company Prescient
@@ -1500,15 +1498,15 @@ from melpa. TODO: fix this
 #+BEGIN_SRC emacs-lisp
 (use-package winum
   :bind*
-  (("M-1" . winum-select-window-1)
-   ("M-2" . winum-select-window-2)
-   ("M-3" . winum-select-window-3)
-   ("M-4" . winum-select-window-4)
-   ("M-5" . winum-select-window-5)
-   ("M-6" . winum-select-window-6)
-   ("M-7" . winum-select-window-7)
-   ("M-8" . winum-select-window-8)
-   ("M-9" . winum-select-window-9))
+  ("M-1" . winum-select-window-1)
+  ("M-2" . winum-select-window-2)
+  ("M-3" . winum-select-window-3)
+  ("M-4" . winum-select-window-4)
+  ("M-5" . winum-select-window-5)
+  ("M-6" . winum-select-window-6)
+  ("M-7" . winum-select-window-7)
+  ("M-8" . winum-select-window-8)
+  ("M-9" . winum-select-window-9)
   :config
   (winum-mode))
 #+END_SRC
@@ -1517,8 +1515,8 @@ from melpa. TODO: fix this
 #+BEGIN_SRC emacs-lisp
 (use-package mwim
   :bind
-  (("C-a" . mwim-beginning-of-code-or-line)
-   ("C-e" . mwim-end-of-code-or-line)))
+  ("C-a" . mwim-beginning-of-code-or-line)
+  ("C-e" . mwim-end-of-code-or-line))
 #+END_SRC
 
 ** Helm Projectile
@@ -1577,8 +1575,8 @@ from melpa. TODO: fix this
   :custom
   (dumb-jump-aggressive t)
   :bind
-  (([remap xref-find-definitions] . fk/smart-jump-go)
-   ([remap xref-pop-marker-stack] . fk/smart-jump-back))
+  ([remap xref-find-definitions] . fk/smart-jump-go)
+  ([remap xref-pop-marker-stack] . fk/smart-jump-back)
   :config
   (defun fk/smart-jump-go ()
     "Fallback `dumb-jump-go' if `xref-find-definitions' cannot find the source."
@@ -2078,6 +2076,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (lsp-ui-peek-highlight ((t (:inherit nil :background nil :foreground nil :weight semi-bold :box (:line-width -1)))))
   :bind
   ([remap xref-find-references] . lsp-ui-peek-find-references)
+  ("C-M-l" . lsp-ui-peek-find-definitions)
   :config
   ;;;; LSP UI posframe ;;;;
   (defun lsp-ui-peek--peek-display (src1 src2)
@@ -2142,6 +2141,9 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 (use-package python
   :straight (:type built-in)
+  :init
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\.py$" all-the-icons-alltheicon "python" :height 1.1 :face all-the-icons-dblue))
   :custom
   (python-shell-interpreter "ipython")
   (python-shell-interpreter-args "-i --simple-prompt")
@@ -2154,9 +2156,9 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
     ("C-c i l" . python-indent-shift-left))
   :hook
   ;; With pyls:
-  ;; pip install python-language-server pyls-black pyls-isort flake8
+  ;; pip install python-language-server flake8 pyls-black(optional) pyls-isort(optional)
   ;; With pyright
-  ;; sudo npm install -g pyright && pip install black flake8
+  ;; sudo npm install -g pyright && pip install flake8 black(optional)
   ;; NOTE: these hooks runs in reverse order
   (python-mode . fk/python-auto-f-string-mode)
   (python-mode . (lambda () (setq-local company-prescient-mode nil)))
@@ -2423,9 +2425,9 @@ TODO: seperate sections (html, css..)
 *** Json Mode
 #+BEGIN_SRC emacs-lisp
 (use-package json-mode
-  :defer t)
+  :mode ("\\.json\\'" . json-mode))
 (use-package json-navigator
-  :after json-mode)
+  :commands json-navigator-navigate-region)
 #+END_SRC
 
 *** Prettier
@@ -3461,7 +3463,10 @@ the `docker-container-prompt-regexp'."
 #+BEGIN_SRC emacs-lisp
 ;; TODO: find mp3 file does not work with straight
 (use-package fireplace
-  :commands fireplace)
+  :commands fireplace
+  :custom
+  (fireplace-sound-on t)
+  (fireplace-sound-file-path (expand-file-name "straight/repos/emacs-fireplace/fireplace.mp3" user-emacs-directory)))
 #+END_SRC
 
 ** Pacmacs
@@ -3480,7 +3485,10 @@ the `docker-container-prompt-regexp'."
 ** Turkish Mode
 #+BEGIN_SRC emacs-lisp
 (use-package turkish
-  :commands turkish-mode)
+  :commands turkish-mode turkish-asciify-region
+  :bind
+  ( :map text
+    ("a" . turkish-asciify-region)))
 #+END_SRC
 
 ** Minimap
