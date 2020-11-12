@@ -1167,6 +1167,7 @@ Change default window dividers to a better built-in alternative.
   (helm-display-function 'pop-to-buffer)
   (savehist-additional-variables '(extended-command-history))
   (history-delete-duplicates t)
+  (helm-command-prefix-key nil)
   :custom-face
   (helm-non-file-buffer ((t (:inherit font-lock-comment-face))))
   (helm-ff-file-extension ((t (:inherit default))))
