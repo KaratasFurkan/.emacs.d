@@ -1977,8 +1977,19 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (projectile-ignored-project-function
    (lambda (project-root)
      (string-prefix-p (expand-file-name user-emacs-directory) project-root)))
+  :bind
+  ("C-M-t" . fk/projectile-vterm)
   :hook
-  (dashboard-after-initialize . projectile-mode))
+  (dashboard-after-initialize . projectile-mode)
+  :config
+  (defun fk/projectile-vterm ()
+    "Open vterm (or eshell if vterm is not found) in project root directory."
+    (interactive)
+    (let ((default-directory (or (projectile-project-root)
+                                 default-directory)))
+      (if (fboundp 'vterm)
+          (vterm)
+        (eshell)))))
 #+END_SRC
 
 *** Flycheck
@@ -3176,6 +3187,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 *** Vterm
 #+BEGIN_SRC emacs-lisp
 (use-package vterm
+  :custom
+  (vterm-max-scrollback 100000)
   :custom-face
   ;; match with fk/darken-background
   (vterm-color-default ((t (:background ,fk/dark-color))))
@@ -3190,8 +3203,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     :map vterm-copy-mode-map
     ("C-c C-e" . vterm-copy-mode)
     ("C-c C-c" . vterm-copy-mode)
-    ("C-c C-n" . fk/vterm-next-prompt)
-    ("C-c C-p" . fk/vterm-previous-prompt))
+    ("M-n" . fk/vterm-next-prompt)
+    ("M-p" . fk/vterm-previous-prompt))
   :hook
   (vterm-mode . (lambda () (setq-local global-hl-line-mode nil
                                        show-trailing-whitespace nil)))
@@ -3199,10 +3212,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                        (face-remap-add-relative 'hl-line :background fk/background-color)
                        (call-interactively 'hl-line-mode)))
   :config
-  (defvar docker-container-prompt-regexp "^root@[A-z0-9]*:/[^#]*# ")
+  (defvar docker-container-prompt-regexp "^[\\^A-Z]*root@[A-z0-9]*:/[^#]*# ")
 
   (defface docker-container-prompt-face
-    '((t (:foreground "#A3BE8C")))
+    '((t (:foreground "green yellow")))
     "Face for docker container prompt in vterm.")
 
   ;; NOTE: https://github.com/akermu/emacs-libvterm/pull/430 this PR is needed.
