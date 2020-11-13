@@ -1984,9 +1984,18 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
    (lambda (project-root)
      (string-prefix-p (expand-file-name user-emacs-directory) project-root)))
   :bind
-  ("C-M-t" . projectile-run-vterm)
+  ("C-M-t" . fk/projectile-vterm)
   :hook
-  (dashboard-after-initialize . projectile-mode))
+  (dashboard-after-initialize . projectile-mode)
+  :config
+  (defun fk/projectile-vterm ()
+    "Open vterm (or eshell if vterm is not found) in project root directory."
+    (interactive)
+    (let ((default-directory (or (projectile-project-root)
+                                 default-directory)))
+      (if (fboundp 'vterm)
+          (vterm)
+        (eshell)))))
 #+END_SRC
 
 *** Flycheck
