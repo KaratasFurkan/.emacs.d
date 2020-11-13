@@ -1051,15 +1051,20 @@ Change default window dividers to a better built-in alternative.
   (olivetti-body-width 120)
   (olivetti-enable-visual-line-mode nil)
   :bind*
-  ( :map windows
-    ("c" . olivetti-mode)
-    ("v" . visual-line-mode)
-    :map windows
-    :prefix-map olivetti
-    :prefix "o"
-    ("o" . fk/olivetti-single-window-mode)
-    ("e" . olivetti-expand)
-    ("s" . olivetti-shrink))
+  (("C-1" . (lambda ()
+              (interactive)
+              (if (= (count-windows) 1)
+                  (call-interactively 'fk/olivetti-single-window-mode)
+                (delete-other-windows))))
+   :map windows
+   ("c" . olivetti-mode)
+   ("v" . visual-line-mode)
+   :map windows
+   :prefix-map olivetti
+   :prefix "o"
+   ("o" . fk/olivetti-single-window-mode)
+   ("e" . olivetti-expand)
+   ("s" . olivetti-shrink))
   :hook
   (olivetti-mode . (lambda () (face-remap-add-relative 'fringe fk/olivetti-fringe-face)))
   (dashboard-after-initialize . fk/olivetti-single-window-mode)
