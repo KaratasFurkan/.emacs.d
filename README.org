@@ -896,10 +896,32 @@ Change default window dividers to a better built-in alternative.
   (defconst cursor-color+1 (format "#%x" (+ 1 (string-to-number (string-remove-prefix "#" (face-attribute 'cursor :background)) 16))))
   :custom
   (beacon-color cursor-color+1)
-  (beacon-blink-when-point-moves-vertically 10)
-  (beacon-dont-blink-major-modes '(dashboard-mode))
+  ;; (beacon-blink-when-point-moves-vertically 10)
+  (beacon-dont-blink-major-modes '(dashboard-mode minibuff))
   :config
-  (beacon-mode))
+  (defun fk/beacon-blink ()
+    "`beacon-blink' with `beacon-dont-blink-major-modes' control."
+    (interactive)
+    (unless (seq-find #'derived-mode-p beacon-dont-blink-major-modes)
+      (beacon-blink)))
+  ;; `beacon-blink' manually instead of activating `beacon-mode' to not
+  ;; calculate every time on post-command-hook if should beacon blink
+  (defadvice other-window (after blink activate)
+    (fk/beacon-blink))
+  (defadvice winum-select-window-by-number (after blink activate)
+    (fk/beacon-blink))
+  (defadvice scroll-up-command (after blink activate)
+    (fk/beacon-blink))
+  (defadvice scroll-down-command (after blink activate)
+    (fk/beacon-blink))
+  (defadvice recenter-top-bottom (after blink activate)
+    (fk/beacon-blink))
+  (defadvice move-to-window-line-top-bottom (after blink activate)
+    (fk/beacon-blink))
+  (defadvice ace-select-window (after blink activate)
+    (fk/beacon-blink))
+  (defadvice ace-swap-window (after blink activate)
+    (fk/beacon-blink)))
 #+END_SRC
 
 ** All The Icons
