@@ -1587,7 +1587,15 @@ from melpa. TODO: fix this
   :bind
   ("C-x f" . helm-projectile)
   :hook
-  (projectile-mode . helm-projectile-on))
+  (projectile-mode . helm-projectile-on)
+  :config
+  (defun fk/projectile-recentf-files-first-five (original-function)
+    "Return a list of five recently visited files in a project."
+    (let ((files (funcall original-function)))
+      (if (> (length files) 5)
+          (seq-subseq files 0 5)
+        files)))
+  (advice-add 'projectile-recentf-files :around 'fk/projectile-recentf-files-first-five))
 #+END_SRC
 
 ** Helm Ag
