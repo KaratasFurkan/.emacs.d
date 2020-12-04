@@ -517,7 +517,8 @@ Keep Emacs directory clean.
  backup-by-copying t                   ; prevent linked files
  require-final-newline t               ; always end files with newline
  delete-old-versions t                 ; don't ask to delete old backup files
- revert-without-query '(".*"))         ; `revert-buffer' without confirmation
+ revert-without-query '(".*")          ; `revert-buffer' without confirmation
+ uniquify-buffer-name-style 'forward)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
