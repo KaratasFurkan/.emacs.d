@@ -910,22 +910,20 @@ Change default window dividers to a better built-in alternative.
       (beacon-blink)))
   ;; `beacon-blink' manually instead of activating `beacon-mode' to not
   ;; calculate every time on post-command-hook if should beacon blink
-  (defadvice other-window (after blink activate)
-    (fk/beacon-blink))
-  (defadvice winum-select-window-by-number (after blink activate)
-    (fk/beacon-blink))
-  (defadvice scroll-up-command (after blink activate)
-    (fk/beacon-blink))
-  (defadvice scroll-down-command (after blink activate)
-    (fk/beacon-blink))
-  (defadvice recenter-top-bottom (after blink activate)
-    (fk/beacon-blink))
-  (defadvice move-to-window-line-top-bottom (after blink activate)
-    (fk/beacon-blink))
-  (defadvice ace-select-window (after blink activate)
-    (fk/beacon-blink))
-  (defadvice ace-swap-window (after blink activate)
-    (fk/beacon-blink)))
+  (dolist (command '(other-window
+                     winum-select-window-by-number
+                     scroll-up-command
+                     scroll-down-command
+                     recenter-top-bottom
+                     move-to-window-line-top-bottom
+                     ace-select-window
+                     ace-swap-window))
+    (eval `(defadvice ,command (after blink activate)
+             (fk/beacon-blink))))
+  (dolist (hook '(find-file-hook
+                  xref-after-jump-hook
+                  xref-after-return-hook))
+    (add-hook hook 'fk/beacon-blink)))
 #+END_SRC
 
 ** All The Icons
