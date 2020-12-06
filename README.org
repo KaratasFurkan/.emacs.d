@@ -1069,15 +1069,7 @@ Change default window dividers to a better built-in alternative.
 ** [[#dired-icons][Dired Icons-]]
 ** [[#rainbow-delimiters][Rainbow Delimiters-]]
 ** [[#helm-icons][Helm Icons-]]
-** Symbol Overlay
-#+BEGIN_SRC emacs-lisp
-(use-package symbol-overlay
-  :commands (symbol-overlay-mode symbol-overlay-put)
-  :hook
-  (emacs-lisp-mode . symbol-overlay-mode)
-  (web-mode . symbol-overlay-mode))
-#+END_SRC
-
+** [[#symbol-overlay][Symbol Overlay-]]
 ** Olivetti
 #+BEGIN_SRC emacs-lisp
 (use-package olivetti
