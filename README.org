@@ -90,6 +90,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#olivetti][Olivetti]]
   - [[#emojify-][Emojify-]]
   - [[#tree-sitter][Tree Sitter]]
+  - [[#visual-fill-column][Visual Fill Column]]
   - [[#color-identifiers-mode-][Color Identifiers Mode-]]
   - [[#goggles-mode-highlight-changes][Goggles Mode (Highlight Changes)]]
 - [[#completion][Completion]]
@@ -1167,6 +1168,14 @@ Change default window dividers to a better built-in alternative.
   :config
   ;; TODO: gives error when try to enable tree-sitter-hl-mode in web mode with html
   (add-to-list 'tree-sitter-major-mode-language-alist '(web-mode . html)))
+** Visual Fill Column
+#+BEGIN_SRC emacs-lisp
+(use-package visual-fill-column
+  :commands visual-fill-column-mode
+  :hook
+  (visual-fill-column-mode . visual-line-mode))
+#+END_SRC
+
 ** [[#color-identifiers-mode][Color Identifiers Mode-]]
 ** Goggles Mode (Highlight Changes)
 #+BEGIN_SRC emacs-lisp
