@@ -204,6 +204,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#javascript-1][JavaScript]]
   - [[#go][Go]]
     - [[#go-mode][Go Mode]]
+  - [[#c][C]]
 - [[#tools][Tools]]
   - [[#dired][Dired]]
     - [[#dired-1][Dired]]
@@ -2617,6 +2618,23 @@ TODO: seperate sections (html, css..)
   (go-mode . lsp-deferred)
   (go-mode . (lambda () (require 'tree-sitter-langs) (tree-sitter-hl-mode)))
   (go-mode . (lambda () (fk/add-local-hook 'before-save-hook 'gofmt))))
+#+END_SRC
+
+** C
+#+BEGIN_SRC emacs-lisp
+(use-package cc-mode
+  :bind
+  ( :map c-mode-base-map
+    ("C-c C-c" . fk/c-run))
+  :hook
+  (c-mode . lsp-deferred)
+  (c++-mode . lsp-deferred))
+
+(use-package clang-format
+  :commands clang-format-buffer clang-format-region
+  :hook
+  (c-mode . (lambda () (fk/add-local-hook 'before-save-hook 'clang-format-buffer)))
+  (c++-mode . (lambda () (fk/add-local-hook 'before-save-hook 'clang-format-buffer))))
 #+END_SRC
 
 * TODO Tools
