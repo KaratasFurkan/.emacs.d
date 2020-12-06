@@ -185,7 +185,8 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#python-1][Python]]
     - [[#pyvenv][Pyvenv]]
     - [[#import-magic][Import Magic]]
-    - [[#blacken][Blacken]]
+    - [[#black][Black]]
+    - [[#isort][Isort]]
     - [[#lsp-pyright][LSP Pyright]]
   - [[#web-mode][Web Mode]]
     - [[#web-mode-1][Web Mode]]
@@ -2435,10 +2436,16 @@ beginning of the string that has curly brackets in it."
   :commands importmagic-mode)
 #+END_SRC
 
-*** Blacken
+*** Black
 #+BEGIN_SRC emacs-lisp
 (use-package blacken
-  :commands blacken-mode)
+  :commands blacken-mode blacken-buffer)
+#+END_SRC
+
+*** Isort
+#+BEGIN_SRC emacs-lisp
+(use-package py-isort
+  :commands py-isort-buffer)
 #+END_SRC
 
 *** LSP Pyright
