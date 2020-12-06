@@ -194,7 +194,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#isort][Isort]]
     - [[#lsp-pyright][LSP Pyright]]
   - [[#web-mode][Web Mode]]
-    - [[#web-mode-1][Web Mode]]
+    - [[#web-mode-html][Web Mode (HTML)]]
     - [[#emmet-mode][Emmet Mode]]
       - [[#emmet-mode-1][Emmet Mode]]
       - [[#helm-emmet][Helm Emmet]]
@@ -1164,10 +1164,9 @@ Change default window dividers to a better built-in alternative.
   :straight
   (tree-sitter-langs :host github
                      :repo "ubolonton/emacs-tree-sitter"
-                     :files ("langs/*.el" "langs/queries"))
-  :config
-  ;; TODO: gives error when try to enable tree-sitter-hl-mode in web mode with html
-  (add-to-list 'tree-sitter-major-mode-language-alist '(web-mode . html)))
+                     :files ("langs/*.el" "langs/queries")))
+#+END_SRC
+
 ** Visual Fill Column
 #+BEGIN_SRC emacs-lisp
 (use-package visual-fill-column
@@ -2507,15 +2506,19 @@ beginning of the string that has curly brackets in it."
 
 ** TODO Web Mode
 TODO: seperate sections (html, css..)
-*** Web Mode
+*** Web Mode (HTML)
 #+BEGIN_SRC emacs-lisp
 (use-package web-mode
   :custom
   (css-indent-offset 2)
-  ;;(web-mode-markup-indent-offset 2)
+  ;;(web-mode-markup-indent-offset 2) set in .dir-locals.el according to project
   (web-mode-enable-auto-indentation nil)
   (web-mode-enable-auto-pairing nil)
   (web-mode-engines-alist '(("django" . "\\.html\\'")))
+  :custom-face
+  (web-mode-block-string-face ((t (:inherit font-lock-string-face))))
+  (web-mode-html-attr-value-face ((t (:inherit font-lock-string-face :foreground nil))))
+  (web-mode-current-element-highlight-face ((t (:inherit highlight))))
   :mode ;; Copied from spacemacs
   (("\\.phtml\\'"      . web-mode)
    ("\\.tpl\\.php\\'"  . web-mode)
@@ -2534,10 +2537,8 @@ TODO: seperate sections (html, css..)
    ("\\.ejs\\'"        . web-mode)
    ("\\.svelte\\'"     . web-mode)
    ("\\.djhtml\\'"     . web-mode))
-  ;; :hook
-  ;; (web-mode . tree-sitter-hl-mode)
-  ;; (web-mode . (lambda () (fk/add-local-hook 'before-save-hook 'fk/indent-buffer)))
-  )
+  :hook
+  (web-mode . web-mode-toggle-current-element-highlight))
 #+END_SRC
 
 *** Emmet Mode
