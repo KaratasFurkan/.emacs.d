@@ -3010,6 +3010,12 @@ else call `dired-find-file'"
 (use-package org-bullets
   :custom
   (org-bullets-bullet-list '("⁖"))
+  ;;;; Alternatives
+  ;; (org-bullets-bullet-list '("①" "②" "③" "④" "⑤" "⑥" "⑦" "⑧" "⑨"))
+  ;; (org-bullets-bullet-list '("➀" "➁" "➂" "➃" "➄" "➅" "➆" "➇" "➈"))
+  ;; (org-bullets-bullet-list '("❶" "❷" "❸" "❹" "❺" "❻" "❼" "❽" "❾"))
+  ;; (org-bullets-bullet-list '("➊" "➋" "➌" "➍" "➎" "➏" "➐" "➑" "➒"))
+  ;; (org-bullets-bullet-list '("⒈" "⒉" "⒊" "⒋" "⒌" "⒍" "⒎" "⒏" "⒐"))
   :hook (org-mode . org-bullets-mode))
 #+END_SRC
 
