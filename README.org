@@ -2846,7 +2846,8 @@ else call `dired-find-file'"
                             (file "inbox.org")
                             "* %?\nCREATED: %U")))
   (org-refile-targets '(("todos.org" :level . 1)
-                        ("someday.org" :level . 1)))
+                        ("someday.org" :level . 1)
+                        ("archive.org" :level . 1)))
   (org-default-priority ?A)
   ;;;; Getting Things Done ;;;;
   :custom-face
@@ -2872,9 +2873,21 @@ else call `dired-find-file'"
     ("C-c C-f". fk/org-imenu)
     ("C-x C-1" . outline-hide-other)
     ("C-c C-r" . org-refile)
+    ("C-c C-a" . fk/org-refile-done)  ; "a" for archive
+    ("C-c C-t" . fk/org-refile-trash)
     ("C-c C-p" . org-priority-down)
     :map org-src-mode-map
     ("C-c C-c" . org-edit-src-exit))
+  :hook
+  ;; TODO: bunlar yerine prettify + box face'i ile yap
+  (org-mode . prettify-symbols-mode)
+  (org-mode . (lambda () (setq prettify-symbols-alist
+                               '(("[ ]" . "☐")
+                                 ("[X]" . "☑") ;; ✔
+                                 ("[-]" . "◿"))))) ;; ◪, ⬔
+  (org-babel-after-execute . org-redisplay-inline-images)
+  (org-mode . (lambda () (fk/add-local-hook 'before-save-hook 'org-redisplay-inline-images)))
+  (org-after-refile-insert . (lambda () (fk/org-sort-by-priority) (save-buffer)))
   :config
   (add-to-list 'org-emphasis-alist '("#" (:box '(:line-width -1))))  ; FIXME: does not work.
   (setf (cdr (assoc "*" org-emphasis-alist)) '((:weight extra-bold :underline t :foreground "#DDDDDD")))
@@ -2902,16 +2915,28 @@ else call `dired-find-file'"
    `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
       1 'org-checkbox-done-text prepend))
    'append)
-  :hook
-  ;; TODO: bunlar yerine prettify + box face'i ile yap
-  (org-mode . prettify-symbols-mode)
-  (org-mode . (lambda () (setq prettify-symbols-alist
-                               '(("[ ]" . "☐")
-                                 ("[X]" . "☑") ;; ✔
-                                 ("[-]" . "◿"))))) ;; ◪, ⬔
-  (org-babel-after-execute . org-redisplay-inline-images)
-  (org-mode . (lambda () (fk/add-local-hook 'before-save-hook 'org-redisplay-inline-images)))
-  (org-after-refile-insert . (lambda () (fk/org-sort-by-priority) (save-buffer))))
+
+  (defun fk/org-refile-fixed-location (file headline)
+    "Refile headline without selecting from refile-targets."
+    (let ((pos (save-window-excursion
+                 (find-file file)
+                 (org-find-exact-headline-in-buffer headline))))
+      (org-refile nil nil (list headline file nil pos))))
+
+  (defun fk/org-refile-fixed-location-with-closed-timestamp (file headline)
+    "Refile headline without selecting from refile-targets. Add
+    \"CLOSED\" timestamp info."
+    (add-hook 'org-after-refile-insert-hook (lambda () (org-add-planning-info 'closed (org-current-effective-time))) -100)
+    (fk/org-refile-fixed-location file headline)
+    (remove-hook 'org-after-refile-insert-hook (lambda () (org-add-planning-info 'closed (org-current-effective-time)))))
+
+  (defun fk/org-refile-done ()
+    (interactive)
+    (fk/org-refile-fixed-location-with-closed-timestamp "archive.org" "Done"))
+
+  (defun fk/org-refile-trash ()
+    (interactive)
+    (fk/org-refile-fixed-location-with-closed-timestamp "archive.org" "Trash")))
 #+END_SRC
 
 *** Custom Functions
