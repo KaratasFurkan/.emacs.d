@@ -184,6 +184,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#emacs-lisp][Emacs Lisp]]
     - [[#elisp-slime-nav][Elisp Slime Nav]]
     - [[#aggressive-indent][Aggressive Indent]]
+    - [[#lisp-data-mode][Lisp Data Mode]]
   - [[#python][Python]]
     - [[#python-1][Python]]
     - [[#pyvenv][Pyvenv]]
@@ -2240,6 +2241,19 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 ;; TODO: try in other languages (html, css, js, c)
 (use-package aggressive-indent
   :hook (emacs-lisp-mode . aggressive-indent-mode))
+#+END_SRC
+
+*** Lisp Data Mode
+#+BEGIN_SRC emacs-lisp
+(use-package lisp-mode
+  :straight (:type built-in)
+  :hook
+  (lisp-data-mode . (lambda ()
+                      (when (= (buffer-name) ".dir-locals.el")
+                        (fk/add-local-hook 'before-save-hook
+                                           (lambda ()
+                                             (align-regexp (point-min) (point-max) "\\(\\s-*\\). (")
+                                             (fk/indent-buffer)))))))
 #+END_SRC
 
 ** Python
