@@ -86,10 +86,11 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#dired-icons-][Dired Icons-]]
   - [[#rainbow-delimiters-][Rainbow Delimiters-]]
   - [[#helm-icons-][Helm Icons-]]
-  - [[#symbol-overlay][Symbol Overlay]]
+  - [[#symbol-overlay-][Symbol Overlay-]]
   - [[#olivetti][Olivetti]]
   - [[#emojify-][Emojify-]]
   - [[#tree-sitter][Tree Sitter]]
+  - [[#color-identifiers-mode-][Color Identifiers Mode-]]
   - [[#goggles-mode-highlight-changes][Goggles Mode (Highlight Changes)]]
 - [[#completion][Completion]]
   - [[#better-defaults-2][Better Defaults]]
@@ -178,6 +179,8 @@ File explorer (treemacs), auto complete (company), git&github integration
         - [[#lsp-pyright-][LSP Pyright-]]
     - [[#yasnippet-snippets][YASnippet-snippets]]
     - [[#rainbow-delimiters][Rainbow Delimiters]]
+    - [[#color-identifiers-mode][Color Identifiers Mode]]
+    - [[#symbol-overlay][Symbol Overlay]]
   - [[#emacs-lisp][Emacs Lisp]]
     - [[#elisp-slime-nav][Elisp Slime Nav]]
     - [[#aggressive-indent][Aggressive Indent]]
@@ -1170,6 +1173,14 @@ Change default window dividers to a better built-in alternative.
   :config
   ;; TODO: gives error when try to enable tree-sitter-hl-mode in web mode with html
   (add-to-list 'tree-sitter-major-mode-language-alist '(web-mode . html)))
+** [[#color-identifiers-mode][Color Identifiers Mode-]]
+** Goggles Mode (Highlight Changes)
+#+BEGIN_SRC emacs-lisp
+(use-package goggles
+  :straight (:host github :repo "minad/goggles")
+  :commands goggles-mode
+  :custom
+  (goggles-pulse-delay 0.1))
 #+END_SRC
 
 * Completion
@@ -2198,6 +2209,20 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
+#+END_SRC
+
+*** Color Identifiers Mode
+#+BEGIN_SRC emacs-lisp
+(use-package color-identifiers-mode
+  :commands color-identifiers-mode)
+#+END_SRC
+
+*** Symbol Overlay
+#+BEGIN_SRC emacs-lisp
+(use-package symbol-overlay
+  :commands (symbol-overlay-mode symbol-overlay-put)
+  :hook
+  (emacs-lisp-mode . symbol-overlay-mode))
 #+END_SRC
 
 ** Emacs Lisp
