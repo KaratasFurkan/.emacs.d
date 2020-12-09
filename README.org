@@ -93,6 +93,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#visual-fill-column][Visual Fill Column]]
   - [[#color-identifiers-mode-][Color Identifiers Mode-]]
   - [[#goggles-mode-highlight-changes][Goggles Mode (Highlight Changes)]]
+  - [[#hideshow][Hide/Show]]
 - [[#completion][Completion]]
   - [[#better-defaults-2][Better Defaults]]
   - [[#which-key-keybinding-completion][Which Key (Keybinding Completion)]]
@@ -1183,6 +1184,35 @@ Change default window dividers to a better built-in alternative.
   :commands goggles-mode
   :custom
   (goggles-pulse-delay 0.1))
+#+END_SRC
+
+** Hide/Show
+#+BEGIN_SRC emacs-lisp
+(use-package hideshow
+  :straight (:type built-in)
+  :bind
+  ( :map hs-minor-mode-map
+    ("TAB" . fk/hs-smart-tab)
+    ("<tab>" . fk/hs-smart-tab)
+    ("<backtab>" . hs-toggle-hiding))
+  :config
+  (defun fk/hs-smart-tab ()
+    "Pretend like `hs-toggle-hiding' if point is on a hiding block."
+    (interactive)
+    (if (save-excursion
+          (move-beginning-of-line 1)
+          (hs-looking-at-block-start-p))
+        (hs-show-block)
+      (indent-for-tab-command)))
+
+  (defun fk/hide-second-level-blocks ()
+    "Hide second level blocks (mostly class methods in python) in
+current buffer."
+    (interactive)
+    (hs-minor-mode)
+    (save-excursion
+      (goto-char (point-min))
+      (hs-hide-level 2))))
 #+END_SRC
 
 * Completion
@@ -2290,6 +2320,11 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ;; always find imports, 60%-70% maybe. I stop using this, but still want to keep.
   ;;(python-mode . importmagic-mode)
   (python-mode . fk/activate-pyvenv)
+  (python-mode . (lambda ()
+                   (when (string=
+                          (car (last (f-split (f-parent (buffer-file-name)))))
+                          "tests")
+                     (fk/hide-second-level-blocks))))
   (python-mode . (lambda () (require 'tree-sitter-langs) (tree-sitter-hl-mode)))
   (python-mode . (lambda () (setq-local fill-column 88)))
   :config
