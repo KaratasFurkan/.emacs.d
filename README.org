@@ -259,6 +259,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#restclient-1][Restclient]]
     - [[#company-restclient][Company Restclient]]
     - [[#ob-restclient][ob-restclient]]
+    - [[#password-mode][Password Mode]]
   - [[#eaf][EAF]]
   - [[#google-translate][Google Translate]]
   - [[#pdf][PDF]]
@@ -3531,6 +3532,19 @@ the `docker-container-prompt-regexp'."
   :after org
   :config
   (org-babel-do-load-languages 'org-babel-load-languages '((restclient . t))))
+#+END_SRC
+
+*** Password Mode
+#+BEGIN_SRC emacs-lisp
+(use-package password-mode
+  :hook
+  (restclient-mode . password-mode)
+  (org-mode . (lambda () (when-let ((filename (f-filename (buffer-file-name))))
+                           (when (or (string-match "rest" filename)
+                                     (string-match "api" filename))
+                             (password-mode)))))
+  :config
+  (add-to-list 'password-mode-password-prefix-regexs "\"password\":?[[:space:]]+"))
 #+END_SRC
 
 ** TODO EAF
