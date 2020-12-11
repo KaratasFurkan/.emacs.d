@@ -3542,10 +3542,11 @@ the `docker-container-prompt-regexp'."
 (use-package password-mode
   :hook
   (restclient-mode . password-mode)
-  (org-mode . (lambda () (when-let ((filename (f-filename (buffer-file-name))))
-                           (when (or (string-match "rest" filename)
-                                     (string-match "api" filename))
-                             (password-mode)))))
+  (org-mode . (lambda () (when (stringp buffer-file-name)
+                           (let ((filename (f-filename buffer-file-name)))
+                             (when (or (string-match "rest" filename)
+                                       (string-match "api" filename))
+                               (password-mode))))))
   :config
   (add-to-list 'password-mode-password-prefix-regexs "\"password\":?[[:space:]]+"))
 #+END_SRC
