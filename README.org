@@ -3564,6 +3564,7 @@ the `docker-container-prompt-regexp'."
   (go-translate-target-language "en")
   (go-translate-inputs-function 'go-translate-inputs-current-or-prompt)
   (go-translate-buffer-follow-p t)
+  (go-translate-token-current (cons 430675 2721866130)) ; Fix https://github.com/lorniu/go-translate/issues/7
   :bind*
   ( :map text
     :prefix-map google-translate
