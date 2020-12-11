@@ -1194,6 +1194,9 @@ Change default window dividers to a better built-in alternative.
 #+BEGIN_SRC emacs-lisp
 (use-package hideshow
   :straight (:type built-in)
+  :defer nil
+  :custom
+  (hs-isearch-open t)
   :bind
   ( :map hs-minor-mode-map
     ("TAB" . fk/hs-smart-tab)
