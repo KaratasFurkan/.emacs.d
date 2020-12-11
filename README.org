@@ -148,7 +148,9 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#better-defaults-4][Better Defaults]]
   - [[#custom-functions-3][Custom Functions]]
     - [[#backward-kill-word-or-region][backward-kill-word-or-region]]
+    - [[#newline-below][newline-below]]
   - [[#keybindings-2][Keybindings]]
+  - [[#electric-indent-mode-][Electric Indent Mode-]]
   - [[#undo-tree][Undo Tree]]
   - [[#trailing-white-space][Trailing White Space]]
   - [[#case-switching][Case Switching]]
@@ -167,6 +169,7 @@ File explorer (treemacs), auto complete (company), git&github integration
       - [[#comment-or-uncomment-region][comment-or-uncomment-region]]
     - [[#fill-column-indicator-][Fill Column Indicator-]]
     - [[#line-numbers-][Line Numbers-]]
+    - [[#electric-indent-mode][Electric Indent Mode]]
     - [[#comments][Comments]]
     - [[#yasnippet-][YASnippet-]]
     - [[#projectile][Projectile]]
@@ -1853,16 +1856,26 @@ otherwise."
                         'backward-kill-word)))
 #+END_SRC
 
+*** newline-below
+#+BEGIN_SRC emacs-lisp
+(defun fk/newline-below ()
+  "Insert newline below the current line."
+  (interactive)
+  (save-excursion (end-of-line) (open-line 1)))
+#+END_SRC
+
 ** Keybindings
 #+BEGIN_SRC emacs-lisp
 (keyboard-translate ?\C-h ?\C-?)  ; C-h as DEL, (F1 as `help-command')
 (global-set-key (kbd "C-w") 'fk/backward-kill-word-or-region)
+(global-set-key (kbd "C-o") 'fk/newline-below)
 
 (bind-keys*
  :map text
  ("s" . sort-lines))
 #+END_SRC
 
+** [[#electric-indent-mode][Electric Indent Mode-]]
 ** Undo Tree
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
@@ -2020,6 +2033,17 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 
 *** [[#fill-column-indicator][Fill Column Indicator-]]
 *** [[#line-numbers][Line Numbers-]]
+*** Electric Indent Mode
+#+BEGIN_SRC emacs-lisp
+(use-package electric
+  :straight (:type built-in)
+  :bind
+  ( :map prog-mode-map
+    ("M-RET" . electric-indent-just-newline))
+  :hook
+  (dashboard-after-initialize-hook . electric-indent-mode))
+#+END_SRC
+
 *** Comments
 #+BEGIN_SRC emacs-lisp
 (use-package newcomment
