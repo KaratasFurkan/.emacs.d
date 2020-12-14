@@ -3,6 +3,6 @@ early-init.el
 eln-cache
 elpa
 etc
-straight
+straight/*
 !straight/versions/default.el
 var
