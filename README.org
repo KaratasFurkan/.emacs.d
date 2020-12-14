@@ -398,6 +398,12 @@ file; follow link? (y or n)"= every time, to always answer =yes=, set
 (setq vc-follow-symlinks t)
 #+END_SRC
 
+Use default depth of 1 when cloning files with git to get savings on network
+bandwidth and disk space.
+#+BEGIN_SRC emacs-lisp
+(setq straight-vc-git-default-clone-depth 1)
+#+END_SRC
+
 *** Notes
 - =M-x straight-pull-all=: update all packages.
 - =M-x straight-normalize-all=: restore all packages (remove local edits)
