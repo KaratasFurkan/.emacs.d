@@ -2936,6 +2936,7 @@ else call `dired-find-file'"
   (org-drawer ((t (:foreground nil :inherit font-lock-comment-face))))
   (org-table ((t (:inherit fixed-pitch :foreground "white"))))
   (org-document-title ((t (:height 1.5))))
+  (org-block-begin-line ((t (:foreground ,fk/light-color3 :background ,fk/background-color))))
   :bind
   ( :map org
     ("c" . (lambda () (interactive) (org-capture :keys "i")))
