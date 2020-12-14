@@ -3,6 +3,7 @@ early-init.el
 eln-cache
 elpa
 etc
-straight/*
-!straight/versions/default.el
+straight/build
+straight/build-cache.el
+straight/repos
 var
