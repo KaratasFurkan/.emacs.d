@@ -4,4 +4,5 @@ eln-cache
 elpa
 etc
 straight
+!straight/versions/default.el
 var
