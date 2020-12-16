@@ -131,7 +131,7 @@
  ("org-fancy-priorities" . "819bb993b71e7253cefef7047306ab4e0f9d0a86")
  ("org-pomodoro" . "aa07c11318f91219336197e62c47bc7a3d090479")
  ("org-roam" . "6759bee56b381d6f3148ee03493c82a4277efb4e")
- ("org-tree-slide" . "aa2140f62b63083cdefa1617052b8a775be39c11")
+ ("org-tree-slide" . "a9dcef402afd4d573d9d80f2dca9878cd31d0e2a")
  ("ox-twbs" . "e8a27dc78b7be494d9918f26db7a3bbb6b45020b")
  ("pacmacs.el" . "d813e9c62c2540fe619234824fc60e128c786442")
  ("page-break-lines" . "f8c4cd7fc67638ae4113551dcffdf87fcd252d9b")
@@ -189,5 +189,5 @@
  ("yaml-mode" . "68fecb5f0dec712a10c8655df6881392a4613617")
  ("yasnippet" . "5cbdbf0d2015540c59ed8ee0fcf4788effdf75b6")
  ("yasnippet-snippets" . "5e871ccaa55f02646ada8cfdc48813fae1a06ebb")
- ("zoom" . "06db8fc15b3c3261e28039f1449f87414cab8360"))
+ ("zoom" . "2be4a95a3620efb8ce00bdad9054be700cffc763"))
 :beta

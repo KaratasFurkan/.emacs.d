@@ -986,7 +986,6 @@ Change default window dividers to a better built-in alternative.
 ;; TODO: Add a function to set window width to fill column width
 ;; according to current major mode
 (use-package zoom
-  :straight (:host github :repo "KaratasFurkan/zoom" :branch "control-track-mouse-behaviour-with-a-variable")
   :commands zoom-mode
   :custom
   (zoom-track-mouse-preserve-layout nil)
@@ -3163,7 +3162,6 @@ else call `dired-find-file'"
 *** Org Tree Slide
 #+BEGIN_SRC emacs-lisp
 (use-package org-tree-slide
-  :straight (:host github :repo "KaratasFurkan/org-tree-slide" :branch "create-variable-content-margin-top")
   :commands org-tree-slide-mode
   :custom
   (org-tree-slide-activate-message "")
