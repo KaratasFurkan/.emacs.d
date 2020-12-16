@@ -1458,7 +1458,7 @@ company-yasnippet' to all company backends."
 
 (setq-default
  recenter-positions '(middle 0.15 top 0.85 bottom)  ; C-l positions
- scroll-conservatively 10000)                       ; Smooth scrolling
+ scroll-conservatively 101)                         ; Smooth scrolling
 #+END_SRC
 
 ** Custom Functions
@@ -1561,7 +1561,8 @@ org-mode activated."
   ;; Use with `helm-recentf'
   :straight (:type built-in)
   :custom
-  (recentf-exclude `(,(expand-file-name "straight/" user-emacs-directory)
+  (recentf-exclude `(,(expand-file-name "straight/build/" user-emacs-directory)
+                     ,(expand-file-name "eln-cache/" user-emacs-directory)
                      "/usr/share/emacs/"
                      "/usr/local/share/emacs/"
                      "emacs/src/"
@@ -2347,7 +2348,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ;; With pyright
   ;; sudo npm install -g pyright && pip install flake8 black(optional)
   ;; NOTE: these hooks runs in reverse order
-  (python-mode . fk/python-auto-f-string-mode)
+  ;;(python-mode . fk/python-auto-f-string-mode)
   (python-mode . (lambda () (setq-local company-prescient-mode nil)))
   (python-mode . flycheck-mode)
   (python-mode . lsp-deferred)
