@@ -339,7 +339,7 @@ initialization.
 
 ** Applying Changes
 #+BEGIN_SRC emacs-lisp
-(defun tangle-config ()
+(defun fk/tangle-config ()
   "Export code blocks from the literate config file
 asynchronously."
   (interactive)
@@ -347,7 +347,7 @@ asynchronously."
   (add-to-list 'kill-emacs-query-functions
                (lambda ()
                  (or (not (process-live-p (get-process "tangle-process")))
-                     (y-or-n-p "\"tangle-config\" is running; kill it? "))))
+                     (y-or-n-p "\"fk/tangle-config\" is running; kill it? "))))
   ;; tangle config asynchronously
   (fk/async-process
    (format "emacs %s --batch --eval '(org-babel-tangle nil \"%s\")'" config-org config-el)
@@ -360,7 +360,7 @@ code blocks on every save to update configuration.
 (add-hook 'org-mode-hook
           (lambda ()
             (if (equal (buffer-file-name) config-org)
-                (fk/add-local-hook 'after-save-hook 'tangle-config))))
+                (fk/add-local-hook 'after-save-hook 'fk/tangle-config))))
 #+END_SRC
 
 * Package Management
@@ -497,7 +497,7 @@ Copied from Doom Emacs:
 ;; loaded, but after `early-init-file'. Doom handles package initialization, so
 ;; we must prevent Emacs from doing it early!
 (setq package-enable-at-startup nil)
-(advice-add #'package--ensure-init-file :override #'ignore)
+(advice-add 'package--ensure-init-file :override 'ignore)
 
 ;; Resizing the Emacs frame can be a terribly expensive part of changing the
 ;; font. By inhibiting this, we easily halve startup times with fonts that are
@@ -634,8 +634,8 @@ emacs will ask root user's password if needed.
 
 (setq-default
  truncate-lines t
- frame-resize-pixelwise t  ; maximized emacs may not fit screen without this
- frame-title-format '((:eval
+ frame-resize-pixelwise t     ; maximized emacs may not fit screen without this
+ frame-title-format '((:eval  ; TODO: maybe better in "* Better Defaults"
                        (let ((project-name (projectile-project-name)))
                          (unless (string= "-" project-name)
                            (format "%s| " project-name))))
@@ -928,7 +928,7 @@ Change default window dividers to a better built-in alternative.
   (defun fk/beacon-blink ()
     "`beacon-blink' with `beacon-dont-blink-major-modes' control."
     (interactive)
-    (unless (seq-find #'derived-mode-p beacon-dont-blink-major-modes)
+    (unless (seq-find 'derived-mode-p beacon-dont-blink-major-modes)
       (beacon-blink)))
   ;; `beacon-blink' manually instead of activating `beacon-mode' to not
   ;; calculate every time on post-command-hook if should beacon blink
@@ -1298,14 +1298,15 @@ current buffer."
      ("M-d" . helm-buffer-run-kill-buffers)
      ("C-M-d" . helm-buffer-run-kill-persistent)))
 
-  ;; "Waiting for process to die...done" fix
-  (defun kadir/helm--collect-matches (orig-fun src-list &rest args)
+  ;; "Waiting for process to die...done" fix.
+  ;; Source: https://github.com/bbatsov/helm-projectile/issues/136#issuecomment-688444955
+  (defun fk/helm--collect-matches (orig-fun src-list &rest args)
     (let ((matches
            (cl-loop for src in src-list
                     collect (helm-compute-matches src))))
       (unless (eq matches t) matches)))
 
-  (advice-add 'helm--collect-matches :around #'kadir/helm--collect-matches))
+  (advice-add 'helm--collect-matches :around 'fk/helm--collect-matches))
 #+END_SRC
 
 *** [[#helm-projectile][Helm Projectile-]]
@@ -1426,7 +1427,7 @@ company-yasnippet' to all company backends."
 ;; It turns out company-prescient could not be disabled locally, lets go back to
 ;; company-statistics
 (use-package company-statistics
-  :hook (company-mode . company-statistics-mode))
+  :hook (global-company-mode . company-statistics-mode))
 #+END_SRC
 
 ** YASnippet (Snippet Completion)
@@ -2256,7 +2257,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
       (posframe-show lsp-ui-peek--buffer
                      :string (mapconcat 'identity string "")
                      :min-width (frame-width)
-                     :poshandler #'posframe-poshandler-frame-center)))
+                     :poshandler 'posframe-poshandler-frame-center)))
 
   (defun lsp-ui-peek--peek-destroy ()
     (when (bufferp lsp-ui-peek--buffer)
@@ -2265,8 +2266,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
           lsp-ui-peek--last-xref nil)
     (set-window-start (get-buffer-window) lsp-ui-peek--win-start))
 
-  (advice-add #'lsp-ui-peek--peek-new :override #'lsp-ui-peek--peek-display)
-  (advice-add #'lsp-ui-peek--peek-hide :override #'lsp-ui-peek--peek-destroy)
+  (advice-add 'lsp-ui-peek--peek-new :override 'lsp-ui-peek--peek-display)
+  (advice-add 'lsp-ui-peek--peek-hide :override 'lsp-ui-peek--peek-destroy)
   ;;;; LSP UI posframe ;;;;
   )
 #+END_SRC
@@ -2850,7 +2851,7 @@ else call `dired-find-file'"
   :hook
   (dired-sidebar-mode . fk/darken-background)
   :config
-  (defun sidebar-toggle ()
+  (defun fk/sidebar-toggle ()
     "Toggle both `dired-sidebar' and `ibuffer-sidebar'."
     (interactive)
     (dired-sidebar-toggle-sidebar)
@@ -3867,16 +3868,16 @@ the `docker-container-prompt-regexp'."
   (dimmer-configure-magit)
   (dimmer-configure-posframe)
   ;; I tried to fix lsp-ui-doc but it seems did not work
-  (defun dimmer-lsp-ui-doc-p ()
+  (defun fk/dimmer-lsp-ui-doc-p ()
     "Return non-nil if current buffer is a lsp-ui-doc buffer."
     (string-prefix-p " *lsp-ui-doc-" (buffer-name)))
 
-  (defun dimmer-configure-lsp-ui-doc ()
+  (defun fk/dimmer-configure-lsp-ui-doc ()
     "Convenience setting for lsp-ui-doc users.
 This predicate prevents dimming the buffer you are editing when
 lsp-ui-doc pops up a documentation."
     (add-to-list
-     'dimmer-prevent-dimming-predicates #'dimmer-lsp-ui-doc-p))
+     'dimmer-prevent-dimming-predicates 'dimmer-lsp-ui-doc-p))
   (dimmer-configure-lsp-ui-doc))
 #+END_SRC
 
