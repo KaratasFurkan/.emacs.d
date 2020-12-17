@@ -109,7 +109,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#company-code--text-completion][Company (Code & Text Completion)]]
     - [[#company][Company]]
     - [[#company-box][Company Box]]
-    - [[#company-prescient][Company Prescient]]
+    - [[#company-statisticsprescient][Company Statistics/Prescient]]
   - [[#yasnippet-snippet-completion][YASnippet (Snippet Completion)]]
   - [[#emmet--snippet-completion-for-html--css][Emmet- (Snippet Completion for HTML & CSS)]]
 - [[#search--navigation][Search & Navigation]]
@@ -1414,15 +1414,19 @@ company-yasnippet' to all company backends."
   (company-mode . company-box-mode))
 #+END_SRC
 
-*** Company Prescient
+*** Company Statistics/Prescient
 #+BEGIN_SRC emacs-lisp
-(use-package prescient
-  :defer t
-  :config (prescient-persist-mode))
+;; (use-package prescient
+;;   :hook (dashboard-after-initialize . prescient-persist-mode))
 
-(use-package company-prescient
-  :after company
-  :config (company-prescient-mode))
+;; (use-package company-prescient
+;;   :after company
+;;   :config (company-prescient-mode))
+
+;; It turns out company-prescient could not be disabled locally, lets go back to
+;; company-statistics
+(use-package company-statistics
+  :hook (company-mode . company-statistics-mode))
 #+END_SRC
 
 ** YASnippet (Snippet Completion)
@@ -2349,7 +2353,6 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ;; sudo npm install -g pyright && pip install flake8 black(optional)
   ;; NOTE: these hooks runs in reverse order
   ;;(python-mode . fk/python-auto-f-string-mode)
-  (python-mode . (lambda () (setq-local company-prescient-mode nil)))
   (python-mode . flycheck-mode)
   (python-mode . lsp-deferred)
   ;;(python-mode . (lambda () (fk/add-local-hook 'before-save-hook 'eglot-format-buffer)))
