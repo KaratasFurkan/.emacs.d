@@ -2506,6 +2506,7 @@ beginning of the string that has curly brackets in it."
   (defun fk/django-copy-path-of-test-at-point ()
     "Add path of the test at point to kill-ring. Returns the path."
     (interactive)
+    (require 'which-func)
     (let* ((defuns (seq-subseq (split-string (which-function) "\\.") 0 2))
            (class (car defuns))
            (func (let ((f (-second-item defuns))) (and f (string-match "^test" f) f)))
