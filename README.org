@@ -704,12 +704,17 @@ I use this to darken non-file buffers like treemacs, helm etc.
 ** Font
 *** Font
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
-(defconst fk/default-font-family "Source Code Pro")
-(defconst fk/default-font-size 90)
+(defconst fk/default-font-family "Roboto Mono")
+;; fk/default-font-size is calculated on start according to the primary screen
+;; size. if screen-size is bigger than 16 inch: 9 else 11.
+(defconst fk/default-font-size
+  (let* ((command "xrandr | awk '/primary/{print sqrt( ($(NF-2)/10)^2 + ($NF/10)^2 )/2.54}'")
+         (screen-size (string-to-number (shell-command-to-string command))))
+    (if (> screen-size 16) 90 110)))
 (defconst fk/default-icon-size 15)
 
 (defconst fk/variable-pitch-font-family "Noto Serif")
-(defconst fk/variable-pitch-font-size 140)
+(defconst fk/variable-pitch-font-size 140)  ; TODO: adjust this and use in org-mode
 
 (set-face-attribute 'default nil
                     :family fk/default-font-family
