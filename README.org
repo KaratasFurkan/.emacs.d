@@ -3313,7 +3313,17 @@ Pull Requests, Issues etc.
   (defadvice magit-pull-from-upstream (after forge-pull activate)
     (forge-pull))
   (defadvice magit-fetch-all (after forge-pull activate)
-    (forge-pull)))
+    (forge-pull))
+
+  (defun fk/forge-request-review (users)
+    "Request review from USERS (a string list of usernames)."
+    (let* ((topic (forge-current-pullreq))
+           (repo  (forge-get-repository topic)))
+      (forge--set-topic-review-requests repo topic users)))
+
+  (defun fk/mastermind-request-review ()
+    (interactive)
+    (fk/forge-request-review '("omerfarukabaci" "alicertel"))))
 #+END_SRC
 
 *** diff-hl
