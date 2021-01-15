@@ -197,6 +197,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#black][Black]]
     - [[#isort][Isort]]
     - [[#lsp-pyright][LSP Pyright]]
+    - [[#jupyter-notebook][Jupyter Notebook]]
   - [[#web-mode][Web Mode]]
     - [[#web-mode-html][Web Mode (HTML)]]
     - [[#emmet-mode][Emmet Mode]]
@@ -2585,6 +2586,16 @@ beginning of the string that has curly brackets in it."
      (pcase output
        ("0\n" (message "Pyright is up to date."))
        ("1\n" (message "A pyright update is available."))))))
+#+END_SRC
+
+*** Jupyter Notebook
+#+BEGIN_SRC emacs-lisp
+(use-package ein
+  :commands ein:run
+  :custom-face
+  (ein:cell-input-area ((t (:background "#21262E"))))
+  :hook
+  (ein:ipynb-mode . fk/activate-pyvenv))
 #+END_SRC
 
 ** TODO Web Mode
