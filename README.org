@@ -495,8 +495,8 @@ Copied from Doom Emacs:
 (Note: ":tangle early-init.el")
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
 ;; In Emacs 27+, package initialization occurs before `user-init-file' is
-;; loaded, but after `early-init-file'. Doom handles package initialization, so
-;; we must prevent Emacs from doing it early!
+;; loaded, but after `early-init-file'. straight.el handles package
+;; initialization, so we must prevent Emacs from doing it early!
 (setq package-enable-at-startup nil)
 (advice-add 'package--ensure-init-file :override 'ignore)
 
@@ -1293,6 +1293,7 @@ current buffer."
    ("C-x b" . helm-buffers-list)
    ("C-x C-r" . helm-recentf)
    ("C-x C-i" . helm-imenu)
+   ("C-x C-j" . helm-imenu)
    ("M-y" . helm-show-kill-ring)
    :map helm-map
    ("TAB" . helm-execute-persistent-action)
@@ -1544,7 +1545,7 @@ company-yasnippet' to all company backends."
   "Create and switch to a temporary scratch buffer with a random name and
 org-mode activated."
   (interactive)
-  (switch-to-buffer (make-temp-name "scratch-"))
+  (switch-to-buffer (make-temp-name "scratch-org-"))
   (org-mode))
 #+END_SRC
 
@@ -1626,8 +1627,8 @@ org-mode activated."
     ("w" . ace-window)
     ("D" . ace-delete-window)
     ("s" . ace-swap-window))
-  :config
-  (ace-window-posframe-mode)
+  ;; :config
+  ;; (ace-window-posframe-mode) ;; Posframe is very slow at the first time
   :custom-face
   (aw-leading-char-face ((t (:height 1000 :foreground "red")))))
 #+END_SRC
@@ -2367,8 +2368,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ( :map python-mode-map
     ;;("M-n" . python-nav-forward-block)
     ;;("M-p" . python-nav-backward-block)
-    ("C-c i r" . python-indent-shift-right)
-    ("C-c i l" . python-indent-shift-left))
+    ("C-c r" . python-indent-shift-right)
+    ("C-c l" . python-indent-shift-left))
   :hook
   ;; With pyls:
   ;; pip install python-language-server flake8 pyls-black(optional) pyls-isort(optional)
