@@ -994,11 +994,27 @@ Change default window dividers to a better built-in alternative.
 (use-package zoom
   :commands zoom-mode
   :custom
-  (zoom-track-mouse-preserve-layout nil)
+  (zoom-size fk/zoom-default-size)
   :preface
   (defvar fk/zoom-default-size '(120 . 40))
-  :custom
-  (zoom-size fk/zoom-default-size))
+  :bind*
+  (("C-M-*" . fk/enlarge-window)
+   ("C-M--" . fk/shrink-window)
+   ("C-M-0" . balance-windows))
+  :config
+  (defun fk/adjust-window-width (percentage)
+    (let* ((zoom-height (cdr zoom-size))
+           (new-width (round (* (window-width) percentage)))
+           (zoom-size `(,new-width . ,zoom-height)))
+      (zoom)))
+
+  (defun fk/enlarge-window ()
+    (interactive)
+    (fk/adjust-window-width 1.1))
+
+  (defun fk/shrink-window ()
+    (interactive)
+    (fk/adjust-window-width 0.9)))
 #+END_SRC
 
 ** Emacs Dashboard
