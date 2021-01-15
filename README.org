@@ -1439,17 +1439,17 @@ company-yasnippet' to all company backends."
 
 *** Company Statistics/Prescient
 #+BEGIN_SRC emacs-lisp
-;; (use-package prescient
-;;   :hook (dashboard-after-initialize . prescient-persist-mode))
+(use-package prescient
+  :hook (dashboard-after-initialize . prescient-persist-mode))
 
-;; (use-package company-prescient
-;;   :after company
-;;   :config (company-prescient-mode))
+(use-package company-prescient
+  :after company
+  :config (company-prescient-mode))
 
 ;; It turns out company-prescient could not be disabled locally, lets go back to
 ;; company-statistics
-(use-package company-statistics
-  :hook (global-company-mode . company-statistics-mode))
+;; (use-package company-statistics
+;;   :hook (global-company-mode . company-statistics-mode))
 #+END_SRC
 
 ** YASnippet (Snippet Completion)
@@ -2376,6 +2376,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ;; sudo npm install -g pyright && pip install flake8 black(optional)
   ;; NOTE: these hooks runs in reverse order
   ;;(python-mode . fk/python-auto-f-string-mode)
+  (python-mode . (lambda () (setq-local company-prescient-sort-length-enable nil)))
   (python-mode . flycheck-mode)
   (python-mode . lsp-deferred)
   ;;(python-mode . (lambda () (fk/add-local-hook 'before-save-hook 'eglot-format-buffer)))
