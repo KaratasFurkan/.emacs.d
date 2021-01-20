@@ -1285,8 +1285,6 @@ current buffer."
   ;; Just move the selected text to the top of kill-ring, do not insert the text
   (helm-kill-ring-actions '(("Copy marked" . (lambda (_str) (kill-new _str)))
                             ("Delete marked" . helm-kill-ring-action-delete)))
-  :group 'helm-ring
-  :type '(alist :key-type string :value-type function))
   :custom-face
   (helm-non-file-buffer ((t (:inherit font-lock-comment-face))))
   (helm-ff-file-extension ((t (:inherit default))))
