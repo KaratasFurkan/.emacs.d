@@ -160,6 +160,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#fill-unfill-paragraph][Fill-Unfill Paragraph]]
   - [[#expand-region][Expand Region]]
   - [[#flyspell-popup][Flyspell Popup]]
+  - [[#company-wordfreq][Company Wordfreq]]
 - [[#programming][Programming]]
   - [[#general-1][General]]
     - [[#better-defaults-5][Better Defaults]]
@@ -2039,6 +2040,33 @@ otherwise."
   (flyspell-popup-correct-delay 1)
   :config
   (flyspell-popup-auto-correct-mode))
+#+END_SRC
+
+** Company Wordfreq
+#+BEGIN_SRC emacs-lisp
+(use-package company-wordfreq
+  :straight (:host github :repo "johannes-mueller/company-wordfreq.el")
+  :custom
+  (company-wordfreq-path (concat no-littering-var-directory "wordfreq-dicts"))
+  (ispell-local-dictionary "english")
+  :config
+  (define-minor-mode fk/company-wordfreq-mode
+    "Suggest words by frequency."
+    :global nil
+    (if fk/company-wordfreq-mode
+        (progn
+          (setq-local company-backends-backup company-backends)
+          (setq-local company-transformers-backup company-transformers)
+          (setq-local company-backends '(company-wordfreq))
+          (setq-local company-transformers nil))
+      (setq-local company-backends company-backends-backup)
+      (setq-local company-transformers company-transformers-backup)))
+  (defun fk/company-wordfreq-toggle-language ()
+    (interactive)
+    (setq ispell-local-dictionary (if (string= ispell-local-dictionary "english")
+                                      "turkish"
+                                    "english"))
+    (message ispell-local-dictionary)))
 #+END_SRC
 
 * TODO Programming
