@@ -2160,7 +2160,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (projectile-ignored-project-function
    (lambda (project-root)
      (string-prefix-p (expand-file-name user-emacs-directory) project-root)))
-  :bind
+  :bind*
   ("C-M-t" . fk/projectile-vterm)
   :hook
   (dashboard-after-initialize . projectile-mode)
@@ -3515,6 +3515,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     ("C-c C-e" . vterm-copy-mode)
     ("M-m" . nil)
     ("M-u" . nil)
+    ("M-j" . nil)
     ("<f1>" . nil)
     ("C-c C-n" . fk/vterm-next-prompt)
     ("C-c C-p" . fk/vterm-previous-prompt)
