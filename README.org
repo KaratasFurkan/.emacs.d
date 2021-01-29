@@ -2818,7 +2818,8 @@ TODO: seperate sections (html, css..)
                      (mouse-set-point event)
                      (dired-subtree-toggle)))
     ("RET" . fk/dired-smart-open)
-    ("C-c C-e" . wdired-change-to-wdired-mode))
+    ("C-c C-e" . wdired-change-to-wdired-mode)
+    ("f". fk/dired-open-systems-file-manager))
   :hook
   (dired-mode . dired-hide-details-mode)
   ;; Fix `save-place' in dired when opening from bookmarks (mostly from dashboard)
@@ -2853,6 +2854,11 @@ else call `dired-find-file'"
     "`dired-up-directory' in same buffer."
     (interactive)
     (find-alternate-file ".."))
+
+  (defun fk/dired-open-systems-file-manager ()
+    "Open current directory with the system's default file manager."
+    (interactive)
+    (call-process-shell-command (concat "xdg-open " default-directory " &")))
 
   (advice-add 'dired-up-directory :override 'fk/dired-up-directory)
   (advice-add 'dired-find-file :override 'dired-find-alternate-file))
