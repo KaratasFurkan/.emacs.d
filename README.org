@@ -3381,15 +3381,19 @@ Pull Requests, Issues etc.
   (defadvice magit-fetch-all (after forge-pull activate)
     (forge-pull))
 
-  (defun fk/forge-request-review (users)
-    "Request review from USERS (a string list of usernames)."
+  (defun fk/forge-request-review (users &optional labels)
+    "Request review from USERS (a string list of usernames) and
+set LABELS (a string list of labels) if given."
     (let* ((topic (forge-current-pullreq))
            (repo  (forge-get-repository topic)))
-      (forge--set-topic-review-requests repo topic users)))
+      (forge--set-topic-review-requests repo topic users)
+      (when labels
+        (forge--set-topic-labels repo topic labels))))
 
   (defun fk/mastermind-request-review ()
     (interactive)
-    (fk/forge-request-review '("omerfarukabaci" "alicertel"))))
+    (fk/forge-request-review '("omerfarukabaci" "alicertel")
+                             '("Waiting for Code Review"))))
 #+END_SRC
 
 *** diff-hl
