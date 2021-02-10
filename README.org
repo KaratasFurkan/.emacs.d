@@ -276,6 +276,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#helm-slack][Helm Slack]]
   - [[#plantuml][PlantUML]]
   - [[#xwwp-xwidget-webkit-enhancement][XWWP (Xwidget Webkit Enhancement)]]
+  - [[#screenshot][Screenshot]]
 - [[#file-modes][File Modes]]
   - [[#markdown][Markdown]]
   - [[#fish][Fish]]
@@ -3810,6 +3811,15 @@ the `docker-container-prompt-regexp'."
   :bind
   ( :map xwidget-webkit-mode-map
     ("f" . xwwp-follow-link)))
+#+END_SRC
+
+** Screenshot
+#+BEGIN_SRC emacs-lisp
+(use-package screenshot
+  :straight (:host github :repo "tecosaur/screenshot")
+  :commands screenshot
+  :custom
+  (screenshot-max-width 300))
 #+END_SRC
 
 * File Modes
