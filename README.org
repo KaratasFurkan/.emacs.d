@@ -995,15 +995,16 @@ Change default window dividers to a better built-in alternative.
 ;; according to current major mode
 (use-package zoom
   :commands zoom-mode
-  :custom
-  (zoom-size fk/zoom-default-size)
   :preface
   (defvar fk/zoom-default-size '(120 . 40))
+  :custom
+  (zoom-size fk/zoom-default-size)
   :bind*
   (("C-M-*" . fk/enlarge-window)
    ("C-M--" . fk/shrink-window)
    ("C-M-0" . balance-windows))
   :config
+  ;; TODO: handle when zoom-mode active
   (defun fk/adjust-window-width (percentage)
     (let* ((zoom-height (cdr zoom-size))
            (new-width (round (* (window-width) percentage)))
@@ -3410,6 +3411,7 @@ set LABELS (a string list of labels) if given."
 (use-package diff-hl
   :custom
   (diff-hl-global-modes '(not org-mode))
+  (diff-hl-ask-before-revert-hunk nil)
   :custom-face
   (diff-hl-insert ((t (:background "#224022"))))
   (diff-hl-change ((t (:background "#492949" :foreground "mediumpurple1"))))
