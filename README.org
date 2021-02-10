@@ -1112,13 +1112,21 @@ Change default window dividers to a better built-in alternative.
 #+BEGIN_SRC emacs-lisp
 (use-package olivetti
   :custom
-  (olivetti-body-width 120)
+  (olivetti-body-width-default 120)
+  (olivetti-body-width-large 180)
+  (olivetti-body-width olivetti-body-width-default)
   (olivetti-enable-visual-line-mode nil)
   :bind*
   (("C-1" . (lambda ()
               (interactive)
               (if (= (count-windows) 1)
-                  (call-interactively 'fk/olivetti-single-window-mode)
+                  (if (and fk/olivetti-single-window-mode
+                           (= olivetti-body-width olivetti-body-width-default))
+                      (progn
+                        (setq olivetti-body-width olivetti-body-width-large)
+                        (olivetti-mode))
+                    (call-interactively 'fk/olivetti-single-window-mode)
+                    (setq olivetti-body-width olivetti-body-width-default))
                 (delete-other-windows))))
    :map windows
    ("c" . olivetti-mode)
