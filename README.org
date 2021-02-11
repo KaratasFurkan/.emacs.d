@@ -1608,7 +1608,8 @@ org-mode activated."
                      "/usr/share/emacs/"
                      "/usr/local/share/emacs/"
                      "emacs/src/"
-                     ,(expand-file-name "~/.virtualenvs")))
+                     ,(expand-file-name "~/.virtualenvs")
+                     "/usr/lib/node_modules/"))
   (recentf-max-saved-items 200))
 #+END_SRC
 
@@ -2169,7 +2170,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ;; to project list
   (projectile-ignored-project-function
    (lambda (project-root)
-     (string-prefix-p (expand-file-name user-emacs-directory) project-root)))
+     (or (string-prefix-p (expand-file-name user-emacs-directory) project-root)
+         (string-prefix-p "/usr/lib/node_modules/" project-root))))
   :bind*
   ("C-M-t" . fk/projectile-vterm)
   :hook
