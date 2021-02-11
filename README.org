@@ -3346,6 +3346,11 @@ else call `dired-find-file'"
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :commands magit
+  :custom
+  (magit-section-initial-visibility-alist '((stashes . show)
+                                            (unpushed . show)
+                                            (pullreqs . show)
+                                            (issues . show)))
   :bind*
   ( :map version-control
     ("v" . magit-status)
