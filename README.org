@@ -245,6 +245,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#org-tree-slide][Org Tree Slide]]
     - [[#org-export-twitter-bootstrap][Org Export Twitter Bootstrap]]
     - [[#valign-mode][Valign Mode]]
+    - [[#org-appear][Org Appear]]
   - [[#version-control][Version Control]]
     - [[#magit][Magit]]
       - [[#magit-1][Magit]]
@@ -3341,6 +3342,16 @@ else call `dired-find-file'"
   (valign-fancy-bar t)
   :hook
   (org-mode . valign-mode))
+#+END_SRC
+
+*** Org Appear
+#+BEGIN_SRC emacs-lisp
+(use-package org-appear
+  :straight (:host github :repo "awth13/org-appear")
+  :custom
+  (org-appear-autolinks t)
+  :hook
+  (org-mode . org-appear-mode))
 #+END_SRC
 
 ** Version Control
