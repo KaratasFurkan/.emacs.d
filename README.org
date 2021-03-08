@@ -2406,7 +2406,9 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   :straight (:type built-in)
   :hook
   (lisp-data-mode . (lambda ()
-                      (when (= (buffer-name) ".dir-locals.el")
+                      ;; NOTE: `emacs-lisp-mode' derives from `lisp-data-mode',
+                      ;; so make sure that the major-mode is `lisp-data-mode'.
+                      (when (string= major-mode "lisp-data-mode")
                         (fk/add-local-hook 'before-save-hook
                                            (lambda ()
                                              (align-regexp (point-min) (point-max) "\\(\\s-*\\). (")
