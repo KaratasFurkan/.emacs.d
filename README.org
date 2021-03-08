@@ -1033,15 +1033,16 @@ Change default window dividers to a better built-in alternative.
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
   (dashboard-week-agenda t)
+  (dashboard-agenda-time-string-format "%d/%m/%Y %A %H:%M")
+  ;; (dashboard-agenda-release-buffers t) ; Has bugs
   (dashboard-item-shortcuts '((recents . "r")
                               (bookmarks . "b")
                               (projects . "p")
                               (agenda . "a")))
   (dashboard-items '((recents  . 10)
-                     (projects . 10)
+                     (projects . 5)
                      ;;(bookmarks . 5)
-                     ;;(agenda . 5))
-                     ))
+                     (agenda . 10)))
   (dashboard-set-navigator t)
   ;; Format: "(icon title help action face prefix suffix)"
   (dashboard-navigator-buttons
@@ -1062,6 +1063,7 @@ Change default window dividers to a better built-in alternative.
        (lambda (&rest _) (persp-state-load persp-state-default-file))))))
   :custom-face
   (dashboard-heading-face ((t (:weight bold))))
+  (dashboard-items-face ((t (:weight normal))))
   :config
   (dashboard-setup-startup-hook)
   (defun fk/home ()
@@ -1072,8 +1074,7 @@ Change default window dividers to a better built-in alternative.
       (dashboard-refresh-buffer)))
   :hook
   (dashboard-mode . (lambda () (setq-local cursor-type nil)))
-  (dashboard-mode . (lambda () (setq-local show-trailing-whitespace nil)))
-  (dashboard-mode . (lambda () (face-remap-add-relative 'hl-line :weight 'bold))))
+  (dashboard-mode . (lambda () (setq-local show-trailing-whitespace nil))))
 #+END_SRC
 
 ** Stripe Buffer
