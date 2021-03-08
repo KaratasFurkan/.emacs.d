@@ -3388,7 +3388,7 @@ else call `dired-find-file'"
 *** Org Appear
 #+BEGIN_SRC emacs-lisp
 (use-package org-appear
-  :straight (:host github :repo "awth13/org-appear")
+  :straight (:host github :repo "awth13/org-appear" :branch "feature/time-stamps")
   :custom
   (org-appear-autolinks t)
   :hook
