@@ -3028,7 +3028,17 @@ else call `dired-find-file'"
   (org-refile-targets '(("todos.org" :level . 1)
                         ("someday.org" :level . 1)
                         ("archive.org" :level . 1)))
-  (org-default-priority ?A)
+  (org-default-priority ?A)  ; Highest
+  (org-log-done 'time)
+  (org-todo-keywords '((sequence "TODO(1)" "WIP(w)" "WAITING_REVIEW(r)" "WAITING_TEST(t)" "READY_PROD(p)" "HOLD(h)" "|"
+                                 "DONE(d)" "CANCELLED(c)")))
+  (org-todo-keyword-faces
+   '(("WIP" :foreground "#86DC2F" :weight bold)
+     ("WAITING_REVIEW" :foreground "cyan" :weight bold)
+     ("WAITING_TEST" :foreground "cyan" :weight bold)
+     ("READY_PROD" :foreground "greenyellow" :weight bold)
+     ("HOLD" :foreground "#DC752F" :weight bold)
+     ("CANCELLED" :inherit 'org-done)))
   ;;;; Getting Things Done ;;;;
   :custom-face
   (org-block ((t (:extend t))))
@@ -3044,8 +3054,15 @@ else call `dired-find-file'"
   (org-table ((t (:inherit fixed-pitch :foreground "white"))))
   (org-document-title ((t (:height 1.5))))
   (org-block-begin-line ((t (:foreground ,fk/light-color3 :background ,fk/background-color))))
+  (org-document-info-keyword ((t (:foreground ,fk/light-color3))))
+  (org-document-info-keyword ((t (:foreground ,fk/light-color3 :height 10))))  ; Make #+TITLE: invisible
+  (org-meta-line ((t (:foreground ,fk/light-color3))))  ; Less distractive
+  (org-agenda-current-time ((t (:foreground "LightGoldenrod"))))
+  (org-agenda-date-today ((t (:foreground "LightGoldenrod"))))
+  (org-agenda-calendar-event ((t (:weight bold))))
   :bind
   ( :map org
+    ("a" . org-agenda)
     ("c" . (lambda () (interactive) (org-capture :keys "i")))
     :map org-mode-map
     ("C-c C-e" . org-edit-special)
@@ -3056,6 +3073,7 @@ else call `dired-find-file'"
     ("C-c C-r" . org-refile)
     ("C-c C-a" . fk/org-refile-done)  ; "a" for archive
     ("C-c C-t" . fk/org-refile-trash)
+    ("C-c t" . org-todo)
     ("C-c C-p" . org-priority-down)
     ("C-M-j" . org-open-at-point)
     :map org-src-mode-map
@@ -3080,6 +3098,8 @@ else call `dired-find-file'"
     (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
                                                              (emacs-lisp . t)
                                                              (shell . t))))
+  (with-eval-after-load 'org-agenda
+    (bind-key "m" 'org-agenda-month-view org-agenda-mode-map))
 
   ;; Beautify org mode
   (font-lock-add-keywords 'org-mode
@@ -3260,7 +3280,7 @@ else call `dired-find-file'"
 #+BEGIN_SRC emacs-lisp
 (use-package org-fancy-priorities
   :custom
-  (org-fancy-priorities-list '("[!!!]" "[!!]" "[!]"))
+  (org-fancy-priorities-list '("[!!!]" "[!!] " "[!]  "))  ; same length
   (org-priority-faces '((?A . (:foreground "orangered2" :weight extrabold :height 1.3))  ; org-mode
                         (?B . (:foreground "orange" :weight extrabold :height 1.3))
                         (?C . (:foreground "Burlywood" :weight extrabold :height 1.3))))
