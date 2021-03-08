@@ -2544,15 +2544,15 @@ beginning of the string that has curly brackets in it."
 
   (defun fk/django-search-views ()
     (interactive)
-    (fk/helm-ag-search-with-glob "views.py"))
+    (fk/helm-ag-search-with-glob "*views*.py"))
 
   (defun fk/django-search-serializers ()
     (interactive)
-    (fk/helm-ag-search-with-glob "serializers.py"))
+    (fk/helm-ag-search-with-glob "*serializers*.py"))
 
   (defun fk/django-search-tests ()
     (interactive)
-    (fk/helm-ag-search-with-glob "test*.py"))
+    (fk/helm-ag-search-with-glob "*test*.py"))
 
   (defun fk/django-search-settings ()
     (interactive)
@@ -2573,7 +2573,7 @@ beginning of the string that has curly brackets in it."
 
   (defun fk/django-search-urls ()
     (interactive)
-    (fk/helm-ag-search-with-glob "urls.py" "name ="))
+    (fk/helm-ag-search-with-glob "*.py" "path\\( "))
 
   (bind-keys*
    :map django
