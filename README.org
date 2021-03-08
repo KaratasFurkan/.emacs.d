@@ -2447,9 +2447,10 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ;;(python-mode . importmagic-mode)
   (python-mode . fk/activate-pyvenv)
   (python-mode . (lambda ()
-                   (when (string=
-                          (car (last (f-split (f-parent (buffer-file-name)))))
-                          "tests")
+                   (when (and (buffer-file-name)
+                              (string=
+                               (car (last (f-split (f-parent (buffer-file-name)))))
+                               "tests"))
                      (fk/hide-second-level-blocks))))
   (python-mode . (lambda () (require 'tree-sitter-langs) (tree-sitter-hl-mode)))
   (python-mode . (lambda () (setq-local fill-column 88)))
