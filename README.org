@@ -150,6 +150,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#custom-functions-3][Custom Functions]]
     - [[#backward-kill-word-or-region][backward-kill-word-or-region]]
     - [[#newline-below][newline-below]]
+    - [[#remove-hypens-and-underscores-region][remove-hypens-and-underscores-region]]
   - [[#keybindings-2][Keybindings]]
   - [[#electric-indent-mode-][Electric Indent Mode-]]
   - [[#undo-tree][Undo Tree]]
@@ -1924,6 +1925,18 @@ otherwise."
   (save-excursion (end-of-line) (open-line 1)))
 #+END_SRC
 
+*** remove-hypens-and-underscores-region
+#+BEGIN_SRC emacs-lisp
+(defun fk/remove-hypens-and-underscores-region (beg end)
+  "Remove hypens and underscores from region."
+  (interactive "*r")
+  (save-excursion
+    (let* ((raw-str (buffer-substring-no-properties beg end))
+           (clean-str (string-replace "_" " " (string-replace "-" " " raw-str))))
+      (delete-region beg end)
+      (insert clean-str))))
+#+END_SRC
+
 ** Keybindings
 #+BEGIN_SRC emacs-lisp
 (keyboard-translate ?\C-h ?\C-?)  ; C-h as DEL, (F1 as `help-command')
@@ -1932,7 +1945,8 @@ otherwise."
 
 (bind-keys*
  :map text
- ("s" . sort-lines))
+ ("s" . sort-lines)
+ ("r" . fk/remove-hypens-and-underscores-region))
 #+END_SRC
 
 ** [[#electric-indent-mode][Electric Indent Mode-]]
