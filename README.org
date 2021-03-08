@@ -3055,6 +3055,7 @@ else call `dired-find-file'"
     ("C-c C-a" . fk/org-refile-done)  ; "a" for archive
     ("C-c C-t" . fk/org-refile-trash)
     ("C-c C-p" . org-priority-down)
+    ("C-M-j" . org-open-at-point)
     :map org-src-mode-map
     ("C-c C-c" . org-edit-src-exit))
   :hook
@@ -3875,7 +3876,8 @@ the `docker-container-prompt-regexp'."
   :bind
   ( :map markdown-mode-map
     ("M-n" . markdown-next-visible-heading)
-    ("M-p" . markdown-previous-visible-heading))
+    ("M-p" . markdown-previous-visible-heading)
+    ("C-M-j" . markdown-follow-thing-at-point))
   :hook
   (markdown-mode . emojify-mode))
 #+END_SRC
