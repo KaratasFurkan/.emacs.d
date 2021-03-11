@@ -2040,7 +2040,8 @@ otherwise."
   (wrap-region-add-wrapper "/" "/" nil 'org-mode)
   (wrap-region-add-wrapper "+" "+" nil 'org-mode)
   (wrap-region-add-wrapper "~" "~" nil 'org-mode)
-  (wrap-region-add-wrapper "#" "#" nil 'org-mode))
+  (wrap-region-add-wrapper "#" "#" nil 'org-mode)
+  (wrap-region-add-wrapper "`" "`" nil 'markdown-mode))
 #+END_SRC
 
 ** Fill-Unfill Paragraph
