@@ -3573,7 +3573,10 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 *** Git Blame (vc-msg)
 #+BEGIN_SRC emacs-lisp
 (use-package vc-msg
-  :commands vc-msg-show)
+  :commands vc-msg-show
+  :bind
+  ( :map version-control
+    ("b" . vc-msg-show)))
 #+END_SRC
 
 ** Terminal Emulation
