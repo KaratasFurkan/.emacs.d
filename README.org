@@ -1859,10 +1859,32 @@ from melpa. TODO: fix this
     ("p" . persp-switch)
     ("k" . persp-kill)
     ("l" . persp-switch-last)
-    ("q" . persp-switch-quick))
+    ("q" . persp-switch-quick)
+    ("n" . (lambda () (interactive) (persp-switch (make-temp-name "p-")))))
   :hook
   (dashboard-after-initialize . persp-mode)
-  (kill-emacs . persp-state-save))
+  (kill-emacs . persp-state-save)
+  :config
+  (with-eval-after-load 'projectile
+    (defun fk/perspective-rename-with-project-name ()
+      "Rename current perspective according to current project name."
+      (interactive)
+      (when (projectile-project-p)
+        (let ((project-name (projectile-project-name)))
+          (persp-rename (if (> (length project-name) 10)
+                            (concat (substring project-name 0 9) "…")
+                          project-name)))))
+
+    (define-minor-mode fk/perspective-auto-rename-mode
+      "Rename perspectives according to project name automatically."
+      :global t
+      (if fk/perspective-auto-rename-mode
+          (progn
+            (ignore-errors (fk/perspective-rename-with-project-name))
+            (add-hook 'projectile-after-switch-project-hook 'fk/perspective-rename-with-project-name))
+        (remove-hook 'projectile-after-switch-project-hook 'fk/perspective-rename-with-project-name)))
+
+    (fk/perspective-auto-rename-mode)))
 #+END_SRC
 
 ** [[#dired-sidebar][Dired Sidebar-]]
@@ -2173,7 +2195,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 *** Projectile
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
-  :after f
+  :after f  ; TODO: remove this dependency
   :custom
   (projectile-auto-discover nil)
   (projectile-project-search-path (f-directories "~/projects"))
