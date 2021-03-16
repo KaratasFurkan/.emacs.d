@@ -141,7 +141,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#treemacs][Treemacs]]
     - [[#treemacs-1][Treemacs]]
     - [[#treemacs-projectile][Treemacs Projectile]]
-  - [[#persp-mode][Persp Mode]]
+  - [[#perspective][Perspective]]
   - [[#dired-sidebar-][Dired Sidebar-]]
   - [[#ibuffer-sidebar-][IBuffer Sidebar-]]
   - [[#block-nav][Block Nav]]
@@ -1808,7 +1808,7 @@ from melpa. TODO: fix this
 #+BEGIN_SRC emacs-lisp
 (use-package avy
   :bind
-  (("M-j" . avy-goto-char-2)
+  (("M-j" . avy-goto-word-or-subword-1)
    ("C-M-u" . avy-pop-mark)))
 #+END_SRC
 
@@ -1841,7 +1841,7 @@ from melpa. TODO: fix this
   :after treemacs projectile)
 #+END_SRC
 
-** Persp Mode
+** Perspective
 #+BEGIN_SRC emacs-lisp
 (use-package perspective
   :custom
@@ -1860,7 +1860,8 @@ from melpa. TODO: fix this
     ("k" . persp-kill)
     ("l" . persp-switch-last)
     ("q" . persp-switch-quick)
-    ("n" . (lambda () (interactive) (persp-switch (make-temp-name "p-")))))
+    ("n" . (lambda () (interactive) (persp-switch (make-temp-name "p-"))))
+    ("R" . fk/perspective-rename-with-project-name))
   :hook
   (dashboard-after-initialize . persp-mode)
   (kill-emacs . persp-state-save)
@@ -1884,6 +1885,8 @@ from melpa. TODO: fix this
             (add-hook 'projectile-after-switch-project-hook 'fk/perspective-rename-with-project-name))
         (remove-hook 'projectile-after-switch-project-hook 'fk/perspective-rename-with-project-name)))
 
+    (advice-add 'fk/find-config :after 'fk/perspective-rename-with-project-name)
+
     (fk/perspective-auto-rename-mode)))
 #+END_SRC
 
@@ -1894,6 +1897,7 @@ from melpa. TODO: fix this
 (use-package block-nav
   :straight (:host github :repo "nixin72/block-nav.el")
   :config
+  ;; TODO: DRY
   ;; (defun fk/block-nav-activate (file keymap)
   ;;   (with-eval-after-load file
   ;;     (define-key keymap (kbd "M-n") 'block-nav-next-block)
@@ -2572,7 +2576,7 @@ beginning of the string that has curly brackets in it."
 
   (defun fk/django-search-views ()
     (interactive)
-    (fk/helm-ag-search-with-glob "*views*.py"))
+    (fk/helm-ag-search-with-glob "views*.py"))
 
   (defun fk/django-search-serializers ()
     (interactive)
@@ -4085,7 +4089,8 @@ This predicate prevents dimming the buffer you are editing when
 lsp-ui-doc pops up a documentation."
     (add-to-list
      'dimmer-prevent-dimming-predicates 'dimmer-lsp-ui-doc-p))
-  (dimmer-configure-lsp-ui-doc))
+
+  (fk/dimmer-configure-lsp-ui-doc))
 #+END_SRC
 
 ** Focus
