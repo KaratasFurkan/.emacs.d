@@ -2340,16 +2340,18 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 (use-package lsp-ui
   :after lsp-mode
   :custom
-  (lsp-ui-doc-position 'top)
+  (lsp-ui-doc-show-with-cursor nil)
+  (lsp-ui-doc-position 'at-point)
   (lsp-ui-sideline-delay 0.5)
-  (lsp-ui-doc-delay 0.5)
   (lsp-ui-peek-always-show t)
   (lsp-ui-peek-fontify 'always)
   :custom-face
   (lsp-ui-peek-highlight ((t (:inherit nil :background nil :foreground nil :weight semi-bold :box (:line-width -1)))))
   :bind
-  ([remap xref-find-references] . lsp-ui-peek-find-references)
-  ("C-M-l" . lsp-ui-peek-find-definitions)
+  ( :map lsp-ui-mode-map
+    ([remap xref-find-references] . lsp-ui-peek-find-references)
+    ("C-M-l" . lsp-ui-peek-find-definitions)
+    ("C-c C-d" . lsp-ui-doc-show))
   :config
   ;;;; LSP UI posframe ;;;;
   (defun lsp-ui-peek--peek-display (src1 src2)
