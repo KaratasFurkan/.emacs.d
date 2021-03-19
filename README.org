@@ -213,8 +213,8 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#javascript][JavaScript]]
     - [[#javascript-1][JavaScript]]
   - [[#go][Go]]
-    - [[#go-mode][Go Mode]]
   - [[#c][C]]
+  - [[#lua][Lua]]
 - [[#tools][Tools]]
   - [[#dired][Dired]]
     - [[#dired-1][Dired]]
@@ -2819,7 +2819,6 @@ TODO: seperate sections (html, css..)
 #+END_SRC
 
 ** Go
-*** Go Mode
 #+BEGIN_SRC emacs-lisp
 (use-package go-mode
   ;; install go & go-tools, for arch based linux:
@@ -2856,6 +2855,12 @@ TODO: seperate sections (html, css..)
   :hook
   (c-mode . (lambda () (fk/add-local-hook 'before-save-hook 'clang-format-buffer)))
   (c++-mode . (lambda () (fk/add-local-hook 'before-save-hook 'clang-format-buffer))))
+#+END_SRC
+
+** Lua
+#+BEGIN_SRC emacs-lisp
+(use-package lua-mode
+  :mode "\\.lua\\'")
 #+END_SRC
 
 * TODO Tools
