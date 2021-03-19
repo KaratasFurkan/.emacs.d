@@ -278,6 +278,8 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#alert][Alert]]
     - [[#helm-slack][Helm Slack]]
   - [[#plantuml][PlantUML]]
+  - [[#eww][EWW]]
+    - [[#highlight-code-blocks][Highlight Code Blocks]]
   - [[#xwwp-xwidget-webkit-enhancement][XWWP (Xwidget Webkit Enhancement)]]
   - [[#screenshot][Screenshot]]
 - [[#file-modes][File Modes]]
@@ -3907,6 +3909,15 @@ the `docker-container-prompt-regexp'."
     (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
     (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t)))
     (setq org-plantuml-jar-path plantuml-jar-path)))
+#+END_SRC
+
+** EWW
+*** Highlight Code Blocks
+#+BEGIN_SRC emacs-lisp
+(use-package shr-tag-pre-highlight
+  :after shr
+  :config
+  (add-to-list 'shr-external-rendering-functions '(pre . shr-tag-pre-highlight)))
 #+END_SRC
 
 ** XWWP (Xwidget Webkit Enhancement)
