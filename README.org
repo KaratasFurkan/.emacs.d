@@ -2653,14 +2653,20 @@ beginning of the string that has curly brackets in it."
   :after python
   :config
   (defun fk/activate-pyvenv ()
-    "Activate python environment according to the `.venv' file."
+    "Activate python environment according to the `project_root/.venv' file."
     (interactive)
-    (pyvenv-mode)
-    (let* ((pdir (projectile-project-root)) (pfile (concat pdir ".venv")))
-      (if (file-exists-p pfile)
-          (pyvenv-workon (with-temp-buffer
-                           (insert-file-contents pfile)
-                           (nth 0 (split-string (buffer-string)))))))))
+    (let* ((pdir (projectile-project-root))
+           (venv-file (concat pdir ".venv")))
+      (when (file-exists-p venv-file)
+        (pyvenv-mode)
+        (pyvenv-workon (with-temp-buffer
+                         (insert-file-contents venv-file)
+                         (nth 0 (split-string (buffer-string))))))))
+
+  ;; python-mode hook is not enough when more than one project's files are open.
+  ;; It just re-activate pyvenv when a new file is opened, it should re-activate
+  ;; on buffer (or perspective) switching too.
+  (add-hook 'window-configuration-change-hook 'fk/activate-pyvenv))
 #+END_SRC
 
 *** Import Magic
