@@ -1982,6 +1982,8 @@ otherwise."
 ** Undo Tree
 #+BEGIN_SRC emacs-lisp
 (use-package undo-tree
+  :custom
+  (undo-tree-visualizer-diff t)
   :bind
   (("C-u" . undo-tree-undo)
    ("C-S-u" . undo-tree-redo))
