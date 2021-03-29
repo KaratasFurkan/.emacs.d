@@ -123,6 +123,8 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#split-window-and-switch][split-window-and-switch]]
     - [[#generate-random-scratch][generate-random-scratch]]
     - [[#generate-random-org-scratch][generate-random-org-scratch]]
+    - [[#convert-string-to-rg-compatible][convert-string-to-rg-compatible]]
+    - [[#get-selected-text][get-selected-text]]
   - [[#keybindings-1][Keybindings]]
   - [[#recentf-recent-files][Recentf (Recent Files)]]
   - [[#winner-mode][Winner Mode]]
@@ -1569,6 +1571,26 @@ org-mode activated."
   (interactive)
   (switch-to-buffer (make-temp-name "scratch-org-"))
   (org-mode))
+#+END_SRC
+
+*** convert-string-to-rg-compatible
+#+BEGIN_SRC emacs-lisp
+(setq fk/rg-special-characters '("(" ")" "[" "{" "*"))
+
+(defun fk/convert-string-to-rg-compatible (str)
+  "Escape special characters defined in `fk/rg-special-characters' of STR."
+  (seq-reduce (lambda (str char) (string-replace char (concat "\\" char) str))
+              fk/rg-special-characters
+              str))
+#+END_SRC
+
+*** get-selected-text
+#+BEGIN_SRC emacs-lisp
+(defun fk/get-selected-text ()
+  "Return selected text if region is active, else nil."
+  (when (region-active-p)
+    (let ((text (buffer-substring-no-properties (region-beginning) (region-end))))
+      (deactivate-mark) text)))
 #+END_SRC
 
 ** Keybindings
