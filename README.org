@@ -1745,17 +1745,19 @@ from melpa. TODO: fix this
   (helm-ag-base-command
    "rg -S --no-heading --color=never --line-number --max-columns 400")
   :bind
-  (("C-M-S-s" . fk/helm-do-ag-project-root-or-current-dir)
+  (("C-M-S-s" . fk/helm-ag-dwim)
    :map helm-ag-map
    ("C-o" . helm-ag--run-other-window-action))
   :config
-  (defun fk/helm-do-ag-project-root-or-current-dir (&optional query)
-    "If in a project call `helm-do-ag-project-root', else call
-`helm-do-ag' with current directory."
+  (defun fk/helm-ag-dwim ()
+    "Smarter version of helm-ag.
+- Search in project if in a project else search in default (current) directory.
+- Start search with selected text if region is active or empty string.
+- Escape special characters when searching with selected text."
     (interactive)
-    (if (projectile-project-p)
-        (helm-do-ag-project-root query)
-      (helm-do-ag default-directory nil query))))
+    (let ((root-dir (or (projectile-project-root) default-directory))
+          (query (fk/convert-string-to-rg-compatible (or (fk/get-selected-text) ""))))
+      (helm-do-ag root-dir nil query))))
 #+END_SRC
 
 ** Helm Rg
@@ -1763,6 +1765,7 @@ from melpa. TODO: fix this
 (use-package helm-rg
   :custom
   (helm-rg--extra-args '("--max-columns" "400"))
+  (fk/helm-rg-fuzzy-match t)  ; I may wanna disable helm-rg's transform functionality
   :custom-face
   (helm-rg-file-match-face ((t (:inherit font-lock-type-face :weight bold :underline nil))))
   (helm-rg-line-number-match-face ((t (:inherit line-number))))
@@ -1772,16 +1775,19 @@ from melpa. TODO: fix this
   (defun fk/helm-rg-dwim ()
     "Smarter version of helm-rg.
 - Search in project if in a project else search in default (current) directory.
-- Start search with selected text if region is active or empty string."
+- Start search with selected text if region is active or empty string.
+- Escape special characters when searching with selected text."
     (interactive)
-    (let ((helm-rg-default-directory (or (projectile-project-root) default-directory)))
-      (cl-letf (((symbol-function 'helm-rg--get-thing-at-pt)
-                 (lambda ()  ; Get selected text or empty string
-                   (if (region-active-p)
-                       (buffer-substring-no-properties (region-beginning) (region-end))
-                     ""))))
-        (call-interactively 'helm-rg)))
-    (deactivate-mark)))
+    (let ((helm-rg-default-directory (or (projectile-project-root) default-directory))
+          (query (fk/convert-string-to-rg-compatible (or (fk/get-selected-text) ""))))
+      (cl-letf (((symbol-function 'helm-rg--get-thing-at-pt) (lambda () query)))
+        (if fk/helm-rg-fuzzy-match
+            (call-interactively 'helm-rg)
+          (cl-letf (((symbol-function 'helm-rg--helm-pattern-to-ripgrep-regexp) (lambda (_) _)))
+            (call-interactively 'helm-rg))))))
+
+  ;; Use a simpler header in the helm buffer.
+  (fset 'helm-rg--header-name (lambda (_) (concat "Search at " helm-rg--current-dir))))
 #+END_SRC
 
 ** Helm Xref
