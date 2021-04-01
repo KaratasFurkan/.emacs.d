@@ -1749,15 +1749,20 @@ from melpa. TODO: fix this
    :map helm-ag-map
    ("C-o" . helm-ag--run-other-window-action))
   :config
-  (defun fk/helm-ag-dwim ()
+  (defun fk/helm-ag-dwim (&optional query)
     "Smarter version of helm-ag.
 - Search in project if in a project else search in default (current) directory.
 - Start search with selected text if region is active or empty string.
 - Escape special characters when searching with selected text."
     (interactive)
     (let ((root-dir (or (projectile-project-root) default-directory))
-          (query (fk/convert-string-to-rg-compatible (or (fk/get-selected-text) ""))))
-      (helm-do-ag root-dir nil query))))
+          (query (or query (fk/convert-string-to-rg-compatible (or (fk/get-selected-text) "")))))
+      (helm-do-ag root-dir nil query)))
+
+  (defun fk/helm-ag-dwim-with-glob (glob &optional query)
+    (interactive)
+    (let ((helm-ag-base-command (concat helm-ag-base-command " --glob " glob)))
+      (fk/helm-ag-dwim query))))
 #+END_SRC
 
 ** Helm Rg
@@ -1772,14 +1777,14 @@ from melpa. TODO: fix this
   :bind
   ("C-M-s" . fk/helm-rg-dwim)
   :config
-  (defun fk/helm-rg-dwim ()
+  (defun fk/helm-rg-dwim (&optional query)
     "Smarter version of helm-rg.
 - Search in project if in a project else search in default (current) directory.
 - Start search with selected text if region is active or empty string.
 - Escape special characters when searching with selected text."
     (interactive)
     (let ((helm-rg-default-directory (or (projectile-project-root) default-directory))
-          (query (fk/convert-string-to-rg-compatible (or (fk/get-selected-text) ""))))
+          (query (or query (fk/convert-string-to-rg-compatible (or (fk/get-selected-text) "")))))
       (cl-letf (((symbol-function 'helm-rg--get-thing-at-pt) (lambda () query)))
         (if fk/helm-rg-fuzzy-match
             (call-interactively 'helm-rg)
@@ -1787,7 +1792,12 @@ from melpa. TODO: fix this
             (call-interactively 'helm-rg))))))
 
   ;; Use a simpler header in the helm buffer.
-  (fset 'helm-rg--header-name (lambda (_) (concat "Search at " helm-rg--current-dir))))
+  (fset 'helm-rg--header-name (lambda (_) (concat "Search at " helm-rg--current-dir)))
+
+  (defun fk/helm-rg-dwim-with-glob (glob &optional query)
+    (interactive)
+    (let ((helm-rg-default-glob-string glob))
+      (fk/helm-rg-dwim query))))
 #+END_SRC
 
 ** Helm Xref
@@ -2623,50 +2633,44 @@ beginning of the string that has curly brackets in it."
       (ad-remove-advice 'kill-region 'after 'smart-f-string)
       (ad-update 'kill-region)))
 
-
+  ;; TODO: Seperate Django section
   ;; Grep functions for Django
-
-  (defun fk/helm-ag-search-with-glob (glob &optional query)
-    (interactive)
-    (let ((helm-ag-base-command (concat helm-ag-base-command " --glob " glob)))
-      (fk/helm-do-ag-project-root-or-current-dir (or query "^class "))))
-
   (defun fk/django-search-models ()
     (interactive)
-    (fk/helm-ag-search-with-glob "models.py"))
+    (fk/helm-rg-dwim-with-glob "models.py" "^class "))
 
   (defun fk/django-search-views ()
     (interactive)
-    (fk/helm-ag-search-with-glob "views*.py"))
+    (fk/helm-rg-dwim-with-glob "views*.py" "^class "))
 
   (defun fk/django-search-serializers ()
     (interactive)
-    (fk/helm-ag-search-with-glob "*serializers*.py"))
+    (fk/helm-rg-dwim-with-glob "*serializers*.py" "^class "))
 
   (defun fk/django-search-tests ()
     (interactive)
-    (fk/helm-ag-search-with-glob "*test*.py"))
+    (fk/helm-rg-dwim-with-glob "*test*.py" "^class "))
 
   (defun fk/django-search-settings ()
     (interactive)
     ;; TODO: this glob does not work
-    (fk/helm-ag-search-with-glob "settings*.py" ""))
+    (fk/helm-rg-dwim-with-glob "settings*.py" ""))
 
   (defun fk/django-search-admins ()
     (interactive)
-    (fk/helm-ag-search-with-glob "admin.py" ""))
+    (fk/helm-rg-dwim-with-glob "admin.py" ""))
 
   (defun fk/django-search-permissions ()
     (interactive)
-    (fk/helm-ag-search-with-glob "permissions.py"))
+    (fk/helm-rg-dwim-with-glob "permissions.py" "^class "))
 
   (defun fk/django-search-mixins ()
     (interactive)
-    (fk/helm-ag-search-with-glob "mixins.py"))
+    (fk/helm-rg-dwim-with-glob "mixins.py" "^class "))
 
   (defun fk/django-search-urls ()
     (interactive)
-    (fk/helm-ag-search-with-glob "*.py" "path\\( "))
+    (fk/helm-rg-dwim-with-glob "*.py" "path\\( "))
 
   (bind-keys*
    :map django
