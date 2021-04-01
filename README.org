@@ -3588,7 +3588,9 @@ set LABELS (a string list of labels) if given."
     ("r" . diff-hl-revert-hunk))
   :hook
   (dashboard-after-initialize . global-diff-hl-mode)
-  (diff-hl-mode . diff-hl-flydiff-mode))
+  (diff-hl-mode . diff-hl-flydiff-mode)
+  (magit-pre-refresh . diff-hl-magit-pre-refresh)
+  (magit-post-refresh . diff-hl-magit-post-refresh))
 #+END_SRC
 
 *** Smerge + Hydra
