@@ -203,6 +203,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#black][Black]]
     - [[#isort][Isort]]
     - [[#lsp-pyright][LSP Pyright]]
+    - [[#django][Django]]
     - [[#jupyter-notebook][Jupyter Notebook]]
   - [[#web-mode][Web Mode]]
     - [[#web-mode-html][Web Mode (HTML)]]
@@ -2601,83 +2602,7 @@ beginning of the string that has curly brackets in it."
       (ad-remove-advice 'delete-active-region 'after 'smart-f-string)
       (ad-update 'delete-active-region)
       (ad-remove-advice 'kill-region 'after 'smart-f-string)
-      (ad-update 'kill-region)))
-
-  ;; TODO: Seperate Django section
-  ;; Grep functions for Django
-  (defun fk/django-search-models ()
-    (interactive)
-    (fk/helm-rg-dwim-with-glob "models.py" "^class "))
-
-  (defun fk/django-search-views ()
-    (interactive)
-    (fk/helm-rg-dwim-with-glob "views*.py" "^class "))
-
-  (defun fk/django-search-serializers ()
-    (interactive)
-    (fk/helm-rg-dwim-with-glob "*serializers*.py" "^class "))
-
-  (defun fk/django-search-tests ()
-    (interactive)
-    (fk/helm-rg-dwim-with-glob "*test*.py" "^class "))
-
-  (defun fk/django-search-settings ()
-    (interactive)
-    ;; TODO: this glob does not work
-    (fk/helm-rg-dwim-with-glob "settings*.py" ""))
-
-  (defun fk/django-search-admins ()
-    (interactive)
-    (fk/helm-rg-dwim-with-glob "admin.py" ""))
-
-  (defun fk/django-search-permissions ()
-    (interactive)
-    (fk/helm-rg-dwim-with-glob "permissions.py" "^class "))
-
-  (defun fk/django-search-mixins ()
-    (interactive)
-    (fk/helm-rg-dwim-with-glob "mixins.py" "^class "))
-
-  (defun fk/django-search-urls ()
-    (interactive)
-    (fk/helm-rg-dwim-with-glob "*.py" "path\\( "))
-
-  (bind-keys*
-   :map django
-   ("m" . fk/django-search-models)
-   ("v" . fk/django-search-views)
-   ("s" . fk/django-search-serializers)
-   ("t" . fk/django-search-tests)
-   ("S" . fk/django-search-settings)
-   ("a" . fk/django-search-admins)
-   ("p" . fk/django-search-permissions)
-   ("x" . fk/django-search-mixins)
-   ("u" . fk/django-search-urls))
-
-  ;; Utility functions for Django
-
-  (defun fk/django-copy-path-of-test-at-point ()
-    "Add path of the test at point to kill-ring. Returns the path."
-    (interactive)
-    (require 'which-func)
-    (let* ((defuns (seq-subseq (split-string (which-function) "\\.") 0 2))
-           (class (car defuns))
-           (func (let ((f (-second-item defuns))) (and f (string-match "^test" f) f)))
-           (module (fk/django-get-module))
-           (path (concat module (and module class ".") class (and class func ".") func)))
-      (kill-new path)))
-
-  (defun fk/django-get-module ()
-    "pony-get-module originally."
-    (let* ((root (projectile-project-root))
-           (path (file-name-sans-extension (or buffer-file-name (expand-file-name default-directory)))))
-      (when (string-match (projectile-project-root) path)
-        (let ((path-to-class (substring path (match-end 0))))
-          (mapconcat 'identity (split-string path-to-class "/") ".")))))
-
-  (bind-keys*
-   :map django
-   ("c" . fk/django-copy-path-of-test-at-point)))
+      (ad-update 'kill-region))))
 #+END_SRC
 
 *** Pyvenv
@@ -2738,6 +2663,85 @@ beginning of the string that has curly brackets in it."
      (pcase output
        ("0\n" (message "Pyright is up to date."))
        ("1\n" (message "A pyright update is available."))))))
+#+END_SRC
+
+*** Django
+#+BEGIN_SRC emacs-lisp
+;; Grep functions for Django
+
+(defun fk/django-search-models ()
+  (interactive)
+  (fk/helm-rg-dwim-with-glob "models.py" "^class "))
+
+(defun fk/django-search-views ()
+  (interactive)
+  (fk/helm-rg-dwim-with-glob "views*.py" "^class "))
+
+(defun fk/django-search-serializers ()
+  (interactive)
+  (fk/helm-rg-dwim-with-glob "*serializers*.py" "^class "))
+
+(defun fk/django-search-tests ()
+  (interactive)
+  (fk/helm-rg-dwim-with-glob "*test*.py" "^class "))
+
+(defun fk/django-search-settings ()
+  (interactive)
+  ;; TODO: this glob does not work
+  (fk/helm-rg-dwim-with-glob "settings*.py" ""))
+
+(defun fk/django-search-admins ()
+  (interactive)
+  (fk/helm-rg-dwim-with-glob "admin.py" ""))
+
+(defun fk/django-search-permissions ()
+  (interactive)
+  (fk/helm-rg-dwim-with-glob "permissions.py" "^class "))
+
+(defun fk/django-search-mixins ()
+  (interactive)
+  (fk/helm-rg-dwim-with-glob "mixins.py" "^class "))
+
+(defun fk/django-search-urls ()
+  (interactive)
+  (fk/helm-rg-dwim-with-glob "*.py" "path\\( "))
+
+(bind-keys*
+ :map django
+ ("m" . fk/django-search-models)
+ ("v" . fk/django-search-views)
+ ("s" . fk/django-search-serializers)
+ ("t" . fk/django-search-tests)
+ ("S" . fk/django-search-settings)
+ ("a" . fk/django-search-admins)
+ ("p" . fk/django-search-permissions)
+ ("x" . fk/django-search-mixins)
+ ("u" . fk/django-search-urls))
+
+;; Utility functions for Django
+
+(defun fk/django-copy-path-of-test-at-point ()
+  "Add path of the test at point to kill-ring. Returns the path."
+  (interactive)
+  (require 'which-func)
+  (let* ((defuns (seq-subseq (split-string (which-function) "\\.") 0 2))
+         (class (car defuns))
+         (func (let ((f (-second-item defuns))) (and f (string-match "^test" f) f)))
+         (module (fk/django-get-module))
+         (path (concat module (and module class ".") class (and class func ".") func)))
+    (kill-new path)))
+
+(defun fk/django-get-module ()
+  "pony-get-module originally."
+  (let* ((root (projectile-project-root))
+         (path (file-name-sans-extension (or buffer-file-name (expand-file-name default-directory)))))
+    (when (string-match (projectile-project-root) path)
+      (let ((path-to-class (substring path (match-end 0))))
+        (mapconcat 'identity (split-string path-to-class "/") ".")))))
+
+(bind-keys*
+ :map django
+ ("c" . fk/django-copy-path-of-test-at-point))
 #+END_SRC
 
 *** Jupyter Notebook
