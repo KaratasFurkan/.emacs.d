@@ -1713,7 +1713,7 @@ from melpa. TODO: fix this
 (use-package mwim
   :bind
   ("C-a" . mwim-beginning-of-code-or-line)
-  ("C-e" . mwim-end-of-code-or-line))
+  ("C-e" . mwim-end-of-line-or-code))
 #+END_SRC
 
 ** Helm Projectile
