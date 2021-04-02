@@ -2583,38 +2583,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
               (goto-char (ts-node-start-position str))
               (when (char-equal (char-after) ?f)
                 (delete-char 1))))))))
-  ;; Experiment to implement without tree-sitter dependency, does not work yet
-  ;; deletes whole string when delete active region
-  ;; (defun fk/python-f-string-ify ()
-  ;; Does nothing if major-mode is not python or point is not on a string.
-  ;; (when-let* ((python-mode-p (eq major-mode 'python-mode))
-  ;;             (is-string (nth 3 (syntax-ppss))))
-  ;;   (let* ((beg-of-string (nth 8 (syntax-ppss)))
-  ;;          (end-of-string (save-excursion
-  ;;                           (goto-char beg-of-string)
-  ;;                           (forward-sexp)
-  ;;                           (point)))
-  ;;          (string (buffer-substring-no-properties beg-of-string end-of-string))
-  ;;          (is-f-string (char-equal (char-before beg-of-string) ?f))
-  ;;          (should-f-string (and (s-contains-p "{" string)
-  ;;                                (s-contains-p "}" string))))
-  ;;     (if should-f-string
-  ;;         (unless is-f-string
-  ;;           (save-excursion
-  ;;             (goto-char beg-of-string)
-  ;;             (insert "f")))
-  ;;       (when is-f-string
-  ;;         (save-excursion
-  ;;           (goto-char beg-of-string)
-  ;;           (backward-delete-char 1)))))))
 
-  ;; When not using wrap-region or anything that changes "{" keybinding
-  ;; (define-key python-mode-map (kbd "{") (lambda ()
-  ;;                                         (interactive)
-  ;;                                         (call-interactively 'self-insert-command)
-  ;;                                         (fk/python-f-string-ify)))
-
-  (define-minor-mode fk/python-auto-f-string-mode
+  (define-minor-mode fk/python-auto-f-string-mode  ; TODO: does not work well
     "Toggle fk/python-auto-f-string-mode which adds 'f' at the
 beginning of the string that has curly brackets in it."
     :init-value t
