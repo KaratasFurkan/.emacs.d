@@ -2611,19 +2611,21 @@ beginning of the string that has curly brackets in it."
   :after python
   :config
   (defun fk/activate-pyvenv ()
-    "Activate python environment according to the `project_root/.venv' file."
+    "Activate python environment according to the `project-root/.venv' file."
     (interactive)
-    (let* ((pdir (projectile-project-root))
-           (venv-file (concat pdir ".venv")))
-      (when (file-exists-p venv-file)
-        (pyvenv-mode)
-        (pyvenv-workon (with-temp-buffer
-                         (insert-file-contents venv-file)
-                         (nth 0 (split-string (buffer-string))))))))
+    (when-let* ((root-dir (projectile-project-root))
+                (venv-file (concat root-dir ".venv"))
+                (venv-exists (file-exists-p venv-file))
+                (venv-name (with-temp-buffer
+                             (insert-file-contents venv-file)
+                             (nth 0 (split-string (buffer-string))))))
+      (pyvenv-mode)
+      (pyvenv-workon venv-name)))
 
   ;; python-mode hook is not enough when more than one project's files are open.
   ;; It just re-activate pyvenv when a new file is opened, it should re-activate
-  ;; on buffer (or perspective) switching too.
+  ;; on buffer or perspective switching too. NOTE: restarting lsp server is
+  ;; heavy, so it should be done manually if needed.
   (add-hook 'window-configuration-change-hook 'fk/activate-pyvenv))
 #+END_SRC
 
