@@ -1331,7 +1331,9 @@ current buffer."
    ("r" . helm-recentf)
    ("b" . helm-bookmarks)
    :map buffers
-   ("b" . helm-buffers-list))
+   ("b" . helm-buffers-list)
+   :map help-map
+   ("a" . helm-apropos))
   :hook
   (dashboard-after-initialize . helm-mode)
   (helm-mode . savehist-mode)
