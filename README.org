@@ -314,10 +314,6 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#command-log-mode][Command Log Mode]]
   - [[#keypression][Keypression]]
   - [[#literate-calc-mode][Literate Calc Mode]]
-- [[#todos][TODOs]]
-  - [[#explore][Explore]]
-    - [[#packages-29][Packages]]
-    - [[#blog-posts][Blog posts]]
 - [[#some-other-emacs-configurations][Some Other Emacs Configurations]]
 
 * About
@@ -4198,23 +4194,6 @@ lsp-ui-doc pops up a documentation."
 (use-package literate-calc-mode
   :commands literate-calc-minor-mode)
 #+END_SRC
-
-* TODOs
-- :defer nil or :hook after-init?
-** Explore
-*** Packages [2/9]
-- [ ] https://github.com/jojojames/dired-sidebar
-- [-] https://github.com/raxod502/selectrum
-  + [X] https://github.com/raxod502/prescient.el
-  + [ ] https://github.com/oantolin/orderless
-- [ ] https://github.com/emacsorphanage/quickrun
-- [ ] https://github.com/pashinin/workgroups2
-- [X] https://github.com/Bad-ptr/perspective.el
-- [ ] https://github.com/hrs/engine-mode
-- [ ] https://github.com/cyrus-and/zoom
-
-*** Blog posts
-- https://joshrollinswrites.com/help-desk-head-desk/20200611/
 
 * Some Other Emacs Configurations
 | https://emacs.christianbaeuerlein.com/                                           |
