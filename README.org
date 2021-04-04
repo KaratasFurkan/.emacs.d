@@ -944,6 +944,7 @@ Change default window dividers to a better built-in alternative.
       (beacon-blink)))
   ;; `beacon-blink' manually instead of activating `beacon-mode' to not
   ;; calculate every time on post-command-hook if should beacon blink
+  ;; TODO: create a global minor mode with this: `fk/manual-beacon-mode'
   (dolist (command '(other-window
                      winum-select-window-by-number
                      scroll-up-command
@@ -2254,7 +2255,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ( :map prog-mode-map
     ("M-RET" . electric-indent-just-newline))
   :hook
-  (dashboard-after-initialize-hook . electric-indent-mode))
+  (dashboard-after-initialize . electric-indent-mode))
 #+END_SRC
 
 *** Comments
@@ -3240,10 +3241,26 @@ else call `dired-find-file'"
 *** Custom Functions
 **** org-imenu
 #+BEGIN_SRC emacs-lisp
+(defun fk/helm-imenu ()
+  "helm-imenu without initializion."
+  (interactive)
+  (require 'which-func)
+  (require 'helm-imenu)
+  (unless helm-source-imenu
+    (setq helm-source-imenu
+          (helm-make-source "Imenu" 'helm-imenu-source
+            :fuzzy-match helm-imenu-fuzzy-match)))
+  (let* ((imenu-auto-rescan t)
+         (helm-highlight-matches-around-point-max-lines 'never)
+         (helm-execute-action-at-once-if-one
+          helm-imenu-execute-action-at-once-if-one))
+    (helm :sources 'helm-source-imenu
+          :buffer "*helm imenu*")))
+
 (defun fk/org-imenu ()
   "Go to a heading with helm-imenu and expand the heading."
   (interactive)
-  (helm-imenu)
+  (fk/helm-imenu)
   (show-subtree))
 #+END_SRC
 
@@ -3426,10 +3443,6 @@ else call `dired-find-file'"
   (org-tree-slide-stop . fk/org-tree-slide-update-modeline)
   (org-tree-slide-play . (lambda () (setq-local olivetti-body-width 95) (olivetti-mode 1)))
   (org-tree-slide-stop . (lambda () (setq-local olivetti-body-width 120) (olivetti-mode 1)))
-  ;; Fun
-  (org-tree-slide-after-narrow . (lambda () (when (fk/buffer-contains-substring "turkish-mode")
-                                              (fk/async-process
-                                               "ffplay -nodisp -nostats -hide_banner -volume 10 -t 4.7 ./olurum_turkiyem.mp3"))))
   :config
   (defun fk/buffer-contains-substring (string)
     (save-excursion
