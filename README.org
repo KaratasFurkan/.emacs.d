@@ -3715,6 +3715,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :hook
   (vterm-mode . (lambda () (setq-local global-hl-line-mode nil
                                        show-trailing-whitespace nil)))
+  (vterm-mode . fk/darken-background)
   (vterm-copy-mode . (lambda ()
                        (face-remap-add-relative 'hl-line :background fk/background-color)
                        (call-interactively 'hl-line-mode)))
@@ -3792,9 +3793,7 @@ the `docker-container-prompt-regexp'."
   (shell-pop-shell-type '("vterm" "*vterm*" (lambda () (vterm))))
   (shell-pop-full-span t)
   :bind*
-  (("M-t" . shell-pop))
-  :hook
-  (vterm-mode . fk/darken-background))
+  (("M-t" . shell-pop)))
 #+END_SRC
 
 ** Restclient
@@ -4027,6 +4026,10 @@ the `docker-container-prompt-regexp'."
                              (fk/company-wordfreq-mode)
                              (fk/company-wordfreq-toggle-language "turkish")))
   :config
+  ;; I disabled insert selection because it inserts from clipboard if there is
+  ;; no selection.
+  (fset 'emacs-everywhere-insert-selection nil)
+
   (defun fk/company-grab-word-turkish (orig-func)
     "Convert the word company grabbed to Turkish with `turkish-mode' before
 processing it."
