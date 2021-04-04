@@ -2202,11 +2202,13 @@ otherwise."
           (setq-local company-transformers nil))
       (setq-local company-backends company-backends-backup)
       (setq-local company-transformers company-transformers-backup)))
-  (defun fk/company-wordfreq-toggle-language ()
+
+  (defun fk/company-wordfreq-toggle-language (&optional language)
     (interactive)
-    (setq ispell-local-dictionary (if (string= ispell-local-dictionary "english")
-                                      "turkish"
-                                    "english"))
+    (setq ispell-local-dictionary (or language
+                                      (if (string= ispell-local-dictionary "english")
+                                          "turkish"
+                                        "english")))
     (message ispell-local-dictionary)))
 #+END_SRC
 
@@ -4019,7 +4021,11 @@ the `docker-container-prompt-regexp'."
 (use-package emacs-everywhere
   :straight (:host github :repo "tecosaur/emacs-everywhere")
   :hook
-  (emacs-everywhere-mode . (lambda () (require 'turkish) (turkish-mode))))
+  (emacs-everywhere-mode . (lambda () (require 'turkish) (turkish-mode)))
+  (emacs-everywhere-mode . (lambda ()
+                             (require 'company-wordfreq)
+                             (fk/company-wordfreq-mode)
+                             (fk/company-wordfreq-toggle-language "turkish"))))
 #+END_SRC
 
 * File Modes
