@@ -287,6 +287,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#highlight-code-blocks][Highlight Code Blocks]]
   - [[#xwwp-xwidget-webkit-enhancement][XWWP (Xwidget Webkit Enhancement)]]
   - [[#screenshot][Screenshot]]
+  - [[#emacs-everywhere][Emacs Everywhere]]
 - [[#file-modes][File Modes]]
   - [[#markdown][Markdown]]
   - [[#fish][Fish]]
@@ -726,18 +727,11 @@ I use this to darken non-file buffers like treemacs, helm etc.
 (defconst fk/variable-pitch-font-family "Noto Serif")
 (defconst fk/variable-pitch-font-size 140)  ; TODO: adjust this and use in org-mode
 
-(set-face-attribute 'default nil
-                    :family fk/default-font-family
-                    :height fk/default-font-size)
-
-(set-face-attribute 'variable-pitch nil
-                    :family fk/variable-pitch-font-family
-                    :height fk/variable-pitch-font-size)
-
-(set-face-attribute 'fixed-pitch-serif nil
-                    ;; Characters with fixed pitch face do not shown when height
-                    ;; is 90.
-                    :height 100)
+(custom-set-faces
+ `(default ((t (:family ,fk/default-font-family :height ,fk/default-font-size))))
+ `(variable-pitch ((t (:family ,fk/variable-pitch-font-family :height ,fk/variable-pitch-font-size))))
+ ;; Characters with fixed pitch face do not shown when height is 90.
+ `(fixed-pitch-serif ((t (:height 100)))))
 #+END_SRC
 
 *** Custom Functions
@@ -809,6 +803,9 @@ size. This function also handles icons and modeline font sizes."
   (fixed-pitch ((t (:family "Noto Sans Mono"))))
   :config
   (load-theme 'doom-spacegrey t)
+  (add-hook 'after-make-frame-functions (lambda (_)  ; for emacs --daemon
+                                          (load-theme 'doom-spacegrey t)
+                                          (load-file custom-file)))
   (defconst fk/font-color (face-attribute 'default :foreground))
   (defconst fk/background-color (face-attribute 'default :background))
   (defconst fk/dark-color (doom-darken fk/background-color 0.15))
@@ -933,10 +930,10 @@ Change default window dividers to a better built-in alternative.
 ** Beacon
 #+BEGIN_SRC emacs-lisp
 (use-package beacon
-  :preface
-  (defconst cursor-color+1 (format "#%x" (+ 1 (string-to-number (string-remove-prefix "#" (face-attribute 'cursor :background)) 16))))
+  ;; :preface
+  ;; (defconst cursor-color+1 (format "#%x" (+ 1 (string-to-number (string-remove-prefix "#" (face-attribute 'cursor :background)) 16))))
   :custom
-  (beacon-color cursor-color+1)
+  (beacon-color "#D08771")  ; TODO: cursor-color+1 does not work with emacs --daemon
   ;; (beacon-blink-when-point-moves-vertically 10)
   (beacon-dont-blink-major-modes '(dashboard-mode minibuff))
   :config
@@ -1069,6 +1066,11 @@ Change default window dividers to a better built-in alternative.
   (dashboard-items-face ((t (:weight normal))))
   :config
   (dashboard-setup-startup-hook)
+
+  ;; Run the hooks even if dashboard initialization is skipped
+  (when (> (length command-line-args) 1)
+    (add-hook 'emacs-startup-hook (lambda () (run-hooks 'dashboard-after-initialize-hook))))
+
   (defun fk/home ()
     "Switch to home (dashboard) buffer."
     (interactive)
@@ -1639,7 +1641,8 @@ org-mode activated."
                      "/usr/local/share/emacs/"
                      "emacs/src/"
                      ,(expand-file-name "~/.virtualenvs")
-                     "/usr/lib/node_modules/"))
+                     "/usr/lib/node_modules/"
+                     "/tmp/"))
   (recentf-max-saved-items 200))
 #+END_SRC
 
@@ -2045,6 +2048,7 @@ otherwise."
 ** Keybindings
 #+BEGIN_SRC emacs-lisp
 (keyboard-translate ?\C-h ?\C-?)  ; C-h as DEL, (F1 as `help-command')
+(add-hook 'after-make-frame-functions (lambda (_) (keyboard-translate ?\C-h ?\C-?)))  ; Fix emacs --daemon
 (global-set-key (kbd "C-w") 'fk/backward-kill-word-or-region)
 (global-set-key (kbd "C-o") 'fk/newline-below)
 
@@ -3995,6 +3999,14 @@ the `docker-container-prompt-regexp'."
   :commands screenshot
   :custom
   (screenshot-max-width 300))
+#+END_SRC
+
+** Emacs Everywhere
+#+BEGIN_SRC emacs-lisp
+(use-package emacs-everywhere
+  :straight (:host github :repo "tecosaur/emacs-everywhere")
+  :hook
+  (emacs-everywhere-mode . (lambda () (require 'turkish) (turkish-mode))))
 #+END_SRC
 
 * File Modes
