@@ -4025,7 +4025,22 @@ the `docker-container-prompt-regexp'."
   (emacs-everywhere-mode . (lambda ()
                              (require 'company-wordfreq)
                              (fk/company-wordfreq-mode)
-                             (fk/company-wordfreq-toggle-language "turkish"))))
+                             (fk/company-wordfreq-toggle-language "turkish")))
+  :config
+  (defun fk/company-grab-word-turkish (orig-func)
+    "Convert the word company grabbed to Turkish with `turkish-mode' before
+processing it."
+    (require 'turkish)
+    (let ((word (funcall orig-func)))
+      (if (and fk/company-wordfreq-mode (equal ispell-local-dictionary "turkish"))
+          (with-temp-buffer
+            (insert word)
+            (turkish-correct-region (point-min) (point-max))
+            (message (buffer-string))
+            (buffer-string))
+        word)))
+
+  (advice-add 'company-grab-word :around 'fk/company-grab-word-turkish))
 #+END_SRC
 
 * File Modes
