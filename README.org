@@ -591,6 +591,9 @@ FILTER is function that runs after the process is finished, its args should be
 ;;                   (lambda (process output) (message "Output:\n\n%s" output)))
 ;;
 ;; (fk/async-process "unknown command")
+
+;; Make sure to focus when a new emacsclient frame created.
+(add-hook 'server-after-make-frame-hook (lambda () (select-frame-set-input-focus (selected-frame))))
 #+END_SRC
 
 ** Helpful
