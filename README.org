@@ -803,9 +803,9 @@ size. This function also handles icons and modeline font sizes."
   (fixed-pitch ((t (:family "Noto Sans Mono"))))
   :config
   (load-theme 'doom-spacegrey t)
-  (add-hook 'after-make-frame-functions (lambda (_)  ; for emacs --daemon
-                                          (load-theme 'doom-spacegrey t)
-                                          (load-file custom-file)))
+  (add-hook 'server-after-make-frame-hook (lambda ()  ; for emacs --daemon
+                                            (load-theme 'doom-spacegrey t)
+                                            (load-file custom-file)))
   (defconst fk/font-color (face-attribute 'default :foreground))
   (defconst fk/background-color (face-attribute 'default :background))
   (defconst fk/dark-color (doom-darken fk/background-color 0.15))
@@ -2049,7 +2049,7 @@ otherwise."
 ** Keybindings
 #+BEGIN_SRC emacs-lisp
 (keyboard-translate ?\C-h ?\C-?)  ; C-h as DEL, (F1 as `help-command')
-(add-hook 'after-make-frame-functions (lambda (_) (keyboard-translate ?\C-h ?\C-?)))  ; Fix emacs --daemon
+(add-hook 'server-after-make-frame-hook (lambda () (keyboard-translate ?\C-h ?\C-?)))  ; Fix emacs --daemon
 (global-set-key (kbd "C-w") 'fk/backward-kill-word-or-region)
 (global-set-key (kbd "C-o") 'fk/newline-below)
 
