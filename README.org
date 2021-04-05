@@ -1403,8 +1403,6 @@ current buffer."
   (company-minimum-prefix-length 1)
   (company-tooltip-align-annotations t)
   (company-dabbrev-downcase nil)
-  ;; Disable `single-candidate' and `echo-area' frontends
-  (company-frontends '(company-box-frontend))
   (company-dabbrev-other-buffers t) ; search buffers with the same major mode
   :bind
   ( :map company-active-map
@@ -1460,6 +1458,8 @@ company-yasnippet' to all company backends."
 (use-package company-box
   :straight (:host github :repo "KaratasFurkan/company-box" :branch "consider-icon-right-margin-for-frame")
   :custom
+  ;; Disable `single-candidate' and `echo-area' frontends
+  (company-frontends '(company-box-frontend))
   (company-box-show-single-candidate t)
   ;;(company-box-frame-behavior 'point)
   (company-box-icon-right-margin 0.5)
@@ -2435,6 +2435,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   :after lsp-mode
   :custom
   (lsp-ui-doc-show-with-cursor nil)
+  (lsp-ui-doc-show-with-mouse nil)
   (lsp-ui-doc-position 'at-point)
   (lsp-ui-sideline-delay 0.5)
   (lsp-ui-peek-always-show t)
@@ -3145,8 +3146,6 @@ else call `dired-find-file'"
   (org-block ((t (:extend t))))
   (org-ellipsis ((t (:foreground nil :inherit org-tag :weight light :height 0.9))))
   (org-checkbox ((t (:foreground "white"))))
-  (org-block-begin-line ((t (:extend t))))
-  (org-block-end-line ((t (:extend t))))
   (org-level-4 ((t (:height 1.1 :weight bold))))
   (org-level-3 ((t (:height 1.15 :weight bold))))
   (org-level-2 ((t (:height 1.2 :weight bold))))
@@ -3154,8 +3153,7 @@ else call `dired-find-file'"
   (org-drawer ((t (:foreground nil :inherit font-lock-comment-face))))
   (org-table ((t (:inherit fixed-pitch :foreground "white"))))
   (org-document-title ((t (:height 1.5))))
-  (org-block-begin-line ((t (:foreground ,fk/light-color3 :background ,fk/background-color))))
-  (org-document-info-keyword ((t (:foreground ,fk/light-color3))))
+  (org-block-begin-line ((t (:foreground ,fk/light-color3 :background ,fk/background-color :extend t))))
   (org-document-info-keyword ((t (:foreground ,fk/light-color3 :height 10))))  ; Make #+TITLE: invisible
   (org-meta-line ((t (:foreground ,fk/light-color3))))  ; Less distractive
   (org-agenda-current-time ((t (:foreground "LightGoldenrod"))))
@@ -4028,10 +4026,12 @@ the `docker-container-prompt-regexp'."
                              (require 'company-wordfreq)
                              (fk/company-wordfreq-mode)
                              (fk/company-wordfreq-toggle-language "turkish")))
+  ;; Banish mouse to prevent focusing to company's childframe
+  (emacs-everywhere-mode . (lambda () (set-mouse-position (selected-frame) 0 0)))
   :config
   ;; I disabled insert selection because it inserts from clipboard if there is
   ;; no selection.
-  (fset 'emacs-everywhere-insert-selection nil)
+  (advice-add 'emacs-everywhere-insert-selection :override 'ignore)
 
   (defun fk/company-grab-word-turkish (orig-func)
     "Convert the word company grabbed to Turkish with `turkish-mode' before
@@ -4139,10 +4139,10 @@ processing it."
 #+BEGIN_SRC emacs-lisp
 ;; TODO: find mp3 file does not work with straight
 (use-package fireplace
+  :straight (:files ("*"))  ; Fix fireplace.mp3 not found issue
   :commands fireplace
   :custom
-  (fireplace-sound-on t)
-  (fireplace-sound-file-path (expand-file-name "straight/repos/emacs-fireplace/fireplace.mp3" user-emacs-directory)))
+  (fireplace-sound-on t))
 #+END_SRC
 
 ** Pacmacs
