@@ -3363,7 +3363,13 @@ else call `dired-find-file'"
 *** Org Pomodoro
 #+BEGIN_SRC emacs-lisp
 (use-package org-pomodoro
-  :commands org-pomodoro)
+  :straight (:files ("*"))  ; For sound files
+  :commands org-pomodoro
+  :custom
+  (org-pomodoro-audio-player "ffplay")
+  :config
+  ;; Apply args for all sounds
+  (advice-add 'org-pomodoro-sound-args :override (lambda (_) "-volume 20 -nodisp -nostats -hide_banner")))
 #+END_SRC
 
 *** Org Roam
@@ -3928,7 +3934,7 @@ the `docker-container-prompt-regexp'."
   (slack-buffer-function 'switch-to-buffer)
   (slack-buffer-emojify t)
   (slack-prefer-current-team t)
-  (slack-alert-icon (concat no-littering-etc-directory "slack/icon.svg"))
+  (slack-alert-icon (concat no-littering-etc-directory "slack/icon.png"))
   :custom-face
   (slack-preview-face ((t (:inherit (fixed-pitch shadow org-block) :extend nil))))
   :hook
@@ -3940,7 +3946,17 @@ the `docker-container-prompt-regexp'."
    :name "hipo"
    :default t
    :token (auth-source-pick-first-password :host "slack")
-   :full-and-display-names t))
+   :full-and-display-names t)
+
+  (defun fk/alert-with-sound (orig-func &rest args)
+    "Play sound with alert."
+    (apply orig-func args)
+    (when (eq (plist-get (cdr args) :category) 'slack)
+      (let* ((sound-file (concat no-littering-etc-directory "slack/sound.mp3"))
+             (command (concat "ffplay -volume 20 -nodisp -nostats -hide_banner " sound-file)))
+        (fk/async-process command))))
+
+  (advice-add 'alert :around 'fk/alert-with-sound))
 #+END_SRC
 
 *** Emojify
