@@ -288,6 +288,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#xwwp-xwidget-webkit-enhancement][XWWP (Xwidget Webkit Enhancement)]]
   - [[#screenshot][Screenshot]]
   - [[#emacs-everywhere][Emacs Everywhere]]
+  - [[#pomidor-pomodoro][Pomidor (Pomodoro)]]
 - [[#file-modes][File Modes]]
   - [[#markdown][Markdown]]
   - [[#fish][Fish]]
@@ -1158,7 +1159,7 @@ Change default window dividers to a better built-in alternative.
   (defvar fk/olivetti-fringe-face fk/default-olivetti-fringe-face)
   (defvar fk/olivetti-excluded-buffers '("*dashboard*" " *which-key*" "*helm"
                                          " *Minibuf-1*" "*vterm" "*fireplace*"
-                                         " *lsp-peek--buffer*"))
+                                         " *lsp-peek--buffer*" "*pomidor*"))
 
   (defun fk/windows-vertical-p ()
     "Return t if windows placed vertically."
@@ -4047,7 +4048,20 @@ the `docker-container-prompt-regexp'."
   ;; I disabled insert selection because it inserts from clipboard if there is
   ;; no selection.
   (advice-add 'emacs-everywhere-insert-selection :override 'ignore))
+#+END_SRC
 
+** Pomidor (Pomodoro)
+#+BEGIN_SRC emacs-lisp
+(use-package pomidor
+  :commands pomidor
+  :custom
+  (pomidor-sound-tick nil)
+  (pomidor-sound-tack nil)
+  :custom-face
+  (pomidor-work-face ((t (:inherit success :width ultra-condensed))))
+  (pomidor-overwork-face ((t (:inherit warning :width ultra-condensed))))
+  (pomidor-break-face ((t (:inherit font-lock-keyword-face :width ultra-condensed))))
+  (pomidor-skip-face ((t (:inherit font-lock-comment-face :width ultra-condensed)))))
 #+END_SRC
 
 * File Modes
