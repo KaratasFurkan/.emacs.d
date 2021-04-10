@@ -4019,33 +4019,19 @@ the `docker-container-prompt-regexp'."
 #+BEGIN_SRC emacs-lisp
 (use-package emacs-everywhere
   :straight (:host github :repo "tecosaur/emacs-everywhere")
+  :commands emacs-everywhere
+  :bind
+  ( :map emacs-everywhere-mode-map
+    ("C-x C-c" . emacs-everywhere-abort))
   :hook
   (emacs-everywhere-mode . (lambda () (require 'turkish) (turkish-mode)))
-  (emacs-everywhere-mode . (lambda ()
-                             (require 'company-wordfreq)
-                             (fk/company-wordfreq-mode)
-                             (fk/company-wordfreq-toggle-language "turkish")))
   ;; Banish mouse to prevent focusing to company's childframe
   (emacs-everywhere-mode . (lambda () (set-mouse-position (selected-frame) 0 0)))
   :config
   ;; I disabled insert selection because it inserts from clipboard if there is
   ;; no selection.
-  (advice-add 'emacs-everywhere-insert-selection :override 'ignore)
+  (advice-add 'emacs-everywhere-insert-selection :override 'ignore))
 
-  (defun fk/company-grab-word-turkish (orig-func)
-    "Convert the word company grabbed to Turkish with `turkish-mode' before
-processing it."
-    (require 'turkish)
-    (let ((word (funcall orig-func)))
-      (if (and fk/company-wordfreq-mode (equal ispell-local-dictionary "turkish"))
-          (with-temp-buffer
-            (insert word)
-            (turkish-correct-region (point-min) (point-max))
-            (message (buffer-string))
-            (buffer-string))
-        word)))
-
-  (advice-add 'company-grab-word :around 'fk/company-grab-word-turkish))
 #+END_SRC
 
 * File Modes
@@ -4170,10 +4156,35 @@ processing it."
 ** Turkish Mode
 #+BEGIN_SRC emacs-lisp
 (use-package turkish
-  :commands turkish-mode turkish-asciify-region
+  :commands turkish-mode turkish-correct-region turkish-asciify-region
   :bind
   ( :map text
-    ("a" . turkish-asciify-region)))
+    ("a" . turkish-asciify-region))
+  :hook
+  (turkish-mode . fk/company-turkish-mode)
+  :config
+  (defun fk/company-grab-word-turkish (orig-func)
+    "Convert the word company grabbed to Turkish with `turkish-mode' before
+processing it."
+    (let ((word (funcall orig-func)))
+      (with-temp-buffer
+        (insert word)
+        (turkish-correct-buffer)
+        (buffer-string))))
+
+  (define-minor-mode fk/company-turkish-mode
+    "Suggest candidates by the turkish version of the word."
+    :global t
+    (if fk/company-turkish-mode
+        (progn
+          (require 'turkish)
+          (fk/company-wordfreq-mode 1)
+          (setq ispell-local-dictionary-backup ispell-local-dictionary)
+          (setq ispell-local-dictionary "turkish")
+          (advice-add 'company-grab-word :around 'fk/company-grab-word-turkish))
+      (fk/company-wordfreq-mode -1)
+      (setq ispell-local-dictionary ispell-local-dictionary-backup)
+      (advice-remove 'company-grab-word 'fk/company-grab-word-turkish))))
 #+END_SRC
 
 ** Minimap
