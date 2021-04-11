@@ -3211,7 +3211,8 @@ else call `dired-find-file'"
                             "* %?\nCREATED: %U")))
   (org-refile-targets '(("todos.org" :level . 1)
                         ("someday.org" :level . 1)
-                        ("archive.org" :level . 1)))
+                        ("archive.org" :level . 1)
+                        ("agenda.org" :level . 1)))
   (org-default-priority ?A)  ; Highest
   (org-log-done 'time)
   (org-todo-keywords '((sequence "TODO(1)" "WIP(w)" "WAITING_REVIEW(r)" "WAITING_TEST(t)" "READY_PROD(p)" "HOLD(h)" "|"
