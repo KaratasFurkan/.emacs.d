@@ -1054,10 +1054,11 @@ size. This function also handles icons and modeline font sizes."
   :config
   ;; TODO: handle when zoom-mode active
   (defun fk/adjust-window-width (percentage)
-    (let* ((zoom-height (cdr zoom-size))
-           (new-width (round (* (window-width) percentage)))
-           (zoom-size `(,new-width . ,zoom-height)))
-      (zoom)))
+    (let* ((new-width (round (* (window-width) percentage)))
+           (zoom-size (cons new-width (cdr zoom-size))))
+      (if (> percentage 1.0)  ; TODO: fk/smooth-zoom do not shrink
+          (fk/smooth-zoom)
+        (zoom))))
 
   (defun fk/enlarge-window ()
     (interactive)
@@ -1065,7 +1066,43 @@ size. This function also handles icons and modeline font sizes."
 
   (defun fk/shrink-window ()
     (interactive)
-    (fk/adjust-window-width 0.9)))
+    (fk/adjust-window-width 0.9))
+
+  (defvar fk/smooth-zoom-steps 10)
+  (defvar fk/smooth-zoom-period 0.01)
+
+  (defun fk/floor (number)
+    "Floor by absolute value."
+    (if (< number 0)
+        (ceiling number)
+      (floor number)))
+
+  (defun fk/smooth-zoom ()
+    "Smooth (animated) version of `zoom'."
+    (interactive)
+    (cancel-function-timers 'fk/smooth-zoom--resize)
+    (setq fk/smooth-zoom-sizes '())
+    (setq fk/smooth-zoom-window (get-buffer-window))
+    (let* ((current-size (cons (window-width) (window-height)))
+           (desired-size zoom-size)
+           (distances (cons (- (car desired-size) (car current-size))
+                            (- (cdr desired-size) (cdr current-size))))
+           (step-distance (cons (fk/floor (/ (car distances) (float fk/smooth-zoom-steps)))
+                                (fk/floor (/ (cdr distances) (float fk/smooth-zoom-steps))))))
+      (dotimes (i fk/smooth-zoom-steps)
+        (let* ((zoom-size (if (< i (1- fk/smooth-zoom-steps))
+                              (cons (+ (car step-distance) (car current-size))
+                                    (+ (cdr step-distance) (cdr current-size)))
+                            desired-size))
+               (time (concat (number-to-string (round (* i fk/smooth-zoom-period 1000))) " millisec")))
+          (setq current-size zoom-size)
+          (add-to-list 'fk/smooth-zoom-sizes current-size t)
+          (run-at-time time nil 'fk/smooth-zoom--resize)))))
+
+  (defun fk/smooth-zoom--resize ()
+    (with-selected-window fk/smooth-zoom-window
+      (let ((zoom-size (pop fk/smooth-zoom-sizes)))
+        (zoom--resize)))))
 #+END_SRC
 
 ** Emacs Dashboard
