@@ -554,7 +554,9 @@ Keep Emacs directory clean.
  require-final-newline t               ; always end files with newline
  delete-old-versions t                 ; don't ask to delete old backup files
  revert-without-query '(".*")          ; `revert-buffer' without confirmation
- uniquify-buffer-name-style 'forward)
+ uniquify-buffer-name-style 'forward   ; non-unique buffer name display: unique-part/non-unique-filename
+ fast-but-imprecise-scrolling t        ; supposed to make scrolling faster on hold
+ window-resize-pixelwise t)            ; correctly resize windows by pixels (e.g. in split-window functions)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
