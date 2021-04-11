@@ -53,6 +53,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#darken-background][darken-background]]
     - [[#presentation-mode][presentation-mode]]
   - [[#remove-redundant-ui][Remove Redundant UI]]
+  - [[#window-dividers][Window Dividers]]
   - [[#font][Font]]
     - [[#font-1][Font]]
     - [[#custom-functions-1][Custom Functions]]
@@ -71,7 +72,6 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#mode-line][Mode Line]]
     - [[#doom-modeline][Doom Modeline]]
     - [[#anzu][Anzu]]
-  - [[#window-dividers][Window Dividers]]
   - [[#page-break-lines][Page Break Lines]]
   - [[#trailing-white-space-][Trailing White Space-]]
   - [[#highlight-todos][Highlight TODOs]]
@@ -716,6 +716,17 @@ I use this to darken non-file buffers like treemacs, helm etc.
 (setq-default mode-line-format nil)
 #+END_SRC
 
+** Window Dividers
+Change default window dividers to a better built-in alternative.
+(Note: ":tangle early-init.el")
+#+BEGIN_SRC emacs-lisp :tangle early-init.el
+(setq window-divider-default-places t
+      window-divider-default-bottom-width 1
+      window-divider-default-right-width 1)
+
+(window-divider-mode)
+#+END_SRC
+
 ** Font
 *** Font
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
@@ -878,17 +889,6 @@ size. This function also handles icons and modeline font sizes."
   :after isearch
   :config
   (global-anzu-mode))
-#+END_SRC
-
-** Window Dividers
-Change default window dividers to a better built-in alternative.
-(Note: ":tangle early-init.el")
-#+BEGIN_SRC emacs-lisp :tangle early-init.el
-(setq window-divider-default-places t
-      window-divider-default-bottom-width 1
-      window-divider-default-right-width 1)
-
-(window-divider-mode)
 #+END_SRC
 
 ** Page Break Lines
