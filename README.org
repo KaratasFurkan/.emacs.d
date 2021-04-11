@@ -2554,6 +2554,9 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 ;; TODO: try in other languages (html, css, js, c)
 (use-package aggressive-indent
+  :straight ( :host github
+              :repo "KaratasFurkan/aggressive-indent-mode"
+              :branch "146-emacs28-compatible-suppress-messages")
   :hook (emacs-lisp-mode . aggressive-indent-mode))
 #+END_SRC
 
