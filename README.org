@@ -721,15 +721,16 @@ I use this to darken non-file buffers like treemacs, helm etc.
 #+BEGIN_SRC emacs-lisp
 (use-package good-scroll
   :straight (:host github :repo "io12/good-scroll.el")
+  :commands good-scroll-mode
   :custom
   (good-scroll-duration 0.2)
   (good-scroll-point-jump 4)
-  :bind
-  ("C-v" . fk/smooth-scroll-up)
-  ("M-v" . fk/smooth-scroll-down)
-  ("C-l" . fk/smooth-recenter-top-bottom)
-  :hook
-  (dashboard-after-initialize . good-scroll-mode)
+  ;; :bind
+  ;; ("C-v" . fk/smooth-scroll-up)
+  ;; ("M-v" . fk/smooth-scroll-down)
+  ;; ("C-l" . fk/smooth-recenter-top-bottom)
+  ;; :hook
+  ;; (dashboard-after-initialize . good-scroll-mode)
   :config
   (defun fk/smooth-scroll-down (&optional pixels)
     "Smooth alternative of M-v `scroll-down-command'."
@@ -990,6 +991,7 @@ size. This function also handles icons and modeline font sizes."
                      winum-select-window-by-number
                      scroll-up-command
                      scroll-down-command
+                     recenter-top-bottom
                      ;; fk/smooth-scroll-up
                      ;; fk/smooth-scroll-down
                      ;; fk/smooth-recenter-top-bottom
@@ -1687,6 +1689,9 @@ org-mode activated."
 (global-set-key (kbd "C-1") 'delete-other-windows)
 (global-set-key (kbd "C-2") 'fk/split-window-below-and-switch)
 (global-set-key (kbd "C-3") 'fk/split-window-right-and-switch)
+;; Scroll less than default
+(global-set-key (kbd "C-v") (lambda () (interactive) (scroll-up-command 15)))
+(global-set-key (kbd "M-v") (lambda () (interactive) (scroll-down-command 15)))
 
 (bind-keys*
  :map files
