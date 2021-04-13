@@ -4155,11 +4155,21 @@ the `docker-container-prompt-regexp'."
   :custom
   (pomidor-sound-tick nil)
   (pomidor-sound-tack nil)
+  (pomidor-save-session-file (expand-file-name "pomidor-session.json" no-littering-var-directory))
   :custom-face
   (pomidor-work-face ((t (:inherit success :width ultra-condensed))))
   (pomidor-overwork-face ((t (:inherit warning :width ultra-condensed))))
   (pomidor-break-face ((t (:inherit font-lock-keyword-face :width ultra-condensed))))
-  (pomidor-skip-face ((t (:inherit font-lock-comment-face :width ultra-condensed)))))
+  (pomidor-skip-face ((t (:inherit font-lock-comment-face :width ultra-condensed))))
+  :hook
+  (kill-emacs . fk/pomidor-save-session)
+  :config
+  (defun fk/pomidor-save-session ()
+    "Call `pomidor-save-session' if pomidor is active, without asking yes or no."
+    (interactive)
+    (when (and (featurep 'pomidor) (get-buffer pomidor-buffer-name))
+      (cl-letf (((symbol-function 'y-or-n-p) (lambda (_) t)))
+        (pomidor-save-session)))))
 #+END_SRC
 
 * File Modes
