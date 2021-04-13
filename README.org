@@ -126,6 +126,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#generate-random-org-scratch][generate-random-org-scratch]]
     - [[#convert-string-to-rg-compatible][convert-string-to-rg-compatible]]
     - [[#get-selected-text][get-selected-text]]
+    - [[#find-installed-packages][find-installed-packages]]
   - [[#keybindings-1][Keybindings]]
   - [[#recentf-recent-files][Recentf (Recent Files)]]
   - [[#winner-mode][Winner Mode]]
@@ -620,6 +621,7 @@ Menu style keybindings like Spacemacs.
  :prefix-map fk/menu-map
  :prefix "M-m"
  ("M-m" . which-key-show-full-major-mode)
+ ("M-h" . help-command)
  :map fk/menu-map :prefix-map buffers         :prefix "b"
  :map fk/menu-map :prefix-map comments        :prefix "c"
  :map fk/menu-map :prefix-map django          :prefix "d"
@@ -1680,6 +1682,14 @@ org-mode activated."
       (deactivate-mark) text)))
 #+END_SRC
 
+*** find-installed-packages
+#+BEGIN_SRC emacs-lisp
+(defun fk/find-installed-packages ()
+  "Quick way of opening the source code of an installed package."
+  (interactive)
+  (helm-find-files-1 (expand-file-name "straight/repos/" user-emacs-directory)))
+#+END_SRC
+
 ** Keybindings
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "<F1>") 'help-command)
@@ -1697,7 +1707,8 @@ org-mode activated."
 
 (bind-keys*
  :map files
- ("c" . fk/find-config))
+ ("c" . fk/find-config)
+ ("p" . fk/find-installed-packages))
 
 (bind-keys*
  :map buffers
