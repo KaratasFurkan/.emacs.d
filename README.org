@@ -309,6 +309,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#pacmacs][Pacmacs]]
   - [[#2048][2048]]
   - [[#artist-mode][Artist Mode]]
+  - [[#rubiks-cube][Rubik's Cube]]
 - [[#packages-i-almost-never-use-but-want-to-keep][Packages I almost never use but want to keep]]
   - [[#turkish-mode][Turkish Mode]]
   - [[#minimap][Minimap]]
@@ -4288,6 +4289,12 @@ the `docker-container-prompt-regexp'."
   :bind
   ( :map artist-mode-map
     ("C-c C-c" . 'artist-select-operation)))
+#+END_SRC
+
+** Rubik's Cube
+#+BEGIN_SRC emacs-lisp
+(use-package rubik
+  :commands rubik)
 #+END_SRC
 
 * Packages I almost never use but want to keep
