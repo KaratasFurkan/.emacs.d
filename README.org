@@ -532,15 +532,16 @@ Keep Emacs directory clean.
 
   (setq auto-save-file-name-transforms  ; autosaved-file-name~
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))
-
         custom-file (no-littering-expand-etc-file-name "custom.el"))
 
-  (if (file-exists-p custom-file)
-      (load-file custom-file))
+  (when (file-exists-p custom-file)
+    (load-file custom-file))
 
-  ;; no-littering changes default snippets directory, so i changed it back.
-  (add-to-list 'yas-snippet-dirs
-               (expand-file-name "snippets" user-emacs-directory)))
+  (defconst fk/static-directory (expand-file-name "static/" user-emacs-directory))
+
+  (defun fk/expand-static-file-name (file)
+    "Expand filename FILE relative to `fk/static-directory'."
+    (expand-file-name file fk/static-directory)))
 #+END_SRC
 
 ** General
