@@ -1117,7 +1117,8 @@ size. This function also handles icons and modeline font sizes."
 #+BEGIN_SRC emacs-lisp
 (use-package dashboard
   :custom
-  (dashboard-startup-banner 'logo)
+  ;; Source for logo: https://github.com/tecosaur/emacs-config/blob/master/config.org#splash-screen
+  (dashboard-startup-banner (fk/expand-static-file-name "logos/emacs-e-small.png"))
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
@@ -4035,7 +4036,7 @@ the `docker-container-prompt-regexp'."
   (slack-buffer-function 'switch-to-buffer)
   (slack-buffer-emojify t)
   (slack-prefer-current-team t)
-  (slack-alert-icon (concat no-littering-etc-directory "slack/icon.png"))
+  (slack-alert-icon (fk/expand-static-file-name "slack/icon.png"))
   :custom-face
   (slack-preview-face ((t (:inherit (fixed-pitch shadow org-block) :extend nil))))
   :hook
@@ -4053,9 +4054,10 @@ the `docker-container-prompt-regexp'."
     "Play sound with alert."
     (apply orig-func args)
     (when (eq (plist-get (cdr args) :category) 'slack)
-      (let* ((sound-file (concat no-littering-etc-directory "slack/sound.mp3"))
+      (let* ((sound-file (fk/expand-static-file-name "slack/sound.mp3"))
              (command (concat "ffplay -volume 20 -nodisp -nostats -hide_banner " sound-file)))
-        (fk/async-process command))))
+        (when (file-exists-p sound-file)
+          (fk/async-process command)))))
 
   (advice-add 'alert :around 'fk/alert-with-sound))
 #+END_SRC
