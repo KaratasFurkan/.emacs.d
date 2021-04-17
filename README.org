@@ -3,6 +3,10 @@
 
 * Screenshots
 ** Initial Screen (Dashboard)
+[[./screenshots/dashboard-rms.png]]
+
+No, that's a joke! I use the logo from [[https://github.com/tecosaur/emacs-config/blob/master/config.org#splash-screen][tecosaur & MarioRicalde]]
+
 [[./screenshots/dashboard.png]]
 
 ** Python Development
