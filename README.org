@@ -409,7 +409,10 @@ Taken from: https://github.com/raxod502/straight.el#getting-started
 To not increase Emacs startup time, check package modifications when packages
 edited (with Emacs) or manually invoke =straight-check-all= command, instead of
 checking modifications at startup.
-#+BEGIN_SRC emacs-lisp
+
+Note: this setting should be set *before* the initialization of *straight*.
+early-init is a good place for this, so I used =:tangle early-init.el= here.
+#+BEGIN_SRC emacs-lisp :tangle early-init.el
 (setq straight-check-for-modifications '(check-on-save find-when-checking))
 #+END_SRC
 
