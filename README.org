@@ -43,6 +43,10 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#garbage-collection][Garbage Collection]]
   - [[#file-handler][File Handler]]
   - [[#others][Others]]
+  - [[#custom-functions][Custom Functions]]
+    - [[#measure-time][measure-time]]
+    - [[#time-since-startup][time-since-startup]]
+    - [[#time-since-last-check][time-since-last-check]]
 - [[#better-defaults][Better Defaults]]
   - [[#file-paths][File Paths]]
   - [[#general][General]]
@@ -52,7 +56,7 @@ File explorer (treemacs), auto complete (company), git&github integration
 - [[#appearance][Appearance]]
   - [[#notes-2][Notes]]
   - [[#better-defaults-1][Better Defaults]]
-  - [[#custom-functions][Custom Functions]]
+  - [[#custom-functions-1][Custom Functions]]
     - [[#disable-all-themes][disable-all-themes]]
     - [[#darken-background][darken-background]]
     - [[#presentation-mode][presentation-mode]]
@@ -61,7 +65,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#window-dividers][Window Dividers]]
   - [[#font][Font]]
     - [[#font-1][Font]]
-    - [[#custom-functions-1][Custom Functions]]
+    - [[#custom-functions-2][Custom Functions]]
       - [[#adjust-font-size][adjust-font-size]]
       - [[#increase-font-size][increase-font-size]]
       - [[#decrease-font-size][decrease-font-size]]
@@ -120,7 +124,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#emmet--snippet-completion-for-html--css][Emmet- (Snippet Completion for HTML & CSS)]]
 - [[#search--navigation][Search & Navigation]]
   - [[#better-defaults-3][Better Defaults]]
-  - [[#custom-functions-2][Custom Functions]]
+  - [[#custom-functions-3][Custom Functions]]
     - [[#find-config][find-config]]
     - [[#go-scratch][go-scratch]]
     - [[#go-messages][go-messages]]
@@ -157,7 +161,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#goto-line-preview][Goto Line Preview]]
 - [[#text-editing][Text Editing]]
   - [[#better-defaults-4][Better Defaults]]
-  - [[#custom-functions-3][Custom Functions]]
+  - [[#custom-functions-4][Custom Functions]]
     - [[#backward-kill-word-or-region][backward-kill-word-or-region]]
     - [[#newline-below][newline-below]]
     - [[#remove-hypens-and-underscores-region][remove-hypens-and-underscores-region]]
@@ -176,7 +180,7 @@ File explorer (treemacs), auto complete (company), git&github integration
 - [[#programming][Programming]]
   - [[#general-1][General]]
     - [[#better-defaults-5][Better Defaults]]
-    - [[#custom-functions-4][Custom Functions]]
+    - [[#custom-functions-5][Custom Functions]]
       - [[#align-comments][align-comments]]
       - [[#indent-buffer][indent-buffer]]
       - [[#comment-or-uncomment-region][comment-or-uncomment-region]]
@@ -239,7 +243,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#dired-recent][Dired Recent]]
   - [[#org][Org]]
     - [[#org-1][Org]]
-    - [[#custom-functions-5][Custom Functions]]
+    - [[#custom-functions-6][Custom Functions]]
       - [[#org-imenu][org-imenu]]
       - [[#org-screenshot][org-screenshot]]
       - [[#org-indent-src-block][org-indent-src-block]]
@@ -522,6 +526,54 @@ Copied from Doom Emacs:
 ;; font. By inhibiting this, we easily halve startup times with fonts that are
 ;; larger than the system default.
 (setq frame-inhibit-implied-resize t)
+#+END_SRC
+
+** Custom Functions
+*** measure-time
+(Note: ":tangle early-init.el")
+#+BEGIN_SRC emacs-lisp :tangle early-init.el
+(defmacro fk/measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (message "%s" (float-time (time-since time)))))
+#+END_SRC
+
+*** time-since-startup
+(Note: ":tangle early-init.el")
+#+BEGIN_SRC emacs-lisp :tangle early-init.el
+(defun fk/time-since-startup (&optional prefix)
+  "Display the time that past since emacs startup. Add PREFIX if given at the
+start of message for debug purposes."
+  (interactive)
+  (let* ((prefix (or prefix ""))
+         (time (float-time (time-since before-init-time)))
+         (str (format "%s%s seconds" prefix time)))
+    (if (or (not (string-empty-p prefix))
+            (called-interactively-p 'interactive))
+        (message str)
+      str)))
+#+END_SRC
+
+*** time-since-last-check
+(Note: ":tangle early-init.el")
+#+BEGIN_SRC emacs-lisp :tangle early-init.el
+(defvar fk/time-last-check nil)
+(defvar fk/time-threshold 0)
+(setq fk/time-threshold 0.02)
+
+(defun fk/time-since-last-check (&optional prefix)
+  "Display the time that past since last check. Add PREFIX if given at the
+start of message for debug purposes."
+  (interactive)
+  (let* ((prefix (or prefix ""))
+         (time (float-time (time-since (or fk/time-last-check before-init-time))))
+         (str (format "%s%s seconds" prefix time)))
+    (setq fk/time-last-check (current-time))
+    (if (or (not (string-empty-p prefix))
+            (called-interactively-p 'interactive))
+        (when (> time fk/time-threshold) (message "%s" str))
+      str)))
 #+END_SRC
 
 * Better Defaults
