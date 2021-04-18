@@ -338,8 +338,10 @@ git clone https://github.com/KaratasFurkan/.emacs.d.git
 
 Open Emacs and let the configuration install necessary packages.
 
-Note: I use emacs 28.0.50 with feature/native-comp branch, most of this
-configuration will work in old versions too but some parts needs emacs27+.
+Note: This configuration is *not* intended to be directly used by others, but it
+can be useful to get inspired or copy some parts of it. I use Emacs 28.0.50 with
+feature/native-comp branch, most of this configuration will work in old versions
+too but some parts needs Emacs 27+.
 
 ** init.el
 init.el is just used to load literate config.
