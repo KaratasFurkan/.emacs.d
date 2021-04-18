@@ -1175,6 +1175,8 @@ size. This function also handles icons and modeline font sizes."
   :custom
   ;; Source for logo: https://github.com/tecosaur/emacs-config/blob/master/config.org#splash-screen
   (dashboard-startup-banner (fk/expand-static-file-name "logos/emacs-e-small.png"))
+  ;; Do not show package count, it is meaningless because of lazy loading.
+  (dashboard-init-info (format "Emacs started in %s" (fk/time-since-startup)))
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
