@@ -1245,6 +1245,7 @@ size. This function also handles icons and modeline font sizes."
     (save-window-excursion
       (org-agenda-list)
       (read-only-mode -1)
+      (delete-matching-lines "...... now - - -")
       (delete-matching-lines "----------------")
       (let ((agenda (buffer-substring (point-min) (point-max))))
         (kill-buffer)
@@ -3342,7 +3343,7 @@ else call `dired-find-file'"
      ("WAITING_TEST" :foreground "cyan" :weight bold)
      ("READY_PROD" :foreground "greenyellow" :weight bold)
      ("HOLD" :foreground "#DC752F" :weight bold)
-     ("CANCELLED" :inherit 'org-done)))
+     ("CANCELLED" :inherit org-done)))
   ;;;; Getting Things Done ;;;;
   :custom-face
   (org-block ((t (:family ,fk/default-font-family :extend t))))
