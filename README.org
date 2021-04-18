@@ -455,10 +455,10 @@ bandwidth and disk space.
 ;; package.el)
 (setq straight-use-package-by-default t)
 
-;; Key Chord functionality in use-package
-(use-package use-package-chords
-  :hook
-  (dashboard-after-initialize . (lambda () (key-chord-mode 1))))
+;; Key Chord functionality in use-package. (I do not use it anymore.)
+;; (use-package use-package-chords
+;;   :hook
+;;   (dashboard-after-initialize . (lambda () (key-chord-mode 1))))
 #+END_SRC
 
 *** Notes
@@ -994,9 +994,8 @@ size. This function also handles icons and modeline font sizes."
 *** Anzu
 #+BEGIN_SRC emacs-lisp
 (use-package anzu
-  :after isearch
-  :config
-  (global-anzu-mode))
+  :hook
+  (dashboard-after-initialize . global-anzu-mode))
 #+END_SRC
 
 ** Page Break Lines
@@ -1195,7 +1194,8 @@ size. This function also handles icons and modeline font sizes."
   (dashboard-items '((recents  . 10)
                      (projects . 5)
                      ;;(bookmarks . 5)
-                     (agenda . 10)))
+                     ;;(agenda . 10) ;; I load agenda in :hook section
+                     ))
   (dashboard-set-navigator t)
   ;; Format: "(icon title help action face prefix suffix)"
   (dashboard-navigator-buttons
@@ -1232,7 +1232,13 @@ size. This function also handles icons and modeline font sizes."
       (dashboard-refresh-buffer)))
   :hook
   (dashboard-mode . (lambda () (setq-local cursor-type nil)))
-  (dashboard-mode . (lambda () (setq-local show-trailing-whitespace nil))))
+  (dashboard-mode . (lambda () (setq-local show-trailing-whitespace nil)))
+  ;; Load agenda after showing dashboard to decrease waiting time to see the
+  ;; initial screen (dashboard). TODO: try to make this asynchronously to not
+  ;; block Emacs.
+  (dashboard-after-initialize . (lambda ()
+                                  (add-to-list 'dashboard-items '(agenda . 10) t)
+                                  (dashboard-refresh-buffer))))
 #+END_SRC
 
 ** Stripe Buffer
@@ -2348,6 +2354,7 @@ otherwise."
 #+BEGIN_SRC emacs-lisp
 (use-package company-wordfreq
   :straight (:host github :repo "johannes-mueller/company-wordfreq.el")
+  :commands fk/company-wordfreq-mode
   :custom
   (company-wordfreq-path (concat no-littering-var-directory "wordfreq-dicts"))
   (ispell-local-dictionary "english")
