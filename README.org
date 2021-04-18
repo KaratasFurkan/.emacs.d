@@ -1191,7 +1191,7 @@ size. This function also handles icons and modeline font sizes."
                               (bookmarks . "b")
                               (projects . "p")
                               (agenda . "a")))
-  (dashboard-items '((recents  . 10)
+  (dashboard-items '((recents  . 5)
                      (projects . 5)
                      ;;(bookmarks . 5)
                      ;;(agenda . 10) ;; I load agenda in :hook section
@@ -1217,6 +1217,15 @@ size. This function also handles icons and modeline font sizes."
   :custom-face
   (dashboard-heading-face ((t (:weight bold))))
   (dashboard-items-face ((t (:weight normal))))
+  :hook
+  (dashboard-mode . (lambda () (setq-local cursor-type nil)))
+  (dashboard-mode . (lambda () (setq-local show-trailing-whitespace nil)))
+  ;; Load agenda after showing dashboard to decrease waiting time to see the
+  ;; initial screen (dashboard). TODO: try to make this asynchronously to not
+  ;; block Emacs.
+  (dashboard-after-initialize . (lambda ()
+                                  (add-to-list 'dashboard-items '(agenda . 10) t)
+                                  (dashboard-refresh-buffer)))
   :config
   (dashboard-setup-startup-hook)
 
@@ -1230,15 +1239,22 @@ size. This function also handles icons and modeline font sizes."
     (if (get-buffer dashboard-buffer-name)
         (switch-to-buffer dashboard-buffer-name)
       (dashboard-refresh-buffer)))
-  :hook
-  (dashboard-mode . (lambda () (setq-local cursor-type nil)))
-  (dashboard-mode . (lambda () (setq-local show-trailing-whitespace nil)))
-  ;; Load agenda after showing dashboard to decrease waiting time to see the
-  ;; initial screen (dashboard). TODO: try to make this asynchronously to not
-  ;; block Emacs.
-  (dashboard-after-initialize . (lambda ()
-                                  (add-to-list 'dashboard-items '(agenda . 10) t)
-                                  (dashboard-refresh-buffer))))
+
+  (defun fk/dashboard-get-agenda ()
+    "Copy org-agenda (week) buffer"
+    (save-window-excursion
+      (org-agenda-list)
+      (read-only-mode -1)
+      (delete-matching-lines "----------------")
+      (let ((agenda (buffer-substring (point-min) (point-max))))
+        (kill-buffer)
+        agenda)))
+
+  (defun fk/dashboard-insert-agenda (list-size)
+    "Insert directly org-agenda buffer."
+    (insert (fk/dashboard-get-agenda)))
+
+  (setcdr (assoc 'agenda dashboard-item-generators) 'fk/dashboard-insert-agenda))
 #+END_SRC
 
 ** Stripe Buffer
