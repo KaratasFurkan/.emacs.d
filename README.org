@@ -1900,7 +1900,22 @@ from melpa. TODO: fix this
 (use-package mwim
   :bind
   ("C-a" . mwim-beginning-of-code-or-line)
-  ("C-e" . mwim-end-of-line-or-code))
+  ("C-e" . mwim-end-of-line-or-code)
+  ;; NOTE: Functions below are built-in but I think they fit in this context
+  ("M-a" . fk/backward-sexp)
+  ("M-e" . fk/forward-sexp)
+  :config
+  (defun fk/forward-sexp (&optional N)
+    "Call `forward-sexp', fallback `forward-char' on error."
+    (interactive)
+    (condition-case nil
+        (forward-sexp N)
+      (error (forward-char N))))
+
+  (defun fk/backward-sexp ()
+    "`fk/forward-sexp' with negative argument."
+    (interactive)
+    (fk/forward-sexp -1)))
 #+END_SRC
 
 ** Helm Projectile
