@@ -3294,7 +3294,8 @@ else call `dired-find-file'"
   (org-bookmark-names-plist '())  ; Do not create bookmarks
   (org-capture-templates '(("i" "Capture to inbox" entry
                             (file "inbox.org")
-                            "* %?\nCREATED: %U")))
+                            "* %?\nCREATED: %U"
+                            :empty-lines 1)))
   (org-refile-targets '(("todos.org" :level . 1)
                         ("someday.org" :level . 1)
                         ("archive.org" :level . 1)
