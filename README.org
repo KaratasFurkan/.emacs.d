@@ -3007,7 +3007,8 @@ TODO: seperate sections (html, css..)
    ("\\.eco\\'"        . web-mode)
    ("\\.ejs\\'"        . web-mode)
    ("\\.svelte\\'"     . web-mode)
-   ("\\.djhtml\\'"     . web-mode))
+   ("\\.djhtml\\'"     . web-mode)
+   ("\\.mjml\\'"       . web-mode))
   :hook
   (web-mode . web-mode-toggle-current-element-highlight))
 #+END_SRC
