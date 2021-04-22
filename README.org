@@ -2517,7 +2517,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
     "Open `vterm' in project root directory."
     (interactive)
     (let* ((default-directory (or (projectile-project-root) default-directory))
-           (buffer-name (format "vterm @%s" (projectile-project-name default-directory)))
+           (project-name (projectile-project-name default-directory))
+           (buffer-name (format "vterm @%s" project-name))
            (buffer (get-buffer buffer-name)))
       (if (or (not buffer) (eq buffer (current-buffer)))
           (vterm buffer-name)
