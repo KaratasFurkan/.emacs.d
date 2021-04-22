@@ -2514,10 +2514,14 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (dashboard-after-initialize . projectile-mode)
   :config
   (defun fk/projectile-vterm ()
-    "Open vterm (or eshell if vterm is not found) in project root directory."
+    "Open `vterm' in project root directory."
     (interactive)
-    (let ((default-directory (or (projectile-project-root) default-directory)))
-      (if (fboundp 'vterm) (vterm) (eshell)))))
+    (let* ((root-dir (or (projectile-project-root) default-directory))
+           (buffer-name (format "vterm @%s" (projectile-project-name root-dir)))
+           (buffer (get-buffer buffer-name)))
+      (if (or (not buffer) (eq buffer (current-buffer)))
+          (vterm buffer-name)
+        (switch-to-buffer buffer)))))
 #+END_SRC
 
 *** Flycheck
