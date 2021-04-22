@@ -2075,7 +2075,9 @@ from melpa. TODO: fix this
   :commands deadgrep
   :bind
   ( :map deadgrep-mode-map
-    ("C-c C-e" . deadgrep-edit-mode)))
+    ("C-c C-e" . deadgrep-edit-mode))
+  :hook
+  (deadgrep-mode . (lambda () (setq-local show-trailing-whitespace nil))))
 #+END_SRC
 
 ** Avy
