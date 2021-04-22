@@ -2488,10 +2488,9 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 *** Projectile
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
-  :after f  ; TODO: remove this dependency
   :custom
   (projectile-auto-discover nil)
-  (projectile-project-search-path (f-directories "~/projects"))
+  (projectile-project-search-path (directory-files "~/projects" t "[^.]"))
   ;; Open magit when switching project
   (projectile-switch-project-action
    (lambda ()
@@ -2506,6 +2505,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
    (lambda (project-root)
      (or (string-prefix-p (expand-file-name user-emacs-directory) project-root)
          (string-prefix-p "/usr/lib/node_modules/" project-root))))
+  (projectile-kill-buffers-filter 'kill-only-files)
   :bind*
   ("C-M-t" . fk/projectile-vterm)
   :hook
@@ -2514,11 +2514,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (defun fk/projectile-vterm ()
     "Open vterm (or eshell if vterm is not found) in project root directory."
     (interactive)
-    (let ((default-directory (or (projectile-project-root)
-                                 default-directory)))
-      (if (fboundp 'vterm)
-          (vterm)
-        (eshell)))))
+    (let ((default-directory (or (projectile-project-root) default-directory)))
+      (if (fboundp 'vterm) (vterm) (eshell)))))
 #+END_SRC
 
 *** Flycheck
