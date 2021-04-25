@@ -4303,7 +4303,9 @@ the `docker-container-prompt-regexp'."
   :straight (:host github :repo "tecosaur/screenshot")
   :commands screenshot
   :custom
-  (screenshot-max-width 300))
+  (screenshot-max-width 300)
+  :hook
+  (screenshot-buffer-creation . (lambda () (hl-line-mode -1))))
 #+END_SRC
 
 ** Emacs Everywhere
