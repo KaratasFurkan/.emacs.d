@@ -1892,15 +1892,19 @@ org-mode activated."
   :custom
   (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (aw-ignore-current t)
-  :bind*
-  ( :map windows
-    ("w" . ace-window)
-    ("D" . ace-delete-window)
-    ("s" . ace-swap-window))
-  ;; :config
-  ;; (ace-window-posframe-mode) ;; Posframe is very slow at the first time
   :custom-face
-  (aw-leading-char-face ((t (:height 1000 :foreground "red")))))
+  (aw-leading-char-face ((t (:height 1000 :foreground "red"))))
+  :bind*
+  (("C-q" . aw-flip-window)  ; last window
+   :map windows
+   ("w" . ace-window)
+   ("D" . ace-delete-window)
+   ("s" . ace-swap-window)
+   ("l" . aw-flip-window))
+  :config
+  (ace-window-posframe-mode)  ; FIXME: Posframe is very slow at the first time
+  (advice-add 'other-window :before (lambda (&rest _) (aw--push-window (selected-window))))
+  (advice-add 'winum-select-window-by-number :before (lambda (&rest _) (aw--push-window (selected-window)))))
 #+END_SRC
 
 *** Dependents
