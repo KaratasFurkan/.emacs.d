@@ -1070,7 +1070,8 @@ size. This function also handles icons and modeline font sizes."
              (fk/beacon-blink))))
   (dolist (hook '(find-file-hook
                   xref-after-jump-hook
-                  xref-after-return-hook))
+                  xref-after-return-hook
+                  persp-switch-hook))
     (add-hook hook 'fk/beacon-blink)))
 #+END_SRC
 
