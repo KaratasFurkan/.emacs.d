@@ -3501,7 +3501,6 @@ _P_: Priority     _h_: Home      _M_: Movie       ^^
 ^^                ^^             _F_: Food        ^^
 ^^                ^^             _O_: Other       ^^
 
-
 "
     ;; Move
     ("n" next-line)
