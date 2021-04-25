@@ -60,6 +60,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#disable-all-themes][disable-all-themes]]
     - [[#darken-background][darken-background]]
     - [[#presentation-mode][presentation-mode]]
+    - [[#toggle-ui-elements][toggle-ui-elements]]
   - [[#remove-redundant-ui][Remove Redundant UI]]
   - [[#good-scroll-smooth-scrolling][Good Scroll (Smooth scrolling)]]
   - [[#window-dividers][Window Dividers]]
@@ -774,6 +775,19 @@ I use this to darken non-file buffers like treemacs, helm etc.
     (setq fk/olivetti-fringe-face fk/default-olivetti-fringe-face)
     (olivetti-mode 1)
     (goggles-mode -1)))
+#+END_SRC
+
+*** toggle-ui-elements
+#+BEGIN_SRC emacs-lisp
+(defun fk/toggle-ui-elements (&optional arg)
+  "Toggle `display-line-numbers-mode', `highlight-indent-guides-mode' and
+`display-fill-column-indicator-mode'."
+  (interactive)
+  (display-line-numbers-mode (or arg (if display-line-numbers-mode -1 1)))
+  (highlight-indent-guides-mode (or arg (if highlight-indent-guides-mode -1 1)))
+  (display-fill-column-indicator-mode (or arg (if display-fill-column-indicator-mode -1 1))))
+
+(add-hook 'prog-mode-hook (lambda () (fk/toggle-ui-elements -1)) 100)
 #+END_SRC
 
 ** Remove Redundant UI
