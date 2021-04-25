@@ -672,6 +672,10 @@ FILTER is function that runs after the process is finished, its args should be
 A better, more detailed *help* buffer.
 #+BEGIN_SRC emacs-lisp
 (use-package helpful
+  :custom
+  ;; Use helpful in `helm-apropos'
+  (helm-describe-function-function 'helpful-function)
+  (helm-describe-variable-function 'helpful-variable)
   :bind
   (([remap describe-function] . helpful-callable)
    ([remap describe-variable] . helpful-variable)
