@@ -1280,8 +1280,10 @@ size. This function also handles icons and modeline font sizes."
 #+BEGIN_SRC emacs-lisp
 (use-package display-fill-column-indicator
   :straight (:type built-in)
-  :custom-face
-  (fill-column-indicator ((t (:foreground ,fk/light-color7))))
+  :custom
+  (display-fill-column-indicator-character ?│)
+  :custom-face  ; NOTE: The character above does not work with "Roboto Mono"
+  (fill-column-indicator ((t (:family "Source Code Pro" :foreground ,fk/light-color7))))
   :hook
   (prog-mode . display-fill-column-indicator-mode))
 #+END_SRC
