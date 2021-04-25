@@ -123,6 +123,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#company-statisticsprescient][Company Statistics/Prescient]]
   - [[#yasnippet-snippet-completion][YASnippet (Snippet Completion)]]
   - [[#emmet--snippet-completion-for-html--css][Emmet- (Snippet Completion for HTML & CSS)]]
+  - [[#hydra][Hydra]]
 - [[#search--navigation][Search & Navigation]]
   - [[#better-defaults-3][Better Defaults]]
   - [[#custom-functions-3][Custom Functions]]
@@ -269,7 +270,7 @@ File explorer (treemacs), auto complete (company), git&github integration
       - [[#magit-todos][Magit Todos]]
       - [[#magit-forge][Magit Forge]]
     - [[#diff-hl][diff-hl]]
-    - [[#smerge--hydra][Smerge + Hydra]]
+    - [[#smerge][Smerge]]
     - [[#git-link][Git Link]]
     - [[#git-timemachine][Git Timemachine]]
     - [[#git-blame-vc-msg][Git Blame (vc-msg)]]
@@ -1703,6 +1704,20 @@ company-yasnippet' to all company backends."
 #+END_SRC
 
 ** [[#emmet-mode][Emmet-]] (Snippet Completion for HTML & CSS)
+** Hydra
+#+BEGIN_SRC emacs-lisp
+(use-package hydra
+  :defer t
+  :custom
+  (hydra-hint-display-type 'posframe)
+  (hydra-posframe-show-params
+   `( :internal-border-width 2
+      :internal-border-color ,fk/light-color
+      :left-fringe 5
+      :right-fringe 5
+      :poshandler posframe-poshandler-frame-bottom-center)))
+#+END_SRC
+
 * Search & Navigation
 ** Better Defaults
 #+BEGIN_SRC emacs-lisp
@@ -3835,24 +3850,8 @@ set LABELS (a string list of labels) if given."
   (magit-post-refresh . diff-hl-magit-post-refresh))
 #+END_SRC
 
-*** Smerge + Hydra
+*** Smerge
 #+BEGIN_SRC emacs-lisp
-(use-package hydra
-  :after smerge)
-
-(use-package hydra-posframe
-  :straight (:host github :repo "Ladicle/hydra-posframe")
-  :after hydra
-  :custom
-  (hydra-posframe-border-width 20)
-  (hydra-posframe-poshandler 'posframe-poshandler-frame-bottom-center)
-  :custom-face
-  (hydra-face-blue ((t (:foreground "#46D9FF" :bold t))))
-  (hydra-posframe-face ((t (:background ,fk/dark-color))))
-  (hydra-posframe-border-face ((t (:background ,fk/dark-color))))
-  :config
-  (hydra-posframe-mode))
-
 ;; Source: https://github.com/alphapapa/unpackaged.el#smerge-mode
 (use-package smerge-mode
   :straight (:type built-in)
