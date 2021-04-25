@@ -1742,6 +1742,9 @@ company-yasnippet' to all company backends."
   "Open config file."
   (interactive)
   (find-file config-org))
+
+;; Use a dedicated perspective for config
+(advice-add 'fk/find-config :before (lambda () (persp-switch "config")))
 #+END_SRC
 
 *** go-scratch
@@ -2206,8 +2209,6 @@ from melpa. TODO: fix this
             (ignore-errors (fk/perspective-rename-with-project-name))
             (add-hook 'projectile-after-switch-project-hook 'fk/perspective-rename-with-project-name))
         (remove-hook 'projectile-after-switch-project-hook 'fk/perspective-rename-with-project-name)))
-
-    (advice-add 'fk/find-config :after 'fk/perspective-rename-with-project-name)
 
     (fk/perspective-auto-rename-mode)))
 #+END_SRC
@@ -4359,7 +4360,11 @@ the `docker-container-prompt-regexp'."
     (interactive)
     (when (and (featurep 'pomidor) (get-buffer pomidor-buffer-name))
       (cl-letf (((symbol-function 'y-or-n-p) (lambda (_) t)))
-        (pomidor-save-session)))))
+        (pomidor-save-session))))
+
+  ;; Use a dedicated perspective for pomidor
+  (advice-add 'pomidor :before (lambda () (persp-switch "pomidor")))
+  (advice-add 'pomidor-quit :after (lambda () (persp-kill  "pomidor"))))
 #+END_SRC
 
 * File Modes
