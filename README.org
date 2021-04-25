@@ -3492,14 +3492,14 @@ else call `dired-find-file'"
     "
 ^Move^            ^Todo^         ^Someday^        ^Archive^
 ^^────────────────^^─────────────^^───────────────^^─────────
-_n_: Next         _w_: Work      _E_: Emacs        _d_: Done
-_p_: Previous     _e_: Emacs     _T_: Tech         _t_: Trash
-_P_: Priority     _h_: Home      _M_: Movie        ^^
-^^                _o_: Other     _S_: TV Show      ^^
-^^                ^^             _A_: Anime        ^^
-^^                ^^             _V_: Video        ^^
-^^                ^^             _F_: Food         ^^
-^^                ^^             _O_: Other        ^^
+_n_: Next         _w_: Work      _E_: Emacs       _d_: Done
+_p_: Previous     _e_: Emacs     _T_: Tech        _t_: Trash
+_P_: Priority     _h_: Home      _M_: Movie       ^^
+^^                _o_: Other     _S_: TV Show     ^^
+^^                ^^             _A_: Anime       ^^
+^^                ^^             _V_: Video       ^^
+^^                ^^             _F_: Food        ^^
+^^                ^^             _O_: Other       ^^
 
 
 "
