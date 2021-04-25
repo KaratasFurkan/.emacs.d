@@ -2945,40 +2945,40 @@ beginning of the string that has curly brackets in it."
 
 (defun fk/django-search-models ()
   (interactive)
-  (fk/helm-rg-dwim-with-glob "models.py" "^class "))
+  (fk/helm-rg-dwim-with-glob "models.py" (unless (region-active-p) "^class ")))
 
 (defun fk/django-search-views ()
   (interactive)
-  (fk/helm-rg-dwim-with-glob "views*.py" "^class "))
+  (fk/helm-rg-dwim-with-glob "views*.py" (unless (region-active-p) "^class ")))
 
 (defun fk/django-search-serializers ()
   (interactive)
-  (fk/helm-rg-dwim-with-glob "*serializers*.py" "^class "))
+  (fk/helm-rg-dwim-with-glob "*serializers*.py" (unless (region-active-p) "^class ")))
 
 (defun fk/django-search-tests ()
   (interactive)
-  (fk/helm-rg-dwim-with-glob "*test*.py" "^class "))
+  (fk/helm-rg-dwim-with-glob "*test*.py" (unless (region-active-p) "^class ")))
 
 (defun fk/django-search-settings ()
   (interactive)
   ;; TODO: this glob does not work
-  (fk/helm-rg-dwim-with-glob "settings*.py" ""))
+  (fk/helm-rg-dwim-with-glob "settings*.py" (unless (region-active-p) "")))
 
 (defun fk/django-search-admins ()
   (interactive)
-  (fk/helm-rg-dwim-with-glob "admin.py" ""))
+  (fk/helm-rg-dwim-with-glob "admin.py" (unless (region-active-p) "")))
 
 (defun fk/django-search-permissions ()
   (interactive)
-  (fk/helm-rg-dwim-with-glob "permissions.py" "^class "))
+  (fk/helm-rg-dwim-with-glob "permissions.py" (unless (region-active-p) "^class ")))
 
 (defun fk/django-search-mixins ()
   (interactive)
-  (fk/helm-rg-dwim-with-glob "mixins.py" "^class "))
+  (fk/helm-rg-dwim-with-glob "mixins.py" (unless (region-active-p) "^class ")))
 
 (defun fk/django-search-urls ()
   (interactive)
-  (fk/helm-rg-dwim-with-glob "*.py" "path\\( "))
+  (fk/helm-rg-dwim-with-glob "*.py" (unless (region-active-p) "path\\( ")))
 
 (bind-keys*
  :map django
