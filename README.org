@@ -1607,11 +1607,14 @@ current buffer."
   ( :map company-active-map
     ("RET" . nil)
     ([return] . nil)
+    ("C-w" . nil)
     ("TAB" . company-complete-selection)
     ("<tab>" . company-complete-selection)
     ("C-s" . company-complete-selection)  ; Mostly to use during yasnippet expansion
     ("C-n" . company-select-next)
-    ("C-p" . company-select-previous))
+    ("C-p" . company-select-previous)
+    ("C-v" . scroll-up-command)
+    ("M-v" . scroll-down-command))
   :hook
   (dashboard-after-initialize . global-company-mode)
   :config
