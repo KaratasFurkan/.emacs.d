@@ -3364,6 +3364,7 @@ else call `dired-find-file'"
   (org-directory "~/org")  ; This is default already but lets declare explicitly
   (org-agenda-files `(,(expand-file-name "agenda.org" org-directory)))
   (org-agenda-start-on-weekday nil)
+  (org-deadline-warning-days 5)
   (org-display-custom-times t)
   (org-time-stamp-custom-formats '("<%d/%m/%Y %A>" . "<%d/%m/%Y %A %H:%M>"))
   (org-bookmark-names-plist '())  ; Do not create bookmarks
