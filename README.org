@@ -3810,6 +3810,7 @@ _P_: Priority     _h_: Home      _M_: Movie       ^^
                                             (unpushed . show)
                                             (pullreqs . show)
                                             (issues . show)))
+  (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   :bind*
   ( :map version-control
     ("v" . magit-status)
