@@ -3416,7 +3416,7 @@ else call `dired-find-file'"
     ("M-p" . org-previous-visible-heading)
     ("C-c C-f". fk/org-imenu)
     ("C-x C-1" . outline-hide-other)
-    ("C-c C-r" . org-refile)
+    ("C-c C-r" . org-refile-hydra/body)
     ("C-c C-a" . fk/org-refile-done)  ; "a" for archive
     ("C-c C-t" . fk/org-refile-trash)
     ("C-c t" . org-todo)
@@ -3485,7 +3485,49 @@ else call `dired-find-file'"
 
   (defun fk/org-refile-trash ()
     (interactive)
-    (fk/org-refile-fixed-location-with-closed-timestamp "archive.org" "Trash")))
+    (fk/org-refile-fixed-location-with-closed-timestamp "archive.org" "Trash"))
+
+  (defhydra org-refile-hydra
+    (:color red :hint nil)
+    "
+^Move^            ^Todo^         ^Someday^        ^Archive^
+^^────────────────^^─────────────^^───────────────^^─────────
+_n_: Next         _w_: Work      _E_: Emacs        _d_: Done
+_p_: Previous     _e_: Emacs     _T_: Tech         _t_: Trash
+_P_: Priority     _h_: Home      _M_: Movie        ^^
+^^                _o_: Other     _S_: TV Show      ^^
+^^                ^^             _A_: Anime        ^^
+^^                ^^             _V_: Video        ^^
+^^                ^^             _F_: Food         ^^
+^^                ^^             _O_: Other        ^^
+
+
+"
+    ;; Move
+    ("n" next-line)
+    ("p" previous-line)
+    ("P" org-priority-down)
+    ;; Todo
+    ("w" (lambda () (fk/org-refile-fixed-location "todos.org" "Work")))
+    ("e" (lambda () (fk/org-refile-fixed-location "todos.org" "Emacs")))
+    ("h" (lambda () (fk/org-refile-fixed-location "todos.org" "Home")))
+    ("o" (lambda () (fk/org-refile-fixed-location "todos.org" "Other")))
+    ;; Someday
+    ("E" (lambda () (fk/org-refile-fixed-location "someday.org" "Emacs")))
+    ("T" (lambda () (fk/org-refile-fixed-location "someday.org" "Tech")))
+    ("M" (lambda () (fk/org-refile-fixed-location "someday.org" "Movie")))
+    ("S" (lambda () (fk/org-refile-fixed-location "someday.org" "TV Show")))
+    ("A" (lambda () (fk/org-refile-fixed-location "someday.org" "Anime")))
+    ("V" (lambda () (fk/org-refile-fixed-location "someday.org" "Video")))
+    ("F" (lambda () (fk/org-refile-fixed-location "someday.org" "Food")))
+    ("O" (lambda () (fk/org-refile-fixed-location "someday.org" "Other")))
+    ;; Archive
+    ("d" fk/org-refile-done)
+    ("t" fk/org-refile-trash)
+    ;; General
+    ("m" org-refile "Refile manually")
+    ("s" save-buffer "Save buffer")
+    ("q" nil "Quit" :color blue)))
 #+END_SRC
 
 *** Custom Functions
