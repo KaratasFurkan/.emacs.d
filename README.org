@@ -1292,6 +1292,9 @@ size. This function also handles icons and modeline font sizes."
 #+BEGIN_SRC emacs-lisp
 (use-package display-line-numbers
   :straight (:type built-in)
+  :custom-face
+  (line-number ((t (:foreground ,fk/light-color2))))
+  (line-number-current-line ((t (:foreground ,fk/light-color))))
   :hook
   (prog-mode . display-line-numbers-mode))
 #+END_SRC
