@@ -1003,10 +1003,12 @@ size. This function also handles icons and modeline font sizes."
   :custom
   (doom-modeline-buffer-encoding nil)
   (doom-modeline-vcs-max-length 20)
+  (doom-modeline-bar-width 1)
   :custom-face
   (mode-line ((t (:background ,fk/dark-color))))
   (mode-line-inactive ((t (:background ,fk/dark-color5))))
-  (mode-line-highlight ((t (:inherit doom-modeline-bar :foreground "black"))))
+  (mode-line-highlight ((t (:inherit cursor :foreground "black"))))
+  (doom-modeline-bar ((t (:background ,fk/dark-color))))
   (doom-modeline-buffer-path ((t (:inherit font-lock-comment-face :slant normal))))
   :hook
   (dashboard-after-initialize . column-number-mode))
