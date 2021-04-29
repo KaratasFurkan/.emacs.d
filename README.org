@@ -3442,7 +3442,15 @@ else call `dired-find-file'"
     ("C-c C-p" . org-priority-down)
     ("C-M-j" . org-open-at-point)
     :map org-src-mode-map
-    ("C-c C-c" . org-edit-src-exit))
+    ("C-c C-c" . org-edit-src-exit)
+    ;; Better, intuitive movement when selecting a date for schedule or deadline
+    :map org-read-date-minibuffer-local-map
+    ("C-n". (lambda () (interactive) (org-eval-in-calendar '(calendar-forward-week 1))))
+    ("C-p". (lambda () (interactive) (org-eval-in-calendar '(calendar-backward-week 1))))
+    ("C-f". (lambda () (interactive) (org-eval-in-calendar '(calendar-forward-day 1))))
+    ("C-b". (lambda () (interactive) (org-eval-in-calendar '(calendar-backward-day 1))))
+    ("C-v". (lambda () (interactive) (org-eval-in-calendar '(calendar-forward-month 1))))
+    ("M-v". (lambda () (interactive) (org-eval-in-calendar '(calendar-backward-month 1)))))
   :hook
   ;; TODO: bunlar yerine prettify + box face'i ile yap
   (org-mode . prettify-symbols-mode)
