@@ -1243,7 +1243,6 @@ size. This function also handles icons and modeline font sizes."
   (dashboard-items-face ((t (:weight normal))))
   :hook
   (dashboard-mode . (lambda () (setq-local cursor-type nil)))
-  (dashboard-mode . (lambda () (setq-local show-trailing-whitespace nil)))
   ;; Load agenda after showing dashboard to decrease waiting time to see the
   ;; initial screen (dashboard). TODO: try to make this asynchronously to not
   ;; block Emacs.
@@ -2131,9 +2130,7 @@ from melpa. TODO: fix this
   :commands deadgrep
   :bind
   ( :map deadgrep-mode-map
-    ("C-c C-e" . deadgrep-edit-mode))
-  :hook
-  (deadgrep-mode . (lambda () (setq-local show-trailing-whitespace nil))))
+    ("C-c C-e" . deadgrep-edit-mode)))
 #+END_SRC
 
 ** Avy
@@ -2330,23 +2327,16 @@ otherwise."
 
 ** Trailing White Space
 #+BEGIN_SRC emacs-lisp
-;; (use-package whitespace
-;;   :straight (:type built-in)
-;;   :custom
-;;   (show-trailing-whitespace t)  ; not from whitespace.el
-;;   :custom-face
-;;   (trailing-whitespace ((t (:background ,fk/light-color7))))  ; not from whitespace.el
-;;   :hook
-;;   (before-save . whitespace-cleanup))
-
-;; Try an alternative:
 (use-package whitespace-cleanup-mode
   :custom
   (show-trailing-whitespace t)  ; not from whitespace-cleanup-mode.el
   :custom-face
   (trailing-whitespace ((t (:background ,fk/light-color7))))  ; not from whitespace-cleanup-mode.el
   :hook
-  (dashboard-after-initialize . global-whitespace-cleanup-mode))
+  (dashboard-after-initialize . global-whitespace-cleanup-mode)
+  (after-change-major-mode . (lambda ()
+                              (unless (buffer-file-name)
+                                (setq-local show-trailing-whitespace nil)))))
 #+END_SRC
 
 ** Case Switching
@@ -3462,7 +3452,6 @@ else call `dired-find-file'"
   (org-mode . (lambda () (fk/add-local-hook 'before-save-hook 'org-redisplay-inline-images)))
   (org-after-refile-insert . (lambda () (fk/org-sort-by-priority) (save-buffer)))
   (org-capture-mode . delete-other-windows)  ; make capture buffer fullscreen
-  (calendar-mode . (lambda () (setq-local show-trailing-whitespace nil)))
   :config
   (add-to-list 'org-emphasis-alist '("#" (:box '(:line-width -1))))  ; FIXME: does not work.
   (setf (cdr (assoc "*" org-emphasis-alist)) '((:weight extra-bold :underline t :foreground "#DDDDDD")))
@@ -4241,7 +4230,6 @@ the `docker-container-prompt-regexp'."
   (slack-preview-face ((t (:inherit (fixed-pitch shadow org-block) :extend nil))))
   :hook
   (slack-message-buffer-mode . (lambda () (setq-local truncate-lines nil)))
-  (slack-message-buffer-mode . (lambda () (setq-local show-trailing-whitespace nil)))
   (slack-message-buffer-mode . (lambda () (setq-local olivetti-body-width 80)))
   :config
   (slack-register-team
