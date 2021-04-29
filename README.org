@@ -792,7 +792,7 @@ I use this to darken non-file buffers like treemacs, helm etc.
   (highlight-indent-guides-mode (or arg (if highlight-indent-guides-mode -1 1)))
   (display-fill-column-indicator-mode (or arg (if display-fill-column-indicator-mode -1 1))))
 
-(add-hook 'prog-mode-hook (lambda () (fk/toggle-ui-elements -1)) 100)
+;; (add-hook 'prog-mode-hook (lambda () (fk/toggle-ui-elements -1)) 100)
 #+END_SRC
 
 ** Remove Redundant UI
@@ -1111,8 +1111,8 @@ size. This function also handles icons and modeline font sizes."
   (highlight-indent-guides-responsive 'top)
   (highlight-indent-guides-auto-enabled nil)
   :custom-face
-  (highlight-indent-guides-character-face ((t (:foreground ,fk/light-color6))))
-  (highlight-indent-guides-top-character-face ((t (:foreground ,fk/light-color))))
+  (highlight-indent-guides-character-face ((t (:foreground ,fk/light-color7))))
+  (highlight-indent-guides-top-character-face ((t (:foreground ,fk/light-color5))))
   :hook
   (prog-mode . highlight-indent-guides-mode))
 #+END_SRC
