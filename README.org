@@ -1489,10 +1489,11 @@ current buffer."
 (use-package which-key-posframe
   :custom
   (which-key-idle-secondary-delay 0)
-  ;;(which-key-side-window-max-height 0.99)
+  (which-key-posframe-border-width 2)
+  (which-key-posframe-parameters '((left-fringe . 5) (right-fringe . 5)))
   :custom-face
   (which-key-posframe ((t (:background ,fk/dark-color))))
-  (which-key-posframe-border ((t (:background "gray"))))
+  (which-key-posframe-border ((t (:background ,fk/light-color))))
   :hook
   (dashboard-after-initialize . which-key-posframe-mode)
   (dashboard-after-initialize . which-key-mode))
@@ -1582,9 +1583,9 @@ current buffer."
   :custom
   (helm-display-header-line nil)
   (helm-echo-input-in-header-line t)
-  (helm-posframe-border-color "gray")
-  (helm-posframe-parameters '((left-fringe . 5)
-                              (right-fringe . 5)))
+  (helm-posframe-border-width 2)
+  (helm-posframe-border-color fk/light-color)
+  (helm-posframe-parameters '((left-fringe . 5) (right-fringe . 5)))
   :config
   (helm-posframe-enable)
   ;; Remove annoying error message that displayed everytime after closing
