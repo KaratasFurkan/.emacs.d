@@ -4349,6 +4349,7 @@ the `docker-container-prompt-regexp'."
 (use-package pomidor
   :commands pomidor
   :custom
+  (pomidor-breaks-before-long 3)
   (pomidor-sound-tick nil)
   (pomidor-sound-tack nil)
   (pomidor-save-session-file (expand-file-name "pomidor-session.json" no-littering-var-directory))
