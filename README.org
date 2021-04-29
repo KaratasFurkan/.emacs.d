@@ -3462,6 +3462,7 @@ else call `dired-find-file'"
   (org-mode . (lambda () (fk/add-local-hook 'before-save-hook 'org-redisplay-inline-images)))
   (org-after-refile-insert . (lambda () (fk/org-sort-by-priority) (save-buffer)))
   (org-capture-mode . delete-other-windows)  ; make capture buffer fullscreen
+  (calendar-mode . (lambda () (setq-local show-trailing-whitespace nil)))
   :config
   (add-to-list 'org-emphasis-alist '("#" (:box '(:line-width -1))))  ; FIXME: does not work.
   (setf (cdr (assoc "*" org-emphasis-alist)) '((:weight extra-bold :underline t :foreground "#DDDDDD")))
