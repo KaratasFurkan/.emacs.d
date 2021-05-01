@@ -37,7 +37,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#settings][Settings]]
     - [[#notes][Notes]]
   - [[#use-package][Use-Package]]
-    - [[#installation--straigt-integration][Installation & Straigt Integration]]
+    - [[#installation--straight-integration][Installation & Straight Integration]]
     - [[#notes-1][Notes]]
 - [[#performance-optimization][Performance Optimization]]
   - [[#garbage-collection][Garbage Collection]]
@@ -448,7 +448,7 @@ bandwidth and disk space.
 #+END_SRC
 
 ** Use-Package
-*** Installation & Straigt Integration
+*** Installation & Straight Integration
 #+BEGIN_SRC emacs-lisp
 ;; Install `use-package'.
 (straight-use-package 'use-package)

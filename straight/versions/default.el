@@ -176,7 +176,7 @@
  ("shr-tag-pre-highlight.el" . "931c447bc0d6c134ddc9657c664eeee33afbc54d")
  ("shrink-path.el" . "c14882c8599aec79a6e8ef2d06454254bb3e1e41")
  ("spinner" . "2daa167bec1c7566d662d48613a94453536b524a")
- ("straight.el" . "e1390a933b6f5a15079d6dec91eac97a17aad10c")
+ ("straight.el" . "1a7453a8d7fcfb62c40c1bfa13389c461817b623")
  ("string-inflection" . "c4a519be102cb99dd86be3ee8c387f008d097635")
  ("stripe-buffer" . "c252080f55cb78c951b19ebab9687f6d00237baf")
  ("su.el" . "eadfacdbcb8d54d83f6f6cfe7990b492f7217453")
