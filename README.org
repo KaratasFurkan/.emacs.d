@@ -767,7 +767,7 @@ I use this to darken non-file buffers like treemacs, helm etc.
         (setq window-divider-default-bottom-width 7
               window-divider-default-right-width 7)
         (window-divider-mode 1)
-        (setq fk/olivetti-fringe-face fk/darker-olivetti-fringe-face)
+        (set-face-attribute 'olivetti-borders-face nil :background fk/darker-olivetti-borders-color)
         (olivetti-mode 1)
         (goggles-mode 1))
     (fk/adjust-font-size 0)
@@ -777,7 +777,7 @@ I use this to darken non-file buffers like treemacs, helm etc.
     (setq window-divider-default-bottom-width default-window-divider-default-bottom-width
           window-divider-default-right-width default-window-divider-default-right-width)
     (window-divider-mode 1)
-    (setq fk/olivetti-fringe-face fk/default-olivetti-fringe-face)
+    (set-face-attribute 'olivetti-borders-face nil :background fk/default-olivetti-borders-color)
     (olivetti-mode 1)
     (goggles-mode -1)))
 #+END_SRC
@@ -1323,87 +1323,46 @@ size. This function also handles icons and modeline font sizes."
 ** Olivetti
 #+BEGIN_SRC emacs-lisp
 (use-package olivetti
+  :straight (:host github :repo "KaratasFurkan/olivetti")
   :custom
-  (olivetti-body-width-default 120)
-  (olivetti-body-width-large 180)
-  (olivetti-body-width olivetti-body-width-default)
   (olivetti-enable-visual-line-mode nil)
+  ;; Body width
+  (fk/olivetti-body-width-default 120)
+  (fk/olivetti-body-width-large 180)
+  (olivetti-body-width fk/olivetti-body-width-default)
+  ;; Borders
+  (olivetti-enable-borders t)
+  (fk/default-olivetti-borders-color fk/dark-color2)
+  (fk/darker-olivetti-borders-color fk/dark-color9)
+  :custom-face
+  (olivetti-borders-face ((t (:background ,fk/default-olivetti-borders-color))))
   :bind*
-  (("C-1" . (lambda ()  ; TODO: a named function would be better
-              (interactive)
-              (if (= (count-windows) 1)
-                  (if (and fk/olivetti-single-window-mode
-                           (= olivetti-body-width olivetti-body-width-default))
-                      (progn
-                        (setq olivetti-body-width olivetti-body-width-large)
-                        (olivetti-mode))
-                    (call-interactively 'fk/olivetti-single-window-mode)
-                    (setq olivetti-body-width olivetti-body-width-default))
-                (delete-other-windows))))
+  (("C-1" . fk/smart-C-x-1)
    :map windows
    ("c" . olivetti-mode)
-   ("v" . visual-line-mode)
    :map windows
    :prefix-map olivetti
    :prefix "o"
-   ("o" . fk/olivetti-single-window-mode)
+   ("o" . global-olivetti-mode)
    ("e" . olivetti-expand)
    ("s" . olivetti-shrink))
   :hook
-  (olivetti-mode . (lambda () (face-remap-add-relative 'fringe fk/olivetti-fringe-face)))
-  (dashboard-after-initialize . fk/olivetti-single-window-mode)
+  (dashboard-after-initialize . global-olivetti-mode)
   :config
-  (defvar fk/default-olivetti-fringe-face `(:background ,fk/dark-color2))
-  (defvar fk/darker-olivetti-fringe-face `(:background ,fk/dark-color9))
-  (defvar fk/olivetti-fringe-face fk/default-olivetti-fringe-face)
-  (defvar fk/olivetti-excluded-buffers '("*dashboard*" " *which-key*" "*helm"
-                                         " *Minibuf-1*" "*vterm" "*fireplace*"
-                                         " *lsp-peek--buffer*" "*pomidor*"))
+  (append olivetti-excluded-buffer-regexps
+          '("\\`\\*vterm" "\\`\\*pomidor\\*" "*fireplace*"))
 
-  (defun fk/windows-vertical-p ()
-    "Return t if windows placed vertically."
+  (defun fk/smart-C-x-1 ()
     (interactive)
-    (not (catch 'horizontal
-           (dolist (window (window-list))
-             (when (not (= (car (window-edges window)) 0))
-               (throw 'horizontal t))))))
-
-  ;; Calculate the necessary `olivetti-body-width' according to
-  ;; `fill-column' and `line-number-display-width' values.
-  ;; (defadvice olivetti-mode (before get-fill-column-width activate)
-  ;;   (setq-local olivetti-body-width (+ fill-column (line-number-display-width))))
-
-  (defun fk/activate-olivetti-if-single-window ()
-    "Activate olivetti-mode if there is only one window visible."
-    (if (or (= (count-windows) 1)
-            (fk/windows-vertical-p))
-        (unless (or (member (buffer-name) fk/olivetti-excluded-buffers)
-                    (catch 'found
-                      (dolist (prefix fk/olivetti-excluded-buffers)
-                        (when (string-prefix-p prefix (buffer-name))
-                          (throw 'found t)))))
-          (olivetti-mode))
-      (fk/olivetti-reset)))
-
-  (defun fk/olivetti-reset ()
-    ;; TODO: do not reset full-span windows
-    "Reset all windows' margins and face-remaps."
-    (olivetti-mode -1)
-    (olivetti-reset-all-windows)
-    (dolist (window (window-list))
-      (with-selected-window window
-        (face-remap-remove-relative (cons 'fringe fk/default-olivetti-fringe-face))
-        (face-remap-remove-relative (cons 'fringe fk/darker-olivetti-fringe-face)))))
-
-  (define-minor-mode fk/olivetti-single-window-mode
-    "Toggle olivetti-mode when there is only one window visible."
-    :global t
-    (if fk/olivetti-single-window-mode
-        (progn
-          (fk/activate-olivetti-if-single-window)
-          (add-hook 'window-configuration-change-hook 'fk/activate-olivetti-if-single-window))
-      (remove-hook 'window-configuration-change-hook 'fk/activate-olivetti-if-single-window)
-      (fk/olivetti-reset))))
+    (if (= (count-windows) 1)
+        (if (and global-olivetti-mode
+                 (= olivetti-body-width fk/olivetti-body-width-default))
+            (progn
+              (setq olivetti-body-width fk/olivetti-body-width-large)
+              (olivetti-mode))
+          (call-interactively 'global-olivetti-mode)
+          (setq olivetti-body-width fk/olivetti-body-width-default))
+      (delete-other-windows))))
 #+END_SRC
 
 ** [[#emojify][Emojify-]]
@@ -1428,6 +1387,9 @@ size. This function also handles icons and modeline font sizes."
 #+BEGIN_SRC emacs-lisp
 (use-package visual-fill-column
   :commands visual-fill-column-mode
+  :bind
+  ( :map windows
+    ("v" . visual-fill-column-mode))
   :hook
   (visual-fill-column-mode . visual-line-mode))
 #+END_SRC
@@ -1834,7 +1796,8 @@ org-mode activated."
 (global-set-key (kbd "M-l") 'move-to-window-line-top-bottom)
 (global-set-key (kbd "C-M-u") 'pop-global-mark)
 ;; Split & Switch
-(global-set-key (kbd "C-1") 'delete-other-windows)
+;; (global-set-key (kbd "C-1") 'delete-other-windows)  ; I use `fk/smart-C-x-1',
+                                                       ; see Appearance / Olivetti
 (global-set-key (kbd "C-2") 'fk/split-window-below-and-switch)
 (global-set-key (kbd "C-3") 'fk/split-window-right-and-switch)
 ;; Scroll less than default

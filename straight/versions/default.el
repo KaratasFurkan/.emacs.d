@@ -135,7 +135,7 @@
  ("oauth2" . "cdf2eef500d0e15e7f15d984dd357faaf5b45e86")
  ("ob-async" . "de1cd6c93242a4cb8773bbe115b7be3d4dd6b97e")
  ("ob-restclient.el" . "f7449b2068498fe9d8ab9589e0a638148861533f")
- ("olivetti" . "f4499948d12190cdc4272fb3c8bb0dc268d84efb")
+ ("olivetti" . "8fe763845512d3afd07866cfdff992f6898c2cc1")
  ("org-appear" . "68a607bed5adeaaf0d43ccbd50f877e5f0402f7f")
  ("org-bullets" . "767f55feb58b840a5a04eabfc3fbbf0d257c4792")
  ("org-fancy-priorities" . "819bb993b71e7253cefef7047306ab4e0f9d0a86")
