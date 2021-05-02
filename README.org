@@ -1215,7 +1215,7 @@ size. This function also handles icons and modeline font sizes."
                               (bookmarks . "b")
                               (projects . "p")
                               (agenda . "a")))
-  (dashboard-items '((recents  . 5)
+  (dashboard-items '((recents  . 10)
                      (projects . 5)
                      ;;(bookmarks . 5)
                      ;;(agenda . 10) ;; I load agenda in :hook section
@@ -1264,15 +1264,12 @@ size. This function also handles icons and modeline font sizes."
       (dashboard-refresh-buffer)))
 
   (defun fk/dashboard-get-agenda ()
-    "Copy org-agenda (week) buffer"
+    "Copy org-agenda buffer"
     (save-window-excursion
-      (org-agenda-list)
-      (read-only-mode -1)
-      (delete-matching-lines "...... now - - -")
-      (delete-matching-lines "----------------")
-      (let ((agenda (buffer-substring (point-min) (point-max))))
-        (kill-buffer)
-        agenda)))
+      (let ((org-agenda-span 'day))
+        (org-agenda-list))
+      (prog1 (buffer-substring (point-min) (point-max))
+        (kill-buffer))))
 
   (defun fk/dashboard-insert-agenda (list-size)
     "Insert directly org-agenda buffer."
