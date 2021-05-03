@@ -1326,8 +1326,6 @@ size. This function also handles icons and modeline font sizes."
   :straight (:host github :repo "KaratasFurkan/olivetti")
   :custom
   (olivetti-enable-visual-line-mode nil)
-  (olivetti-excluded-buffer-regexps `(,@olivetti-excluded-buffer-regexps
-                                      "\\`\\*vterm" "\\`\\*pomidor\\*" "*fireplace*"))
   ;; Body width
   (fk/olivetti-body-width-default 120)
   (fk/olivetti-body-width-large 180)
@@ -1351,6 +1349,10 @@ size. This function also handles icons and modeline font sizes."
   :hook
   (dashboard-after-initialize . global-olivetti-mode)
   :config
+  (setq olivetti-excluded-buffer-regexps
+        `(,@olivetti-excluded-buffer-regexps
+          "\\`\\*vterm" "\\`\\*pomidor\\*" "*fireplace*"))
+
   (defun fk/smart-C-x-1 ()
     (interactive)
     (if (= (count-windows) 1)
