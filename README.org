@@ -4099,12 +4099,12 @@ the `docker-container-prompt-regexp'."
   (add-to-list 'password-mode-password-prefix-regexs "\"password\":?[[:space:]]+"))
 #+END_SRC
 
-** TODO EAF
+** EAF
 #+BEGIN_SRC emacs-lisp
-;; TODO: does not work
-;; (use-package eaf
-;;   :straight
-;;   (:host github :repo "manateelazycat/emacs-application-framework" :depth 1 :files ("*")))
+(use-package eaf
+  :straight
+  (:host github :repo "manateelazycat/emacs-application-framework" :depth 1 :files ("*"))
+  :commands eaf-open-browser eaf-open-camera)
 #+END_SRC
 
 ** Google Translate
