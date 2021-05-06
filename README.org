@@ -705,12 +705,15 @@ Menu style keybindings like Spacemacs.
 #+END_SRC
 
 ** Su/Sudo
-read-only files will be writable but if you attempt to save your modifications,
-emacs will ask root user's password if needed.
++read-only files will be writable but if you attempt to save your modifications,
+emacs will ask root user's password if needed.+
 #+BEGIN_SRC emacs-lisp
-(use-package su
-  :straight (:host github :repo "PythonNut/su.el")
-  :config (su-mode))
+;; (use-package su
+;;   :straight (:host github :repo "PythonNut/su.el")
+;;   :config (su-mode))
+
+(use-package sudo-edit
+  :commands sudo-edit)
 #+END_SRC
 
 * Appearance
