@@ -1086,7 +1086,8 @@ size. This function also handles icons and modeline font sizes."
                      ;; fk/smooth-recenter-top-bottom
                      move-to-window-line-top-bottom
                      ace-select-window
-                     ace-swap-window))
+                     ace-swap-window
+                     aw-flip-window))
     (eval `(defadvice ,command (after blink activate)
              (fk/beacon-blink))))
   (dolist (hook '(find-file-hook
@@ -2359,7 +2360,8 @@ otherwise."
   (wrap-region-add-wrapper "+" "+" nil 'org-mode)
   (wrap-region-add-wrapper "~" "~" nil 'org-mode)
   (wrap-region-add-wrapper "#" "#" nil 'org-mode)
-  (wrap-region-add-wrapper "`" "`" nil 'markdown-mode))
+  (wrap-region-add-wrapper "`" "`" nil 'markdown-mode)
+  (wrap-region-add-wrapper "`" "`" nil 'forge-post-mode))
 #+END_SRC
 
 ** Fill-Unfill Paragraph
@@ -3704,8 +3706,6 @@ _P_: Priority     _h_: Home      _M_: Movie       ^^
                                         (setq-local cursor-type t)
                                         (next-line)))))
   :hook
-  (org-tree-slide-play . (lambda () (setq-local beacon-mode nil)))
-  (org-tree-slide-stop . (lambda () (setq-local beacon-mode t)))
   (org-tree-slide-before-narrow . (lambda () (setq-local cursor-type nil)))
   (org-tree-slide-stop . (lambda () (setq-local cursor-type t)))
   (org-tree-slide-play . variable-pitch-mode)
@@ -3716,8 +3716,10 @@ _P_: Priority     _h_: Home      _M_: Movie       ^^
   (org-tree-slide-after-narrow . org-display-inline-images)
   (org-tree-slide-play . fk/org-tree-slide-update-modeline)
   (org-tree-slide-stop . fk/org-tree-slide-update-modeline)
-  (org-tree-slide-play . (lambda () (setq-local olivetti-body-width 95) (olivetti-mode 1)))
-  (org-tree-slide-stop . (lambda () (setq-local olivetti-body-width 120) (olivetti-mode 1)))
+  ;; (org-tree-slide-play . (lambda () (setq-local olivetti-body-width 95) (olivetti-mode 1)))
+  ;; (org-tree-slide-stop . (lambda () (setq-local olivetti-body-width 120) (olivetti-mode 1)))
+  (org-tree-slide-mode . (lambda () (org-appear-mode -1)))
+  (org-tree-slide-mode . (lambda () (setq olivetti-enable-borders nil) (olivetti-mode 1)))
   :config
   (defun fk/buffer-contains-substring (string)
     (save-excursion
