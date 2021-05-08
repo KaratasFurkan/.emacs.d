@@ -2035,7 +2035,13 @@ from melpa. TODO: fix this
       (fk/helm-rg-dwim query)))
 
   ;; Push mark before `helm-rg' to be able to come back with `pop-global-mark'
-  (advice-add 'helm-rg :before (lambda (&rest _) (push-mark))))
+  (advice-add 'helm-rg :before (lambda (&rest _) (push-mark)))
+
+  ;; Create bigger window for helm-rg
+  (advice-add 'helm-rg :around
+              (lambda (orig-func &rest args)
+                (let ((helm-posframe-min-height (round (* (frame-height) 0.66))))
+                  (apply orig-func args)))))
 #+END_SRC
 
 ** Helm Xref
