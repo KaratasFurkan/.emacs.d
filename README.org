@@ -1546,6 +1546,7 @@ current buffer."
   (helm-posframe-border-width 2)
   (helm-posframe-border-color fk/light-color)
   (helm-posframe-parameters '((left-fringe . 5) (right-fringe . 5)))
+  (helm-posframe-size-function 'fk/helm-posframe-get-size)
   :config
   (helm-posframe-enable)
   ;; Remove annoying error message that displayed everytime after closing
@@ -1553,7 +1554,22 @@ current buffer."
   ;; Error during redisplay: (run-hook-with-args helm--delete-frame-function
   ;; #<frame 0x5586330a1f90>) signaled (user-error "No recursive edit is in
   ;; progress")
-  (remove-hook 'delete-frame-functions 'helm--delete-frame-function))
+  (remove-hook 'delete-frame-functions 'helm--delete-frame-function)
+
+  (defun fk/helm-posframe-get-size ()
+    (list
+     :min-width (or helm-posframe-min-width
+                    (let ((half-frame-width (round (* (frame-width) 0.5)))
+                          (three-quarter-frame-width (round (* (frame-width) 0.75))))
+                      (if (> half-frame-width 100)
+                          half-frame-width
+                        three-quarter-frame-width)))
+     :min-height (or helm-posframe-min-height
+                     (let ((half-frame-height (round (* (frame-height) 0.5)))
+                           (three-quarter-frame-height (round (* (frame-height) 0.75))))
+                       (if (> half-frame-height 25)
+                           half-frame-height
+                         three-quarter-frame-height))))))
 #+END_SRC
 
 ** Company (Code & Text Completion)
