@@ -1591,9 +1591,7 @@ current buffer."
     ("<tab>" . company-complete-selection)
     ("C-s" . company-complete-selection)  ; Mostly to use during yasnippet expansion
     ("C-n" . company-select-next)
-    ("C-p" . company-select-previous)
-    ("C-v" . scroll-up-command)
-    ("M-v" . scroll-down-command))
+    ("C-p" . company-select-previous))
   :hook
   (dashboard-after-initialize . global-company-mode)
   :config
@@ -1712,6 +1710,20 @@ company-yasnippet' to all company backends."
 (setq-default
  recenter-positions '(middle 0.15 top 0.85 bottom)  ; C-l positions
  scroll-conservatively 101)                         ; Smooth scrolling
+
+;; Scroll less than default
+(defvar fk/default-scroll-lines 15)
+
+(defun fk/scroll-up (orig-func &optional arg)
+  "Scroll up `fk/default-scroll-lines' lines (probably less than default)."
+  (apply orig-func (list (or arg fk/default-scroll-lines))))
+
+(defun fk/scroll-down (orig-func &optional arg)
+  "Scroll down `fk/default-scroll-lines' lines (probably less than default)."
+  (apply orig-func (list (or arg fk/default-scroll-lines))))
+
+(advice-add 'scroll-up :around 'fk/scroll-up)
+(advice-add 'scroll-down :around 'fk/scroll-down)
 #+END_SRC
 
 ** Custom Functions
@@ -1813,14 +1825,11 @@ org-mode activated."
 (global-set-key (kbd "C-x C-k") 'kill-current-buffer)
 (global-set-key (kbd "M-l") 'move-to-window-line-top-bottom)
 (global-set-key (kbd "C-M-u") 'pop-global-mark)
+
 ;; Split & Switch
-;; (global-set-key (kbd "C-1") 'delete-other-windows)  ; I use `fk/smart-C-x-1',
-                                                       ; see Appearance / Olivetti
+;; I use `fk/smart-C-x-1' for (kbd "C-1"), see Appearance / Olivetti
 (global-set-key (kbd "C-2") 'fk/split-window-below-and-switch)
 (global-set-key (kbd "C-3") 'fk/split-window-right-and-switch)
-;; Scroll less than default
-(global-set-key (kbd "C-v") (lambda () (interactive) (scroll-up-command 15)))
-(global-set-key (kbd "M-v") (lambda () (interactive) (scroll-down-command 15)))
 
 (bind-keys*
  :map files
