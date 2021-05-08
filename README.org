@@ -246,7 +246,6 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#org][Org]]
     - [[#org-1][Org]]
     - [[#custom-functions-6][Custom Functions]]
-      - [[#org-imenu][org-imenu]]
       - [[#org-screenshot][org-screenshot]]
       - [[#org-indent-src-block][org-indent-src-block]]
       - [[#org-sort-by-priority][org-sort-by-priority]]
@@ -1482,8 +1481,8 @@ current buffer."
    ("C-x C-b" . helm-buffers-list)
    ("C-x b" . helm-buffers-list)
    ("C-x C-r" . helm-recentf)
-   ("C-x C-i" . helm-imenu)
-   ("C-x C-j" . helm-imenu)
+   ("C-x C-i" . fk/helm-imenu)
+   ("C-x C-j" . fk/helm-imenu)
    ("M-y" . helm-show-kill-ring)
    :map helm-map
    ("TAB" . helm-execute-persistent-action)
@@ -1521,7 +1520,27 @@ current buffer."
                     collect (helm-compute-matches src))))
       (unless (eq matches t) matches)))
 
-  (advice-add 'helm--collect-matches :around 'fk/helm--collect-matches))
+  (advice-add 'helm--collect-matches :around 'fk/helm--collect-matches)
+
+  (require 'helm-imenu)  ; Fixes buggy helm-imenu at first usage
+
+  (defun fk/helm-imenu ()
+    "helm-imenu without initializion (preselect)."
+    (interactive)
+    (unless helm-source-imenu
+      (setq helm-source-imenu
+            (helm-make-source "Imenu" 'helm-imenu-source
+              :fuzzy-match helm-imenu-fuzzy-match)))
+    (let* ((imenu-auto-rescan t)
+           (helm-highlight-matches-around-point-max-lines 'never))
+      (helm :sources 'helm-source-imenu
+            :default ""
+            :preselect ""
+            :buffer "*helm imenu*")))
+
+  (add-hook 'imenu-after-jump-hook (lambda ()
+                                     (when (derived-mode-p 'outline-mode)
+                                       (show-subtree)))))
 #+END_SRC
 
 *** [[#helm-projectile][Helm Projectile-]]
@@ -3417,7 +3436,6 @@ else call `dired-find-file'"
     ("C-c C-e" . org-edit-special)
     ("M-n" . org-next-visible-heading)
     ("M-p" . org-previous-visible-heading)
-    ("C-c C-f". fk/org-imenu)
     ("C-x C-1" . outline-hide-other)
     ("C-c C-r" . org-refile-hydra/body)
     ("C-c C-a" . fk/org-refile-done)  ; "a" for archive
@@ -3541,31 +3559,6 @@ _P_: Priority     _h_: Home      _M_: Movie       ^^
 #+END_SRC
 
 *** Custom Functions
-**** org-imenu
-#+BEGIN_SRC emacs-lisp
-(defun fk/helm-imenu ()
-  "helm-imenu without initializion."
-  (interactive)
-  (require 'which-func)
-  (require 'helm-imenu)
-  (unless helm-source-imenu
-    (setq helm-source-imenu
-          (helm-make-source "Imenu" 'helm-imenu-source
-            :fuzzy-match helm-imenu-fuzzy-match)))
-  (let* ((imenu-auto-rescan t)
-         (helm-highlight-matches-around-point-max-lines 'never)
-         (helm-execute-action-at-once-if-one
-          helm-imenu-execute-action-at-once-if-one))
-    (helm :sources 'helm-source-imenu
-          :buffer "*helm imenu*")))
-
-(defun fk/org-imenu ()
-  "Go to a heading with helm-imenu and expand the heading."
-  (interactive)
-  (fk/helm-imenu)
-  (show-subtree))
-#+END_SRC
-
 **** org-screenshot
 #+BEGIN_SRC emacs-lisp
 (defun fk/org-screenshot ()
