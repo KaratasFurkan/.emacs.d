@@ -1326,6 +1326,7 @@ size. This function also handles icons and modeline font sizes."
   :straight (:host github :repo "KaratasFurkan/olivetti")
   :custom
   (olivetti-enable-visual-line-mode nil)
+  (olivetti-window-local t)
   ;; Body width
   (fk/olivetti-body-width-default 120)
   (fk/olivetti-body-width-large 180)
