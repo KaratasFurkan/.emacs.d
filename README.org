@@ -862,8 +862,6 @@ Change default window dividers to a better built-in alternative.
 *** Font
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
 (defconst fk/default-font-family "Roboto Mono")
-;; fk/default-font-size is calculated on start according to the primary screen
-;; size. if screen-size is bigger than 16 inch: 9 else 11.
 (defconst fk/default-font-size 95)
 (defconst fk/default-icon-size 15)
 
