@@ -3504,7 +3504,7 @@ else call `dired-find-file'"
   (org-capture-mode . delete-other-windows)  ; make capture buffer fullscreen
   :config
   (add-to-list 'org-emphasis-alist '("#" (:box '(:line-width -1))))  ; FIXME: does not work.
-  (setf (cdr (assoc "*" org-emphasis-alist)) '((:weight extra-bold :underline t :foreground "#DDDDDD")))
+  (setf (cdr (assoc "*" org-emphasis-alist)) '((:weight extra-bold :foreground "#DDDDDD")))
 
   (defun fk/org-babel-load-languages ()
     "Load languages I use."
@@ -3531,6 +3531,10 @@ else call `dired-find-file'"
    `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
       1 'org-checkbox-done-text prepend))
    'append)
+
+  (defun fk/org-insert-created-time ()
+    (interactive)
+    (insert "CREATED: " (format-time-string (org-time-stamp-format t t) (current-time))))
 
   (defun fk/org-refile-fixed-location (file headline)
     "Refile headline without selecting from refile-targets."
