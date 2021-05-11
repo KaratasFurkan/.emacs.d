@@ -2110,7 +2110,7 @@ from melpa. TODO: fix this
     "Fallback `dumb-jump-back' if xref-pop-marker-stack cannot return back."
     (interactive)
     (if (string= (frame-parameter (selected-frame) 'name) "*Smart Jump Peek*")
-        (delete-frame)
+        (progn (make-frame-invisible) (delete-frame))
       (condition-case nil
           (call-interactively 'xref-pop-marker-stack)
         (error (call-interactively 'dumb-jump-back)))))
@@ -2131,9 +2131,7 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
       (setq y (+ (cdr abs-pixel-pos) (frame-char-height)))
 
       ;; 2. Create a new invisible frame, with the current buffer in it.
-      (setq doc-frame (make-frame `((parent-frame . ,(selected-frame))
-                                    (minibuffer . nil)
-                                    (name . "*Smart Jump Peek*")
+      (setq doc-frame (make-frame `((name . "*Smart Jump Peek*")
                                     (width . 100)
                                     (visibility . nil)
                                     (height . 20))))
