@@ -2082,7 +2082,6 @@ from melpa. TODO: fix this
   ("C-M-k" . xref-pop-marker-stack)
   ("C-9" . xref-find-definitions)
   ("C-8" . xref-pop-marker-stack)
-  ("C-M-S-j" . xref-find-definitions-other-window)
   ("C-M-9" . xref-find-definitions-other-window)
   ("C-M-r" . xref-find-references))
 
@@ -2098,6 +2097,7 @@ from melpa. TODO: fix this
   :bind
   ([remap xref-find-definitions] . fk/smart-jump-go)
   ([remap xref-pop-marker-stack] . fk/smart-jump-back)
+  ("C-M-S-j" . fk/smart-jump-peek)
   :config
   (defun fk/smart-jump-go ()
     "Fallback `dumb-jump-go' if `xref-find-definitions' cannot find the source."
@@ -2109,9 +2109,47 @@ from melpa. TODO: fix this
   (defun fk/smart-jump-back ()
     "Fallback `dumb-jump-back' if xref-pop-marker-stack cannot return back."
     (interactive)
-    (condition-case nil
-        (call-interactively 'xref-pop-marker-stack)
-      (error (call-interactively 'dumb-jump-back)))))
+    (if (string= (frame-parameter (selected-frame) 'name) "*Smart Jump Peek*")
+        (delete-frame)
+      (condition-case nil
+          (call-interactively 'xref-pop-marker-stack)
+        (error (call-interactively 'dumb-jump-back)))))
+
+  (defun fk/smart-jump-peek ()
+    "`fk/smart-jump-go' in a new frame.
+Source: http://tuhdo.github.io/emacs-frame-peek.html"
+    (interactive)
+    (let (summary
+          doc-frame
+          x y
+          ;; 1. Find the absolute position of the current beginning of the symbol
+          ;; at point, in pixels.
+          (abs-pixel-pos (save-excursion
+                           (beginning-of-thing 'symbol)
+                           (window-absolute-pixel-position))))
+      (setq x (car abs-pixel-pos))
+      (setq y (+ (cdr abs-pixel-pos) (frame-char-height)))
+
+      ;; 2. Create a new invisible frame, with the current buffer in it.
+      (setq doc-frame (make-frame `((parent-frame . ,(selected-frame))
+                                    (minibuffer . nil)
+                                    (name . "*Smart Jump Peek*")
+                                    (width . 100)
+                                    (visibility . nil)
+                                    (height . 20))))
+
+      ;; 3. Position the new frame right under the beginning of the symbol at point.
+      (set-frame-position doc-frame x y)
+
+      ;; 4. Jump to the symbol at point.
+      (with-selected-frame doc-frame
+        (fk/smart-jump-go)
+        (read-only-mode -1)
+        (recenter-top-bottom 0))
+
+      ;; 5. Make frame visible again
+      (make-frame-visible doc-frame)
+      (x-focus-frame doc-frame))))
 #+END_SRC
 
 ** Helm Swoop
