@@ -1482,7 +1482,7 @@ current buffer."
    ("C-x C-r" . helm-recentf)
    ("C-x C-i" . fk/helm-imenu)
    ("C-x C-j" . fk/helm-imenu)
-   ("M-y" . helm-show-kill-ring)
+   ("M-y" . fk/yank-pop-or-helm-show-kill-ring)
    :map helm-map
    ("TAB" . helm-execute-persistent-action)
    ("<tab>" . helm-execute-persistent-action)
@@ -1539,7 +1539,17 @@ current buffer."
 
   (add-hook 'imenu-after-jump-hook (lambda ()
                                      (when (derived-mode-p 'outline-mode)
-                                       (show-subtree)))))
+                                       (show-subtree))))
+
+  (defun fk/yank-pop-or-helm-show-kill-ring ()
+    "If called after a yank, call `yank-pop'. Otherwise, call
+`helm-show-kill-ring'."
+    (interactive)
+    (if (eq last-command 'yank)
+        (if (eq major-mode 'vterm-mode)
+            (vterm-yank-pop)
+          (yank-pop))
+      (helm-show-kill-ring))))
 #+END_SRC
 
 *** [[#helm-projectile][Helm Projectile-]]
