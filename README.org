@@ -3845,10 +3845,7 @@ _P_: Priority     _h_: Home      _M_: Movie       ^^
 #+BEGIN_SRC emacs-lisp
 (use-package org-appear
   :straight (:host github :repo "awth13/org-appear" :branch "feature/time-stamps")
-  :custom
-  (org-appear-autolinks t)
-  :hook
-  (org-mode . org-appear-mode))
+  :hook (org-mode . org-appear-mode))
 #+END_SRC
 
 ** Version Control
