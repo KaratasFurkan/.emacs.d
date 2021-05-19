@@ -81,6 +81,7 @@ File explorer (treemacs), auto complete (company), git&github integration
       - [[#a-light-emacs-theme-thats-well-suited-for-org-mode][A light emacs theme that's well suited for org-mode]]
   - [[#mode-line][Mode Line]]
     - [[#doom-modeline][Doom Modeline]]
+    - [[#minibuffer-modeline][Minibuffer Modeline]]
     - [[#anzu][Anzu]]
   - [[#page-break-lines][Page Break Lines]]
   - [[#trailing-white-space-][Trailing White Space-]]
@@ -999,7 +1000,7 @@ size. This function also handles icons and modeline font sizes."
   (add-hook 'emacs-startup-hook 'doom-modeline-mode -100)
   :custom
   (doom-modeline-buffer-encoding nil)
-  (doom-modeline-vcs-max-length 20)
+  (doom-modeline-vcs-max-length 40)
   (doom-modeline-bar-width 1)
   :custom-face
   (mode-line ((t (:background ,fk/dark-color))))
@@ -1011,6 +1012,42 @@ size. This function also handles icons and modeline font sizes."
   (dashboard-after-initialize . column-number-mode))
 #+END_SRC
 
+*** Minibuffer Modeline
+#+BEGIN_SRC emacs-lisp
+(defvar fk/minibuffer-modeline--message nil)
+
+(defun fk/minibuffer-modeline-update ()
+  "Show global info in minibuffer instead of modeline."
+  (let* ((pyvenv-icon (all-the-icons-icon-for-mode 'python-mode :height 0.9 :v-adjust 0.01))
+         (pyvenv (when (featurep 'pyvenv)
+                   (format "[%s %s]" pyvenv-icon pyvenv-virtual-env-name)))
+         (perspectives (when (featurep 'perspective)
+                         (string-join (let ((persp-show-modestring t))
+                                        (persp-update-modestring)
+                                        (persp-mode-line)))))
+         (time (propertize (format-time-string " %H:%M %a %d/%m" (current-time)) 'face 'font-lock-comment-face))
+         (info (string-join (list pyvenv perspectives time) " "))
+         (message (if fk/minibuffer-modeline--message fk/minibuffer-modeline--message ""))
+         (right-padding 2)
+         (left-padding (make-string (max 0 (- (frame-width) (length message) (length info) right-padding)) ?\ )))
+    (setq fk/minibuffer-modeline--message nil)
+    (with-current-buffer " *Minibuf-0*"
+      (erase-buffer)
+      (insert message left-padding info))))
+
+(add-hook 'post-command-hook 'fk/minibuffer-modeline-update)
+
+;;; Advices to not lose minibuffer modeline info  ; FIXME: breaks when using isearch
+
+;; (defun fk/minibuffer-modeline-message (func &rest args)
+;;   "Show message and modeline info at the same time."
+;;   (unless inhibit-message
+;;     (setq fk/minibuffer-modeline--message (apply func args))
+;;     (fk/minibuffer-modeline-update)
+;;     fk/minibuffer-modeline--message))
+
+;; (advice-add 'message :around 'fk/minibuffer-modeline-message)
+#+END_SRC
 *** Anzu
 #+BEGIN_SRC emacs-lisp
 (use-package anzu
@@ -2229,9 +2266,13 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
 ** Perspective
 #+BEGIN_SRC emacs-lisp
 (use-package perspective
+  :preface
+  (defvar persp-icon (all-the-icons-material "dashboard" :height 0.9 :v-adjust -0.17 :face 'all-the-icons-blue))
   :custom
   (persp-mode-prefix-key (kbd "M-m p"))
   (persp-state-default-file (no-littering-expand-var-file-name "perspective.el"))
+  (persp-modestring-dividers `(,(format "[%s " persp-icon) "]" "|"))
+  (persp-show-modestring nil)  ; I show this in `fk/minibuffer-modeline-update' manually.
   :custom-face
   (persp-selected-face ((t (:foreground nil :inherit 'doom-modeline-warning))))
   :bind*
@@ -2936,6 +2977,9 @@ beginning of the string that has curly brackets in it."
 (use-package pyvenv
   :after python
   :config
+  ;; I show this in `fk/minibuffer-modeline-update' manually.
+  (setq pyvenv-mode-line-indicator nil)
+
   (defun fk/activate-pyvenv ()
     "Activate python environment according to the `project-root/.venv' file."
     (interactive)
