@@ -4497,7 +4497,10 @@ the `docker-container-prompt-regexp'."
 (use-package pip-requirements
   :mode (("\\.pip\\'" . pip-requirements-mode)
          ("requirements[^z-a]*\\.txt\\'" . pip-requirements-mode)
-         ("requirements\\.in" . pip-requirements-mode)))
+         ("requirements\\.in" . pip-requirements-mode))
+  :config
+  ;; Assign a non nil value to `pip-packages' to prevent fetching pip packages.
+  (setq pip-packages '("ipython")))
 #+END_SRC
 
 ** [[#pdf][PDF-]]
