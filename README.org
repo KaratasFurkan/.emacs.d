@@ -1020,7 +1020,7 @@ size. This function also handles icons and modeline font sizes."
 (defun fk/minibuffer-modeline-update ()
   "Show global info in minibuffer instead of modeline."
   (let* ((pyvenv-icon (all-the-icons-icon-for-mode 'python-mode :height 0.9 :v-adjust 0.01))
-         (pyvenv (when (featurep 'pyvenv)
+         (pyvenv (when (and (featurep 'pyvenv) pyvenv-virtual-env-name)
                    (format "[%s %s]" pyvenv-icon pyvenv-virtual-env-name)))
          (perspectives (when (featurep 'perspective)
                          (string-join (let ((persp-show-modestring t))
