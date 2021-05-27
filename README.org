@@ -311,7 +311,8 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#requirementstxt-pip][requirements.txt (pip)]]
   - [[#pdf-][PDF-]]
   - [[#gitignore][.gitignore]]
-  - [[#csv-mode][Csv mode]]
+  - [[#csv][Csv]]
+  - [[#po][Po]]
 - [[#fun][Fun]]
   - [[#play-free-software-song][Play Free Software Song]]
   - [[#selectric-mode][Selectric Mode]]
@@ -4506,7 +4507,7 @@ the `docker-container-prompt-regexp'."
   :mode "/\\.gitignore\\'")
 #+END_SRC
 
-** Csv mode
+** Csv
 #+BEGIN_SRC emacs-lisp
 (use-package csv-mode
   :mode "\\.csv\\'"
@@ -4514,6 +4515,12 @@ the `docker-container-prompt-regexp'."
   (csv-invisibility-default nil)
   :hook
   (csv-mode . csv-align-mode))
+#+END_SRC
+
+** Po
+#+BEGIN_SRC emacs-lisp
+(use-package po-mode
+  :mode "\\.po\\'")
 #+END_SRC
 
 * Fun
