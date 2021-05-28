@@ -4223,7 +4223,9 @@ the `docker-container-prompt-regexp'."
 (use-package eaf
   :straight
   (:host github :repo "manateelazycat/emacs-application-framework" :depth 1 :files ("*"))
-  :commands eaf-open-browser eaf-open-camera)
+  :commands eaf-open-browser eaf-open-camera
+  :custom
+  (eaf-python-command "/usr/bin/python"))  ; don't use venv python
 #+END_SRC
 
 ** Google Translate
