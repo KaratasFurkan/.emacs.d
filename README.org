@@ -4457,7 +4457,7 @@ the `docker-container-prompt-regexp'."
 ** Speed Type
 #+BEGIN_SRC emacs-lisp
 (use-package speed-type
-  :commands speed-type-buffer
+  :commands fk/speed-type-project
   :config
   (defun fk/speed-type-project ()
     "Select example paragraphs from projects to exercise touch
