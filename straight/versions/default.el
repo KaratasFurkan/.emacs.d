@@ -176,6 +176,7 @@
  ("shell-pop-el" . "4b4394037940a890a313d715d203d9ead2d156a6")
  ("shr-tag-pre-highlight.el" . "931c447bc0d6c134ddc9657c664eeee33afbc54d")
  ("shrink-path.el" . "c14882c8599aec79a6e8ef2d06454254bb3e1e41")
+ ("speed-type" . "5ef695f7159aa1f20c7c9e55f0c39bcdacce8d21")
  ("spinner" . "2daa167bec1c7566d662d48613a94453536b524a")
  ("straight.el" . "1a7453a8d7fcfb62c40c1bfa13389c461817b623")
  ("string-inflection" . "c4a519be102cb99dd86be3ee8c387f008d097635")

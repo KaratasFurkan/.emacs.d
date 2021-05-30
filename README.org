@@ -301,6 +301,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#screenshot][Screenshot]]
   - [[#emacs-everywhere][Emacs Everywhere]]
   - [[#pomidor-pomodoro][Pomidor (Pomodoro)]]
+  - [[#speed-type][Speed Type]]
 - [[#file-modes][File Modes]]
   - [[#markdown][Markdown]]
   - [[#fish][Fish]]
@@ -3283,7 +3284,7 @@ TODO: seperate sections (html, css..)
   :mode "\\.lua\\'")
 #+END_SRC
 
-* TODO Tools
+* Tools
 ** Dired
 *** Dired
 #+BEGIN_SRC emacs-lisp
@@ -4453,6 +4454,33 @@ the `docker-container-prompt-regexp'."
   (advice-add 'pomidor-quit :after (lambda () (persp-kill  "pomidor"))))
 #+END_SRC
 
+** Speed Type
+#+BEGIN_SRC emacs-lisp
+(use-package speed-type
+  :commands speed-type-buffer
+  :config
+  (defun fk/speed-type-project ()
+    "Select example paragraphs from projects to exercise touch
+typing with actual code."
+    (interactive)
+    (let* ((projects (directory-files "~/projects/python/" t "[^.][^zip]$"))
+           (project (nth (random (length projects)) projects))
+           (files (directory-files-recursively project "[^gunicorn][^__].py$" t
+                                               (lambda (path)
+                                                 (let ((dir (file-name-base path)))
+                                                   (not (or (string-prefix-p "." dir)
+                                                            (string-prefix-p "__" dir)
+                                                            (string= "migrations" dir)))))))
+           (file (nth (random (length files)) files)))
+      (speed-type--setup (with-temp-buffer
+                           (insert-file-contents file)
+                           (delete-whitespace-rectangle (point-min) (point-max))
+                           (speed-type--pick-text-to-type)))
+      (setq-local show-paren-mode nil)))
+
+  (advice-add 'speed-type--play-next :override 'fk/speed-type-project))
+#+END_SRC
+
 * File Modes
 ** Markdown
 #+BEGIN_SRC emacs-lisp
@@ -4526,8 +4554,8 @@ the `docker-container-prompt-regexp'."
 
 ** Po
 #+BEGIN_SRC emacs-lisp
-(use-package po-mode
-  :mode "\\.po\\'")
+;; (use-package po-mode
+;;   :commands po-mode)
 #+END_SRC
 
 * Fun
@@ -4545,6 +4573,7 @@ the `docker-container-prompt-regexp'."
 ** Selectric Mode
 #+BEGIN_SRC emacs-lisp
 (use-package selectric-mode
+  :straight (:files ("*"))
   :commands selectric-mode)
 #+END_SRC
 
