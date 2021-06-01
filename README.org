@@ -2517,7 +2517,7 @@ otherwise."
   :custom
   (expand-region-fast-keys-enabled nil)
   (expand-region-subword-enabled t)
-  :bind
+  :bind*
   ("C-t" . er/expand-region))
 #+END_SRC
 
@@ -4622,7 +4622,9 @@ typing with actual code."
   :commands turkish-mode turkish-correct-region turkish-asciify-region
   :bind
   ( :map text
-    ("a" . turkish-asciify-region))
+    ("a" . turkish-asciify-region)
+    :map turkish-mode-map
+    ("C-g" . fk/turkish-mode-C-g))
   :hook
   (turkish-mode . fk/company-turkish-mode)
   :config
@@ -4647,7 +4649,14 @@ processing it."
           (advice-add 'company-grab-word :around 'fk/company-grab-word-turkish))
       (fk/company-wordfreq-mode -1)
       (setq ispell-local-dictionary ispell-local-dictionary-backup)
-      (advice-remove 'company-grab-word 'fk/company-grab-word-turkish))))
+      (advice-remove 'company-grab-word 'fk/company-grab-word-turkish)))
+
+  (defun fk/turkish-mode-C-g ()
+    "Toggle last word with `C-g' if didn't like last correctify."
+    (interactive)
+    (if (eq last-command 'turkish-correct-last-word)
+        (turkish-toggle-last-word)
+      (keyboard-quit))))
 #+END_SRC
 
 ** Minimap
