@@ -314,6 +314,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#gitignore][.gitignore]]
   - [[#csv][Csv]]
   - [[#po][Po]]
+  - [[#terraform][Terraform]]
 - [[#fun][Fun]]
   - [[#play-free-software-song][Play Free Software Song]]
   - [[#selectric-mode][Selectric Mode]]
@@ -4556,6 +4557,17 @@ typing with actual code."
 #+BEGIN_SRC emacs-lisp
 ;; (use-package po-mode
 ;;   :commands po-mode)
+#+END_SRC
+
+** Terraform
+#+BEGIN_SRC emacs-lisp
+(use-package terraform-mode
+  :mode "\\.tf\\'"
+  :hook
+  (terraform-mode . (lambda ()
+                      (require 'eglot)
+                      (add-to-list 'eglot-server-programs '(terraform-mode . ("terraform-ls" "serve")))
+                      (eglot-ensure))))
 #+END_SRC
 
 * Fun
