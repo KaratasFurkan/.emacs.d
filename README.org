@@ -2995,17 +2995,29 @@ beginning of the string that has curly brackets in it."
   ;; I show this in `fk/minibuffer-modeline-update' manually.
   (setq pyvenv-mode-line-indicator nil)
 
-  (defun fk/activate-pyvenv ()
-    "Activate python environment according to the `project-root/.venv' file."
-    (interactive)
+  (defun fk/get-venv-name ()
+    "Get venv name of current python project."
     (when-let* ((root-dir (projectile-project-root))
                 (venv-file (concat root-dir ".venv"))
                 (venv-exists (file-exists-p venv-file))
                 (venv-name (with-temp-buffer
                              (insert-file-contents venv-file)
                              (nth 0 (split-string (buffer-string))))))
+      venv-name))
+
+  (defun fk/activate-pyvenv ()
+    "Activate python environment according to the `project-root/.venv' file."
+    (interactive)
+    (when-let ((venv-name (fk/get-venv-name)))
       (pyvenv-mode)
       (pyvenv-workon venv-name)))
+
+  (defun fk/open-venv-dir ()
+    "Open the directory of installed libraries in `dired'."
+    (interactive)
+    (when-let* ((venv-name (fk/get-venv-name))
+                (venv-dir (expand-file-name venv-name "~/.virtualenvs")))
+      (dired (car (directory-files-recursively venv-dir "site-packages" t)))))
 
   ;; python-mode hook is not enough when more than one project's files are open.
   ;; It just re-activate pyvenv when a new file is opened, it should re-activate
