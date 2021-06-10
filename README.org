@@ -1894,7 +1894,6 @@ org-mode activated."
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-x C-k") 'kill-current-buffer)
 (global-set-key (kbd "M-l") 'move-to-window-line-top-bottom)
-(global-set-key (kbd "C-M-u") 'pop-global-mark)
 
 ;; Split & Switch
 ;; I use `fk/smart-C-x-1' for (kbd "C-1"), see Appearance / Olivetti
@@ -2113,9 +2112,6 @@ from melpa. TODO: fix this
     (let ((helm-rg-default-glob-string glob))
       (fk/helm-rg-dwim query)))
 
-  ;; Push mark before `helm-rg' to be able to come back with `pop-global-mark'
-  (advice-add 'helm-rg :before (lambda (&rest _) (push-mark)))
-
   ;; Create bigger window for helm-rg
   (advice-add 'helm-rg :around
               (lambda (orig-func &rest args)
@@ -2236,7 +2232,8 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
 #+BEGIN_SRC emacs-lisp
 (use-package avy
   :bind
-  (("M-j" . avy-goto-word-or-subword-1)))
+  ("M-j" . avy-goto-word-or-subword-1)
+  ("C-M-u" . avy-pop-mark))
 #+END_SRC
 
 ** Treemacs
