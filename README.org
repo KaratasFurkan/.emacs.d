@@ -2923,7 +2923,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ;; NOTE: these hooks runs in reverse order
   ;;(python-mode . fk/python-auto-f-string-mode)
   (python-mode . (lambda () (setq-local company-prescient-sort-length-enable nil)))
-  (python-mode . flycheck-mode)
+  (python-mode . (lambda () (unless (and buffer-file-name (file-in-directory-p buffer-file-name "~/.virtualenvs/"))
+                              (flycheck-mode))))
   (python-mode . lsp-deferred)
   ;;(python-mode . (lambda () (fk/add-local-hook 'before-save-hook 'eglot-format-buffer)))
   ;;(python-mode . eglot-ensure)
