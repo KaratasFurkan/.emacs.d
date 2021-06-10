@@ -138,6 +138,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#convert-string-to-rg-compatible][convert-string-to-rg-compatible]]
     - [[#get-selected-text][get-selected-text]]
     - [[#find-installed-packages][find-installed-packages]]
+    - [[#switch-to-last-buffer][switch-to-last-buffer]]
   - [[#keybindings-1][Keybindings]]
   - [[#recentf-recent-files][Recentf (Recent Files)]]
   - [[#winner-mode][Winner Mode]]
@@ -1885,6 +1886,16 @@ org-mode activated."
   "Quick way of opening the source code of an installed package."
   (interactive)
   (helm-find-files-1 (expand-file-name "straight/repos/" user-emacs-directory)))
+#+END_SRC
+
+*** switch-to-last-buffer
+#+BEGIN_SRC emacs-lisp
+(defun fk/switch-to-last-buffer ()
+  "Switch to last buffer."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) nil)))
+
+(global-set-key (kbd "C-;") 'fk/switch-to-last-buffer)
 #+END_SRC
 
 ** Keybindings
