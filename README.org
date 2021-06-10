@@ -1982,7 +1982,7 @@ org-mode activated."
    ("s" . ace-swap-window)
    ("l" . aw-flip-window))
   :config
-  (ace-window-posframe-mode)  ; FIXME: Posframe is very slow at the first time
+  ;;(ace-window-posframe-mode)  ; FIXME: Posframe is very slow at the first time
   (advice-add 'other-window :before (lambda (&rest _) (aw--push-window (selected-window))))
   (advice-add 'winum-select-window-by-number :before (lambda (&rest _) (aw--push-window (selected-window)))))
 #+END_SRC
@@ -2911,8 +2911,6 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (python-indent-guess-indent-offset-verbose nil)
   :bind
   ( :map python-mode-map
-    ;;("M-n" . python-nav-forward-block)
-    ;;("M-p" . python-nav-backward-block)
     ("C-c r" . python-indent-shift-right)
     ("C-c l" . python-indent-shift-left))
   :hook
@@ -3501,6 +3499,7 @@ else call `dired-find-file'"
   (org-directory "~/org")  ; This is default already but lets declare explicitly
   (org-agenda-files `(,(expand-file-name "agenda.org" org-directory)))
   (org-agenda-start-on-weekday nil)
+  (calendar-week-start-day 1)  ; calendar.el not org.el
   (org-deadline-warning-days 5)
   (org-display-custom-times t)
   (org-time-stamp-custom-formats '("<%d/%m/%Y %A>" . "<%d/%m/%Y %A %H:%M>"))
