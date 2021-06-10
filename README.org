@@ -930,8 +930,8 @@ size. This function also handles icons and modeline font sizes."
 
 *** Keybindings
 #+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-=") 'fk/increase-font-size)
 (global-set-key (kbd "C--") 'fk/decrease-font-size)
-(global-set-key (kbd "C-*") 'fk/increase-font-size)
 (global-set-key (kbd "C-0") 'fk/reset-font-size)
 #+END_SRC
 
@@ -1178,17 +1178,19 @@ size. This function also handles icons and modeline font sizes."
   :custom
   (zoom-size fk/zoom-default-size)
   :bind*
-  (("C-M-*" . fk/enlarge-window)
+  (("C-M-=" . fk/enlarge-window)
    ("C-M--" . fk/shrink-window)
    ("C-M-0" . balance-windows))
   :config
   ;; TODO: handle when zoom-mode active
   (defun fk/adjust-window-width (percentage)
-    (let* ((new-width (round (* (window-width) percentage)))
-           (zoom-size (cons new-width (cdr zoom-size))))
-      (if (> percentage 1.0)  ; TODO: fk/smooth-zoom do not shrink
-          (fk/smooth-zoom)
-        (zoom))))
+    (if (and olivetti-mode (= (count-windows) 1))
+        (if (> percentage 1.0) (olivetti-expand) (olivetti-shrink))
+      (let* ((new-width (round (* (window-width) percentage)))
+             (zoom-size (cons new-width (cdr zoom-size))))
+        (if (> percentage 1.0)  ; TODO: fk/smooth-zoom do not shrink
+            (fk/smooth-zoom)
+          (zoom)))))
 
   (defun fk/enlarge-window ()
     (interactive)
