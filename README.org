@@ -2069,6 +2069,7 @@ from melpa. TODO: fix this
 #+END_SRC
 
 ** Helm Ag
+Note: I use [[#helm-rg][helm-rg]] for search (grep) functionality, keep helm-ag only to use its edit feature.
 #+BEGIN_SRC emacs-lisp
 (use-package helm-ag
   :custom
@@ -2086,13 +2087,19 @@ from melpa. TODO: fix this
 - Escape special characters when searching with selected text."
     (interactive)
     (let ((root-dir (or (projectile-project-root) default-directory))
-          (query (or query (fk/convert-string-to-rg-compatible (or (fk/get-selected-text) "")))))
+          (query (or (fk/get-selected-text) query)))
       (helm-do-ag root-dir nil query)))
 
   (defun fk/helm-ag-dwim-with-glob (glob &optional query)
     (interactive)
     (let ((helm-ag-base-command (concat helm-ag-base-command " --glob " glob)))
-      (fk/helm-ag-dwim query))))
+      (fk/helm-ag-dwim query)))
+
+  (defun fk/helm-ag--parse-options-and-query (func input)
+    "Make `helm-ag' input ripgrep compatible."
+    (apply func (list (fk/convert-string-to-rg-compatible input))))
+
+  (advice-add 'helm-ag--parse-options-and-query :around 'fk/helm-ag--parse-options-and-query))
 #+END_SRC
 
 ** Helm Rg
@@ -2117,7 +2124,9 @@ from melpa. TODO: fix this
   (helm-rg-file-match-face ((t (:inherit font-lock-type-face :weight bold :underline nil))))
   (helm-rg-line-number-match-face ((t (:inherit line-number))))
   :bind
-  ("C-M-s" . fk/helm-rg-dwim)
+  (("C-M-s" . fk/helm-rg-dwim)
+   :map helm-rg-map
+   ("C-c C-e" . fk/helm-rg-edit))
   :config
   (defun fk/helm-rg-dwim (&optional query)
     "Smarter version of helm-rg.
@@ -2142,6 +2151,14 @@ from melpa. TODO: fix this
     (apply func (list (fk/convert-string-to-rg-compatible input))))
 
   (advice-add 'helm-rg--helm-pattern-to-ripgrep-regexp :around 'fk/helm-input-to-ripgrep-regexp)
+
+  (defun fk/helm-rg-edit ()
+    "Switch to `helm-ag' to use its edit feature."
+    (interactive)
+    (helm-rg--run-after-exit
+     (require 'helm-ag)
+     (fk/helm-ag-dwim helm-pattern))
+    (minibuffer-keyboard-quit))
 
     ;;;; Non-fuzzy version
 
