@@ -138,7 +138,8 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#convert-string-to-rg-compatible][convert-string-to-rg-compatible]]
     - [[#get-selected-text][get-selected-text]]
     - [[#find-installed-packages][find-installed-packages]]
-    - [[#switch-to-last-buffer][switch-to-last-buffer]]
+    - [[#switch-last-buffer][switch-last-buffer]]
+    - [[#switch-last-window][switch-last-window]]
   - [[#keybindings-1][Keybindings]]
   - [[#recentf-recent-files][Recentf (Recent Files)]]
   - [[#winner-mode][Winner Mode]]
@@ -1888,14 +1889,20 @@ org-mode activated."
   (helm-find-files-1 (expand-file-name "straight/repos/" user-emacs-directory)))
 #+END_SRC
 
-*** switch-to-last-buffer
+*** switch-last-buffer
 #+BEGIN_SRC emacs-lisp
-(defun fk/switch-to-last-buffer ()
+(defun fk/switch-last-buffer ()
   "Switch to last buffer."
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) nil)))
+#+END_SRC
 
-(global-set-key (kbd "C-;") 'fk/switch-to-last-buffer)
+*** switch-last-window
+#+BEGIN_SRC emacs-lisp
+(defun fk/switch-last-window ()
+  (interactive)
+  (when-let ((last-win (get-mru-window nil nil t)))
+    (select-window last-win)))
 #+END_SRC
 
 ** Keybindings
@@ -1905,6 +1912,7 @@ org-mode activated."
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-x C-k") 'kill-current-buffer)
 (global-set-key (kbd "M-l") 'move-to-window-line-top-bottom)
+(bind-key* "M-q" 'fk/switch-last-window)
 
 ;; Split & Switch
 ;; I use `fk/smart-C-x-1' for (kbd "C-1"), see Appearance / Olivetti
@@ -1975,16 +1983,14 @@ org-mode activated."
   :custom-face
   (aw-leading-char-face ((t (:height 1000 :foreground "red"))))
   :bind*
-  (("C-q" . aw-flip-window)  ; last window
-   :map windows
-   ("w" . ace-window)
-   ("D" . ace-delete-window)
-   ("s" . ace-swap-window)
-   ("l" . aw-flip-window))
-  :config
+  ( :map windows
+    ("w" . ace-window)
+    ("D" . ace-delete-window)
+    ("s" . ace-swap-window)
+    ("l" . aw-flip-window))
+  ;; :config
   ;;(ace-window-posframe-mode)  ; FIXME: Posframe is very slow at the first time
-  (advice-add 'other-window :before (lambda (&rest _) (aw--push-window (selected-window))))
-  (advice-add 'winum-select-window-by-number :before (lambda (&rest _) (aw--push-window (selected-window)))))
+  )
 #+END_SRC
 
 *** Dependents
@@ -2293,7 +2299,7 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
     ("C-M-o" . persp-next)
     ("C-x p" . persp-switch)
     ("C-x C-p" . persp-switch-quick)
-    ("M-q" . persp-switch-last)
+    ("C-M-q" . persp-switch-last)
     :map perspective-map
     ("p" . persp-switch)
     ("k" . persp-kill)
