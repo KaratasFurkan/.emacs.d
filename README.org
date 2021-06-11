@@ -2864,9 +2864,16 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 *** Symbol Overlay
 #+BEGIN_SRC emacs-lisp
 (use-package symbol-overlay
-  :commands (symbol-overlay-mode symbol-overlay-put)
+  :commands (symbol-overlay-mode symbol-overlay-put fk/highlight-occurrences)
   :hook
-  (emacs-lisp-mode . symbol-overlay-mode))
+  (emacs-lisp-mode . symbol-overlay-mode)
+  :config
+  (defun fk/highlight-occurrences ()
+    "Put highlight to occurrences of the string in region."
+    (interactive)
+    (let ((str (fk/get-selected-text))
+          (face (nth (random (length symbol-overlay-faces)) symbol-overlay-faces)))
+      (highlight-regexp (regexp-quote str) face))))
 #+END_SRC
 
 ** Emacs Lisp
