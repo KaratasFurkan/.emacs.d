@@ -2098,6 +2098,18 @@ from melpa. TODO: fix this
 ** Helm Rg
 #+BEGIN_SRC emacs-lisp
 (use-package helm-rg
+  :init
+  ;; Load this macro even if helm-rg is not loaded yet
+  (defmacro fk/helm-rg-define-search-command (name keymap kbd &optional glob query)
+    "Define search commands and keybindings with predefined glob and query. Usage:
+(fk/helm-rg-define-search-command
+ \"my-search\" global-map \"C-M-s\" \"*.el\" \"foo\")"
+    `(progn
+       (defun ,(intern (concat "fk/" name)) ()
+         (interactive)
+         (require 'helm-rg)
+         (fk/helm-rg-dwim-with-glob (or ,glob "") ,query))
+       (define-key ,keymap (kbd ,kbd) ',(intern (concat "fk/" name)))))
   :custom
   (helm-rg--extra-args '("--max-columns" "400"))
   (fk/helm-rg-fuzzy-match t)  ; I may wanna disable helm-rg's transform functionality
@@ -2114,20 +2126,42 @@ from melpa. TODO: fix this
 - Escape special characters when searching with selected text."
     (interactive)
     (let ((helm-rg-default-directory (or (projectile-project-root) default-directory))
-          (query (or query (fk/convert-string-to-rg-compatible (or (fk/get-selected-text) "")))))
+          (query (or (fk/get-selected-text) query)))
       (cl-letf (((symbol-function 'helm-rg--get-thing-at-pt) (lambda () query)))
         (if fk/helm-rg-fuzzy-match
             (call-interactively 'helm-rg)
-          (cl-letf (((symbol-function 'helm-rg--helm-pattern-to-ripgrep-regexp) (lambda (_) _)))
-            (call-interactively 'helm-rg))))))
-
-  ;; Use a simpler header in the helm buffer.
-  (fset 'helm-rg--header-name (lambda (_) (concat "Search at " helm-rg--current-dir)))
+          (fk/helm-rg-non-fuzzy)))))
 
   (defun fk/helm-rg-dwim-with-glob (glob &optional query)
     (interactive)
     (let ((helm-rg-default-glob-string glob))
       (fk/helm-rg-dwim query)))
+
+  (defun fk/helm-input-to-ripgrep-regexp (func input)
+    "Make `helm-rg' input ripgrep compatible."
+    (apply func (list (fk/convert-string-to-rg-compatible input))))
+
+  (advice-add 'helm-rg--helm-pattern-to-ripgrep-regexp :around 'fk/helm-input-to-ripgrep-regexp)
+
+    ;;;; Non-fuzzy version
+
+  (defun fk/helm-rg-non-fuzzy ()
+    "Non-fuzzy (`helm-rg's special transformation disabled) version of `helm-rg'."
+    (cl-letf (((symbol-function 'helm-rg--helm-pattern-to-ripgrep-regexp)
+               (lambda (str)
+                 (string-replace " " ".*" (fk/convert-string-to-rg-compatible str)))))
+      (call-interactively 'helm-rg)))
+
+  (defun fk/helm-rg-non-fuzzy-dwim (&optional query)
+    "Non-fuzzy (`helm-rg's special transformation disabled) version of `fk/helm-rg-dwim'."
+    (interactive)
+    (let ((fk/helm-rg-fuzzy-match nil))
+      (fk/helm-rg-dwim query)))
+
+  ;;;; Appearance
+
+  ;; Use a simpler header in the helm buffer.
+  (fset 'helm-rg--header-name (lambda (_) (concat "Search at " helm-rg--current-dir)))
 
   ;; Create bigger window for helm-rg
   (advice-add 'helm-rg :around
@@ -2578,7 +2612,7 @@ otherwise."
     (message ispell-local-dictionary)))
 #+END_SRC
 
-* TODO Programming
+* Programming
 ** General
 *** Better Defaults
 #+BEGIN_SRC emacs-lisp
@@ -3077,56 +3111,34 @@ beginning of the string that has curly brackets in it."
 
 *** Django
 #+BEGIN_SRC emacs-lisp
-;; Grep functions for Django
+;; Search functions for Django
 
-(defun fk/django-search-models ()
-  (interactive)
-  (fk/helm-rg-dwim-with-glob "models.py" (unless (region-active-p) "^class ")))
+(fk/helm-rg-define-search-command
+ "fk/django-search-models" django "m" "models.py" "^class ")
 
-(defun fk/django-search-views ()
-  (interactive)
-  (fk/helm-rg-dwim-with-glob "views*.py" (unless (region-active-p) "^class ")))
+(fk/helm-rg-define-search-command
+ "fk/django-search-views" django "v" "views*.py" "^class ")
 
-(defun fk/django-search-serializers ()
-  (interactive)
-  (fk/helm-rg-dwim-with-glob "*serializers*.py" (unless (region-active-p) "^class ")))
+(fk/helm-rg-define-search-command
+ "fk/django-search-serializers" django "s" "*serializers*.py" "^class ")
 
-(defun fk/django-search-tests ()
-  (interactive)
-  (fk/helm-rg-dwim-with-glob "*test*.py" (unless (region-active-p) "^class ")))
+(fk/helm-rg-define-search-command
+ "fk/django-search-tests" django "t" "*test*.py" "^class ")
 
-(defun fk/django-search-settings ()
-  (interactive)
-  ;; TODO: this glob does not work
-  (fk/helm-rg-dwim-with-glob "settings*.py" (unless (region-active-p) "")))
+(fk/helm-rg-define-search-command
+ "fk/django-search-settings" django "S" "*/settings/*" "")
 
-(defun fk/django-search-admins ()
-  (interactive)
-  (fk/helm-rg-dwim-with-glob "admin.py" (unless (region-active-p) "")))
+(fk/helm-rg-define-search-command
+ "fk/django-search-admins" django "a" "admin.py" "^class admin( ")
 
-(defun fk/django-search-permissions ()
-  (interactive)
-  (fk/helm-rg-dwim-with-glob "permissions.py" (unless (region-active-p) "^class ")))
+(fk/helm-rg-define-search-command
+ "fk/django-search-permissions" django "p" "permissions.py" "^class ")
 
-(defun fk/django-search-mixins ()
-  (interactive)
-  (fk/helm-rg-dwim-with-glob "mixins.py" (unless (region-active-p) "^class ")))
+(fk/helm-rg-define-search-command
+ "fk/django-search-mixins" django "x" "mixins.py" "^class ")
 
-(defun fk/django-search-urls ()
-  (interactive)
-  (fk/helm-rg-dwim-with-glob "*.py" (unless (region-active-p) "path\\( ")))
-
-(bind-keys*
- :map django
- ("m" . fk/django-search-models)
- ("v" . fk/django-search-views)
- ("s" . fk/django-search-serializers)
- ("t" . fk/django-search-tests)
- ("S" . fk/django-search-settings)
- ("a" . fk/django-search-admins)
- ("p" . fk/django-search-permissions)
- ("x" . fk/django-search-mixins)
- ("u" . fk/django-search-urls))
+(fk/helm-rg-define-search-command
+ "fk/django-search-urls" django "u" "*.py" "path( ")
 
 ;; Utility functions for Django
 
