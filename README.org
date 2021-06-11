@@ -2117,6 +2117,14 @@ Note: I use [[#helm-rg][helm-rg]] for search (grep) functionality, keep helm-ag 
          (require 'helm-rg)
          (fk/helm-rg-dwim-with-glob (or ,glob "") ,query))
        (define-key ,keymap (kbd ,kbd) ',(intern (concat "fk/" name)))))
+
+  (defmacro fk/helm-rg-define-search-commands (&rest args)
+    "Define multiple search command at once. Usage:
+(fk/helm-rg-define-search-commands
+ (\"my-search\" global-map \"C-M-s\" \"*.el\" \"foo\")
+ (\"my-other-search\" global-map \"C-M-S\" \"*.el\" \"bar\"))"
+    `(progn ,@(cl-loop for expr in args
+                       collect `(fk/helm-rg-define-search-command ,@expr))))
   :custom
   (helm-rg--extra-args '("--max-columns" "400"))
   (fk/helm-rg-fuzzy-match t)  ; I may wanna disable helm-rg's transform functionality
@@ -3130,32 +3138,16 @@ beginning of the string that has curly brackets in it."
 #+BEGIN_SRC emacs-lisp
 ;; Search functions for Django
 
-(fk/helm-rg-define-search-command
- "fk/django-search-models" django "m" "models.py" "^class ")
-
-(fk/helm-rg-define-search-command
- "fk/django-search-views" django "v" "views*.py" "^class ")
-
-(fk/helm-rg-define-search-command
- "fk/django-search-serializers" django "s" "*serializers*.py" "^class ")
-
-(fk/helm-rg-define-search-command
- "fk/django-search-tests" django "t" "*test*.py" "^class ")
-
-(fk/helm-rg-define-search-command
- "fk/django-search-settings" django "S" "*/settings/*" "")
-
-(fk/helm-rg-define-search-command
- "fk/django-search-admins" django "a" "admin.py" "^class admin( ")
-
-(fk/helm-rg-define-search-command
- "fk/django-search-permissions" django "p" "permissions.py" "^class ")
-
-(fk/helm-rg-define-search-command
- "fk/django-search-mixins" django "x" "mixins.py" "^class ")
-
-(fk/helm-rg-define-search-command
- "fk/django-search-urls" django "u" "*.py" "path( ")
+(fk/helm-rg-define-search-commands
+ ("django-search-models"      django "m" "models.py"        "^class ")
+ ("django-search-views"       django "v" "views*.py"        "^class ")
+ ("django-search-serializers" django "s" "*serializers*.py" "^class ")
+ ("django-search-tests"       django "t" "*test*.py"        "^class ")
+ ("django-search-settings"    django "S" "*/settings/*"     "")
+ ("django-search-admins"      django "a" "admin.py"         "^class admin( ")
+ ("django-search-permissions" django "p" "permissions.py"   "^class ")
+ ("django-search-mixins"      django "x" "mixins.py"        "^class ")
+ ("django-search-urls"        django "u" "*.py"             "path( "))
 
 ;; Utility functions for Django
 
