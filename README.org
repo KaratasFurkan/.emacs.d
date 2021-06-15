@@ -1628,6 +1628,14 @@ current buffer."
   ;; progress")
   (remove-hook 'delete-frame-functions 'helm--delete-frame-function)
 
+  ;; Fix helm-posframe-display: Wrong type argument: window-live-p, #<window XYZ>
+  (defun fk/helm-posframe-disable-on-minibuffer (orig-func &rest args)
+    "Disable `helm-posframe' if it is called from minibuffer."
+    (let ((helm-display-function 'helm-default-display-buffer))
+      (apply orig-func args)))
+
+  (advice-add 'helm-comp-read :around 'fk/helm-posframe-disable-on-minibuffer)
+
   (defun fk/helm-posframe-get-size ()
     (list
      :min-width (or helm-posframe-min-width
