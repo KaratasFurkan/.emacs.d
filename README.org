@@ -208,6 +208,8 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#rainbow-delimiters][Rainbow Delimiters]]
     - [[#color-identifiers-mode][Color Identifiers Mode]]
     - [[#symbol-overlay][Symbol Overlay]]
+    - [[#rainbow-mode][Rainbow Mode]]
+    - [[#bug-reference-mode][Bug Reference Mode]]
   - [[#emacs-lisp][Emacs Lisp]]
     - [[#elisp-slime-nav][Elisp Slime Nav]]
     - [[#aggressive-indent][Aggressive Indent]]
@@ -2941,6 +2943,23 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
     (let ((str (fk/get-selected-text))
           (face (nth (random (length symbol-overlay-faces)) symbol-overlay-faces)))
       (highlight-regexp (regexp-quote str) face))))
+#+END_SRC
+
+*** Rainbow Mode
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-mode
+  :hook (prog-mode . rainbow-mode))
+#+END_SRC
+
+*** Bug Reference Mode
+#+BEGIN_SRC emacs-lisp
+(use-package bug-reference
+  :straight (:type built-in)
+  ;; In default, this package is auto-activated and sometimes breaks syntax
+  ;; highlighting by putting unrelevant bug-reference highlight and clickable
+  ;; link.
+  ;; E.g. `#112' at `my_color = "#112233"' gets bug-reference highlight.
+  :disabled)
 #+END_SRC
 
 ** Emacs Lisp

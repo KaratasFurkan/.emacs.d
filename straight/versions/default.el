@@ -168,6 +168,7 @@
  ("py-isort.el" . "e67306f459c47c53a65604e4eea88a3914596560")
  ("pyvenv" . "861998b6d157ae73b829f02a5a6c8a9118310831")
  ("rainbow-delimiters" . "f43d48a24602be3ec899345a3326ed0247b960c6")
+ ("rainbow-mode" . "949166cc0146bc9fabf74ce70c1c4a097f4cffd4")
  ("restclient.el" . "abc307b965bf6720bc466281f2e204cd5ce37dc3")
  ("rubik-mode" . "c8dab1726463dbc9042a0b00186e4a8df02eb868")
  ("s.el" . "43ba8b563bee3426cead0e6d4ddc09398e1a349d")
