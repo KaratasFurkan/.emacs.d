@@ -1634,7 +1634,7 @@ current buffer."
     (let ((helm-display-function 'helm-default-display-buffer))
       (apply orig-func args)))
 
-  (advice-add 'helm-comp-read :around 'fk/helm-posframe-disable-on-minibuffer)
+  (advice-add 'helm-read-pattern-maybe :around 'fk/helm-posframe-disable-on-minibuffer)
 
   (defun fk/helm-posframe-get-size ()
     (list
