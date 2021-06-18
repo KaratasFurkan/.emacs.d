@@ -4211,6 +4211,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                        (call-interactively 'hl-line-mode)))
   :config
   (defvar docker-container-prompt-regexp "^[\\^A-Z]*root@[A-z0-9]*:/[^#]*# ")
+  (defvar python-pdb-prompt-regexp "^[\\^A-Z]*(Pdb) ")  ; TODO: add next-prompt function for this one too
 
   (defface docker-container-prompt-face
     '((t (:foreground "green yellow")))
@@ -4219,7 +4220,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   ;; NOTE: https://github.com/akermu/emacs-libvterm/pull/430 this PR is needed.
   (font-lock-add-keywords
    'vterm-mode
-   `((,docker-container-prompt-regexp 0 'docker-container-prompt-face t))
+   `((,docker-container-prompt-regexp 0 'docker-container-prompt-face t)
+     (,python-pdb-prompt-regexp       0 'docker-container-prompt-face t))
    'set)
 
   (defun fk/docker-container-next-prompt ()
