@@ -4056,8 +4056,12 @@ Pull Requests, Issues etc.
 (use-package forge
   :straight (:host github :repo "KaratasFurkan/forge" :branch "add-pr-message-prefix-and-number-prefix")
   :after magit
+  :preface
+  (defvar fk/forge-reviewers       nil "Should be set as directory local variable.")
+  (defvar fk/forge-review-labels   nil "Should be set as directory local variable.")
+  (defvar fk/forge-pr-title-prefix nil "Should be set as directory local variable.")
   :custom
-  (forge-create-pullreq-message-prefix "STAGING -")  ; TODO: add this at .dir-locals.el
+  (forge-create-pullreq-message-prefix fk/forge-pr-title-prefix)
   (forge-create-pullreq-message-number-prefix t)
   :config
   (defadvice magit-pull-from-upstream (after forge-pull activate)
@@ -4065,19 +4069,31 @@ Pull Requests, Issues etc.
   (defadvice magit-fetch-all (after forge-pull activate)
     (forge-pull))
 
-  (defun fk/forge-request-review (users &optional labels)
-    "Request review from USERS (a string list of usernames) and
-set LABELS (a string list of labels) if given."
+  (defun fk/forge-request-review (reviewers &optional labels)
+    "Request review from REVIEWERS (a string list of usernames)
+and set LABELS (a string list of labels) if given."
     (let* ((topic (forge-current-pullreq))
            (repo  (forge-get-repository topic)))
-      (forge--set-topic-review-requests repo topic users)
+      (forge--set-topic-review-requests repo topic reviewers)
       (when labels
         (forge--set-topic-labels repo topic labels))))
 
-  (defun fk/mastermind-request-review ()
+  (defun fk/forge-project-request-review ()
     (interactive)
-    (fk/forge-request-review '("omerfarukabaci" "alicertel")
-                             '("Waiting for Code Review"))))
+    (fk/forge-request-review fk/forge-reviewers fk/forge-review-labels))
+
+  ;; TODO: Does not work when PR is merged, because there are no diff remains.
+  (defun fk/forge-pullreq-diff (&rest _)
+    "Like github's `Files changed' tab."
+    (interactive)
+    (let ((topic (forge-topic-at-point)))
+      (when (forge-pullreq-p topic)
+        (with-slots (base-ref head-ref) topic
+          (magit-diff-range
+           (format "%s...%s" base-ref head-ref)
+           '("--stat" "--no-ext-diff"))))))
+
+  (advice-add 'forge-visit-pullreq :override 'fk/forge-pullreq-diff))
 #+END_SRC
 
 *** diff-hl
