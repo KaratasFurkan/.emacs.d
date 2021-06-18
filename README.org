@@ -2144,7 +2144,9 @@ Note: I use [[#helm-rg][helm-rg]] for search (grep) functionality, keep helm-ag 
   :bind
   (("C-M-s" . fk/helm-rg-dwim)
    :map helm-rg-map
-   ("C-c C-e" . fk/helm-rg-edit))
+   ("C-c C-e" . fk/helm-rg-switch-helm-ag)
+   ("C-c C-f" . fk/helm-rg-switch-helm-rg-non-fuzzy)
+   ("C-c C-d" . fk/helm-rg-switch-deadgrep))
   :config
   (defun fk/helm-rg-dwim (&optional query)
     "Smarter version of helm-rg.
@@ -2164,21 +2166,8 @@ Note: I use [[#helm-rg][helm-rg]] for search (grep) functionality, keep helm-ag 
     (let ((helm-rg-default-glob-string glob))
       (fk/helm-rg-dwim query)))
 
-  (defun fk/helm-input-to-ripgrep-regexp (func input)
-    "Make `helm-rg' input ripgrep compatible."
-    (apply func (list (fk/convert-string-to-rg-compatible input))))
 
-  (advice-add 'helm-rg--helm-pattern-to-ripgrep-regexp :around 'fk/helm-input-to-ripgrep-regexp)
-
-  (defun fk/helm-rg-edit ()
-    "Switch to `helm-ag' to use its edit feature."
-    (interactive)
-    (helm-rg--run-after-exit
-     (require 'helm-ag)
-     (fk/helm-ag-dwim helm-pattern))
-    (minibuffer-keyboard-quit))
-
-    ;;;; Non-fuzzy version
+  ;;;; Non-fuzzy version
 
   (defun fk/helm-rg-non-fuzzy ()
     "Non-fuzzy (`helm-rg's special transformation disabled) version of `helm-rg'."
@@ -2193,6 +2182,16 @@ Note: I use [[#helm-rg][helm-rg]] for search (grep) functionality, keep helm-ag 
     (let ((fk/helm-rg-fuzzy-match nil))
       (fk/helm-rg-dwim query)))
 
+
+  ;;;; Input normalization
+
+  (defun fk/helm-input-to-ripgrep-regexp (func input)
+    "Make `helm-rg' input ripgrep compatible."
+    (apply func (list (fk/convert-string-to-rg-compatible input))))
+
+  (advice-add 'helm-rg--helm-pattern-to-ripgrep-regexp :around 'fk/helm-input-to-ripgrep-regexp)
+
+
   ;;;; Appearance
 
   ;; Use a simpler header in the helm buffer.
@@ -2202,7 +2201,36 @@ Note: I use [[#helm-rg][helm-rg]] for search (grep) functionality, keep helm-ag 
   (advice-add 'helm-rg :around
               (lambda (orig-func &rest args)
                 (let ((helm-posframe-min-height (round (* (frame-height) 0.66))))
-                  (apply orig-func args)))))
+                  (apply orig-func args))))
+
+
+  ;;;; Switch to another frontend functions
+
+  (defun fk/helm-rg-switch-helm-ag ()
+    "Switch to `helm-ag' to use its edit feature."
+    (interactive)
+    (helm-rg--run-after-exit
+     (require 'helm-ag)
+     (fk/helm-ag-dwim helm-pattern))
+    (minibuffer-keyboard-quit))
+
+  (defun fk/helm-rg-switch-helm-rg-non-fuzzy ()
+    "Switch to `helm-rg-non-fuzzy-dwim' to use a simpler search,
+especially when `helm-rg's special transformation generates too
+much argument."
+    (interactive)
+    (helm-rg--run-after-exit
+     (fk/helm-rg-non-fuzzy-dwim helm-pattern))
+    (minibuffer-keyboard-quit))
+
+  (defun fk/helm-rg-switch-deadgrep ()
+    "Switch to `deadgrep' to use its seperated buffer and `before
+n line' / `after n line' features."
+    (interactive)
+    (helm-rg--run-after-exit
+     (require 'deadgrep)
+     (deadgrep helm-pattern))
+    (minibuffer-keyboard-quit)))
 #+END_SRC
 
 ** Helm Xref
