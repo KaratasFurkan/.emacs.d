@@ -3206,6 +3206,16 @@ beginning of the string that has curly brackets in it."
 
 ;; Utility functions for Django
 
+(defvar fk/django-test-args "" "Should be set as directory local variable.")
+
+(defun fk/django-get-module ()
+  "pony-get-module originally."
+  (let* ((root (projectile-project-root))
+         (path (file-name-sans-extension (or buffer-file-name (expand-file-name default-directory)))))
+    (when (string-match (projectile-project-root) path)
+      (let ((path-to-class (substring path (match-end 0))))
+        (mapconcat 'identity (split-string path-to-class "/") ".")))))
+
 (defun fk/django-copy-path-of-test-at-point ()
   "Add path of the test at point to kill-ring. Returns the path."
   (interactive)
@@ -3217,17 +3227,23 @@ beginning of the string that has curly brackets in it."
          (path (concat module (and module class ".") class (and class func ".") func)))
     (kill-new path)))
 
-(defun fk/django-get-module ()
-  "pony-get-module originally."
-  (let* ((root (projectile-project-root))
-         (path (file-name-sans-extension (or buffer-file-name (expand-file-name default-directory)))))
-    (when (string-match (projectile-project-root) path)
-      (let ((path-to-class (substring path (match-end 0))))
-        (mapconcat 'identity (split-string path-to-class "/") ".")))))
+(defun fk/django-run-test-at-point ()
+  "Run test at point."
+  (interactive)
+  (fk/django-copy-path-of-test-at-point)
+  (let ((vterm-buffer (save-window-excursion
+                        (fk/projectile-vterm)
+                        (current-buffer))))
+    (if (window-live-p (get-buffer-window vterm-buffer))
+        (select-window (get-buffer-window vterm-buffer))
+      (fk/projectile-vterm)))
+  (vterm-insert (format "python manage.py test %s %s" fk/django-test-args
+                        (substring-no-properties (pop kill-ring)))))
 
 (bind-keys*
  :map django
- ("c" . fk/django-copy-path-of-test-at-point))
+ ("c" . fk/django-copy-path-of-test-at-point)
+ ("d" . fk/django-run-test-at-point))
 #+END_SRC
 
 *** Jupyter Notebook
@@ -4222,6 +4238,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (vterm-mode . (lambda () (setq-local global-hl-line-mode nil
                                        show-trailing-whitespace nil)))
   (vterm-mode . fk/darken-background)
+  (vterm-mode . hack-dir-local-variables-non-file-buffer)
   (vterm-copy-mode . (lambda ()
                        (face-remap-add-relative 'hl-line :background fk/background-color)
                        (call-interactively 'hl-line-mode)))
