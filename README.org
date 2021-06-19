@@ -1293,11 +1293,9 @@ than reading it in normal way."
         (kill-buffer output-buffer)
         agenda)))
 
-  (defun fk/dashboard-insert-agenda (&rest _)
-    "Insert directly org-agenda buffer."
+  (defun dashboard-insert-agenda (&rest _)
+    "Insert a copy of org-agenda buffer."
     (insert (fk/dashboard-get-agenda)))
-
-  (setcdr (assoc 'agenda dashboard-item-generators) 'fk/dashboard-insert-agenda)
 
   ;; Colorize agenda section even if org-agenda.el hasn't loaded
   (defface org-agenda-structure '((t (:weight ultra-bold))) "")
