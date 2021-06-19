@@ -3446,7 +3446,7 @@ else call `dired-find-file'"
         (browse-url-of-dired-file)
       (dired-find-file)))
 
-  ;; Dired in single buffer (prevent dired from opening a lot of buffers)
+  ;;:: Dired in single buffer (prevent dired from opening a lot of buffers)
   (put 'dired-find-alternate-file 'disabled nil)
 
   (defun fk/dired-up-directory ()
@@ -3454,13 +3454,22 @@ else call `dired-find-file'"
     (interactive)
     (find-alternate-file ".."))
 
+  (defun fk/dired-find-file (orig-func &rest args)
+    "If selected file is a directory, open it in same buffer,
+otherwise, open the file in a new buffer."
+    (let ((file (dired-get-file-for-visit)))
+      (if (file-directory-p file)
+          (apply 'dired-find-alternate-file args)
+        (apply orig-func args))))
+
+  (advice-add 'dired-up-directory :override 'fk/dired-up-directory)
+  (advice-add 'dired-find-file :around 'fk/dired-find-file)
+  ;;;; Dired in single buffer
+
   (defun fk/dired-open-systems-file-manager ()
     "Open current directory with the system's default file manager."
     (interactive)
-    (call-process-shell-command (concat "xdg-open " default-directory " &")))
-
-  (advice-add 'dired-up-directory :override 'fk/dired-up-directory)
-  (advice-add 'dired-find-file :override 'dired-find-alternate-file))
+    (call-process-shell-command (concat "xdg-open " default-directory " &"))))
 #+END_SRC
 
 *** Dired-X
