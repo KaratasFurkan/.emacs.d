@@ -1248,51 +1248,21 @@ size. This function also handles icons and modeline font sizes."
   ;; Source for logo: https://github.com/tecosaur/emacs-config/blob/master/config.org#splash-screen
   (dashboard-startup-banner (fk/expand-static-file-name "logos/emacs-e-small.png"))
   ;; Do not show package count, it is meaningless because of lazy loading.
-  (dashboard-init-info (format "Emacs started in %s\n" (fk/time-since-startup)))
+  (dashboard-banner-logo-title "Welcome to Emacs!\n")
+  (dashboard-init-info (format "Emacs started in %s\n\n" (fk/time-since-startup)))
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
-  (dashboard-week-agenda t)
-  (dashboard-agenda-time-string-format "%d/%m/%Y %A %H:%M")
-  ;; (dashboard-agenda-release-buffers t) ; Has bugs
   (dashboard-item-shortcuts '((recents . "r")
-                              (bookmarks . "b")
                               (projects . "p")
                               (agenda . "a")))
   (dashboard-items '((recents  . 10)
                      (projects . 5)
-                     ;;(bookmarks . 5)
-                     ;;(agenda . 10) ;; I load agenda in :hook section
-                     ))
-  (dashboard-set-navigator t)
-  ;; Format: "(icon title help action face prefix suffix)"
-  (dashboard-navigator-buttons
-   `((;; Github
-      (,(all-the-icons-octicon "mark-github" :height 1.1 :v-adjust 0.0)
-       "Github"
-       "Browse github"
-       (lambda (&rest _) (browse-url "https://github.com/")))
-      ;; Codebase
-      (,(all-the-icons-faicon "briefcase" :height 1.1 :v-adjust -0.1)
-       "Codebase"
-       "My assigned tickets"
-       (lambda (&rest _) (browse-url "https://hipo.codebasehq.com/tickets")))
-      ;; Perspective
-      (,(all-the-icons-octicon "history" :height 1.1 :v-adjust 0.0)
-       "Reload last session"
-       "Reload last session"
-       (lambda (&rest _) (persp-state-load persp-state-default-file))))))
+                     (agenda . 0)))  ; I override the insert-agenda function
   :custom-face
-  (dashboard-heading-face ((t (:weight bold))))
-  (dashboard-items-face ((t (:weight normal))))
+  (dashboard-heading ((t (:inherit font-lock-keyword-face :height 1.2))))
   :hook
   (dashboard-mode . (lambda () (setq-local cursor-type nil)))
-  ;; Load agenda after showing dashboard to decrease waiting time to see the
-  ;; initial screen (dashboard). TODO: try to make this asynchronously to not
-  ;; block Emacs.
-  (dashboard-after-initialize . (lambda ()
-                                  (add-to-list 'dashboard-items '(agenda . 10) t)
-                                  (dashboard-refresh-buffer)))
   :config
   (dashboard-setup-startup-hook)
 
@@ -1308,14 +1278,22 @@ size. This function also handles icons and modeline font sizes."
       (dashboard-refresh-buffer)))
 
   (defun fk/dashboard-get-agenda ()
-    "Copy org-agenda buffer"
-    (save-window-excursion
-      (let ((org-agenda-span 'day))
-        (org-agenda-list))
-      (prog1 (buffer-substring (point-min) (point-max))
-        (kill-buffer))))
+    "Get a copy of the agenda buffer from Emacs daemon. Faster
+than reading it in normal way."
+    (let ((output-buffer (get-buffer-create "*agenda*")))
+      (call-process "emacsclient" nil output-buffer nil
+                    "--eval"
+                    "(let ((org-agenda-span 'day))
+                       (org-agenda-list)
+                       (buffer-string))")
+      (let* ((output (with-current-buffer output-buffer
+                       (buffer-substring-no-properties (point-min) (point-max))))
+             (clean-output (string-replace "#<marker" "<marker" output))
+             (agenda (car (read-from-string clean-output))))
+        (kill-buffer output-buffer)
+        agenda)))
 
-  (defun fk/dashboard-insert-agenda (list-size)
+  (defun fk/dashboard-insert-agenda (&rest _)
     "Insert directly org-agenda buffer."
     (insert (fk/dashboard-get-agenda)))
 
