@@ -1297,7 +1297,15 @@ than reading it in normal way."
     "Insert directly org-agenda buffer."
     (insert (fk/dashboard-get-agenda)))
 
-  (setcdr (assoc 'agenda dashboard-item-generators) 'fk/dashboard-insert-agenda))
+  (setcdr (assoc 'agenda dashboard-item-generators) 'fk/dashboard-insert-agenda)
+
+  ;; Colorize agenda section even if org-agenda.el hasn't loaded
+  (defface org-agenda-structure '((t (:weight ultra-bold))) "")
+  (defface org-agenda-date-today '((t (:foreground "LightGoldenrod"))) "")
+  (defface org-agenda-current-time '((t (:foreground "LightGoldenrod"))) "")
+  (defface org-agenda-calendar-event '((t (:weight bold))) "")
+  (defface org-scheduled-today '((t (:foreground "gray"))) "")
+  (defface org-time-grid '((t (:inherit 'font-lock-comment-face ))) ""))
 #+END_SRC
 
 ** Stripe Buffer
