@@ -1280,18 +1280,20 @@ size. This function also handles icons and modeline font sizes."
   (defun fk/dashboard-get-agenda ()
     "Get a copy of the agenda buffer from Emacs daemon. Faster
 than reading it in normal way."
-    (let ((output-buffer (get-buffer-create "*agenda*")))
-      (call-process "emacsclient" nil output-buffer nil
-                    "--eval"
-                    "(let ((org-agenda-span 'day))
-                       (org-agenda-list)
-                       (buffer-string))")
-      (let* ((output (with-current-buffer output-buffer
-                       (buffer-substring-no-properties (point-min) (point-max))))
-             (clean-output (string-replace "#<marker" "<marker" output))
-             (agenda (car (read-from-string clean-output))))
-        (kill-buffer output-buffer)
-        agenda)))
+    (let* ((output-buffer (get-buffer-create "*agenda*"))
+           (exit-status (call-process "emacsclient" nil output-buffer nil
+                                      "--eval"
+                                      "(let ((org-agenda-span 'day))
+                                         (org-agenda-list)
+                                         (buffer-string))")))
+      (if (zerop exit-status)
+          (let* ((output (with-current-buffer output-buffer
+                           (buffer-substring-no-properties (point-min) (point-max))))
+                 (clean-output (string-replace "#<marker" "<marker" output))
+                 (agenda (car (read-from-string clean-output))))
+            (kill-buffer output-buffer)
+            agenda)
+        "Emacs server (daemon) is not running, Agenda couldn't loaded.")))
 
   (defun dashboard-insert-agenda (&rest _)
     "Insert a copy of org-agenda buffer."
