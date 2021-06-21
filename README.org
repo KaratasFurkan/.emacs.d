@@ -1285,6 +1285,9 @@ than reading it in normal way."
                                       "--eval"
                                       "(let ((org-agenda-span 'day))
                                          (org-agenda-list)
+                                         (read-only-mode -1)
+                                         (goto-char (point-min))
+                                         (kill-line)
                                          (buffer-string))")))
       (if (zerop exit-status)
           (let* ((output (with-current-buffer output-buffer
@@ -1297,7 +1300,8 @@ than reading it in normal way."
 
   (defun dashboard-insert-agenda (&rest _)
     "Insert a copy of org-agenda buffer."
-    (insert (fk/dashboard-get-agenda)))
+    (dashboard-insert-heading "Agenda for today:")
+    (insert "\n" (fk/dashboard-get-agenda)))
 
   ;; Colorize agenda section even if org-agenda.el hasn't loaded
   (defface org-agenda-structure '((t (:weight ultra-bold))) "")
