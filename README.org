@@ -4046,7 +4046,8 @@ _P_: Priority     _h_: Home      _M_: Movie       ^^
   :hook
   ;;(magit-mode . magit-toggle-margin) FIXME: does not work
   ;;(magit-mode . magit-toggle-margin-details)
-  (git-commit-setup . git-commit-turn-on-flyspell))
+  (git-commit-setup . git-commit-turn-on-flyspell)
+  (magit-mode . hack-dir-local-variables-non-file-buffer))
 #+END_SRC
 
 **** Magit Todos
@@ -4073,9 +4074,7 @@ Pull Requests, Issues etc.
   :preface
   (defvar fk/forge-reviewers       nil "Should be set as directory local variable.")
   (defvar fk/forge-review-labels   nil "Should be set as directory local variable.")
-  (defvar fk/forge-pr-title-prefix nil "Should be set as directory local variable.")
   :custom
-  (forge-create-pullreq-message-prefix fk/forge-pr-title-prefix)
   (forge-create-pullreq-message-number-prefix t)
   :config
   (defadvice magit-pull-from-upstream (after forge-pull activate)
