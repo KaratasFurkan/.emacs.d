@@ -1283,7 +1283,7 @@ than reading it in normal way."
     (let* ((output-buffer (get-buffer-create "*agenda*"))
            (exit-status (call-process "emacsclient" nil output-buffer nil
                                       "--eval"
-                                      "(let ((org-agenda-span 'day))
+                                      "(let ((org-agenda-span 2))
                                          (org-agenda-list)
                                          (read-only-mode -1)
                                          (goto-char (point-min))
@@ -1303,13 +1303,15 @@ than reading it in normal way."
     (dashboard-insert-heading "Agenda for today:")
     (insert "\n" (fk/dashboard-get-agenda)))
 
-  ;; Colorize agenda section even if org-agenda.el hasn't loaded
-  (defface org-agenda-structure '((t (:weight ultra-bold))) "")
-  (defface org-agenda-date-today '((t (:foreground "LightGoldenrod"))) "")
-  (defface org-agenda-current-time '((t (:foreground "LightGoldenrod"))) "")
-  (defface org-agenda-calendar-event '((t (:weight bold))) "")
-  (defface org-scheduled-today '((t (:foreground "gray"))) "")
-  (defface org-time-grid '((t (:inherit 'font-lock-comment-face ))) ""))
+  ;; Colorize agenda section even if org-agenda.el hasn't loaded.
+  ;; Note: defining faces is enough, color values comes from propertized string
+  (defface org-agenda-structure nil nil)
+  (defface org-agenda-date nil nil)
+  (defface org-agenda-date-today nil nil)
+  (defface org-agenda-current-time nil nil)
+  (defface org-agenda-calendar-event nil nil)
+  (defface org-scheduled-today nil nil)
+  (defface org-time-grid nil nil))
 #+END_SRC
 
 ** Stripe Buffer
@@ -3643,8 +3645,9 @@ otherwise, open the file in a new buffer."
   (org-block-begin-line ((t (:foreground ,fk/light-color3 :background ,fk/background-color :extend t))))
   (org-document-info-keyword ((t (:foreground ,fk/light-color3 :height 10))))  ; Make #+TITLE: invisible
   (org-meta-line ((t (:foreground ,fk/light-color3))))  ; Less distractive
-  (org-agenda-current-time ((t (:foreground "LightGoldenrod"))))
+  (org-agenda-date ((t (:foreground "#ECBE7B"))))
   (org-agenda-date-today ((t (:foreground "LightGoldenrod"))))
+  (org-agenda-current-time ((t (:foreground "LightGoldenrod"))))
   (org-agenda-calendar-event ((t (:weight bold))))
   :bind
   ( :map org
