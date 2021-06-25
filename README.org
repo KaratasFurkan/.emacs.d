@@ -268,6 +268,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#org-export-twitter-bootstrap][Org Export Twitter Bootstrap]]
     - [[#valign-mode][Valign Mode]]
     - [[#org-appear][Org Appear]]
+  - [[#calendar][Calendar]]
   - [[#version-control][Version Control]]
     - [[#magit][Magit]]
       - [[#magit-1][Magit]]
@@ -3605,7 +3606,6 @@ otherwise, open the file in a new buffer."
   (org-directory "~/org")  ; This is default already but lets declare explicitly
   (org-agenda-files `(,(expand-file-name "agenda.org" org-directory)))
   (org-agenda-start-on-weekday nil)
-  (calendar-week-start-day 1)  ; calendar.el not org.el
   (org-deadline-warning-days 5)
   (org-display-custom-times t)
   (org-time-stamp-custom-formats '("<%d/%m/%Y %A>" . "<%d/%m/%Y %A %H:%M>"))
@@ -4023,6 +4023,17 @@ _P_: Priority     _h_: Home      _M_: Movie       ^^
 #+BEGIN_SRC emacs-lisp
 (use-package org-appear
   :hook (org-mode . org-appear-mode))
+#+END_SRC
+
+** Calendar
+#+BEGIN_SRC emacs-lisp
+(use-package calendar
+  :commands calendar
+  :custom
+  (calendar-week-start-day 1)  ; start at Monday
+  :hook
+  ;; bigger calendar like OS calendars
+  (calendar-mode . (lambda () (text-scale-increase 8))))
 #+END_SRC
 
 ** Version Control
