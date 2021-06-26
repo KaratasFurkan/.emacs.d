@@ -606,7 +606,13 @@ Keep Emacs directory clean.
         custom-file (no-littering-expand-etc-file-name "custom.el"))
 
   (when (file-exists-p custom-file)
-    (load-file custom-file))
+    ;; Load `custom-set-variables', not load whole `custom.el' with unwanted
+    ;; `custom-set-faces'
+    (with-current-buffer (find-file-noselect custom-file)
+      (goto-char 0)
+      (forward-sexp)
+      (call-interactively 'eval-last-sexp)
+      (kill-buffer)))
 
   (defconst fk/static-directory (expand-file-name "static/" user-emacs-directory))
 
