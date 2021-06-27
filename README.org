@@ -2139,7 +2139,6 @@ Note: I use [[#helm-rg][helm-rg]] for search (grep) functionality, keep helm-ag 
                        collect `(fk/helm-rg-define-search-command ,@expr))))
   :custom
   (helm-rg--extra-args '("--max-columns" "400"))
-  (fk/helm-rg-fuzzy-match t)  ; I may wanna disable helm-rg's transform functionality
   :custom-face
   (helm-rg-file-match-face ((t (:inherit font-lock-type-face :weight bold :underline nil))))
   (helm-rg-line-number-match-face ((t (:inherit line-number))))
@@ -2147,7 +2146,6 @@ Note: I use [[#helm-rg][helm-rg]] for search (grep) functionality, keep helm-ag 
   (("C-M-s" . fk/helm-rg-dwim)
    :map helm-rg-map
    ("C-c C-e" . fk/helm-rg-switch-helm-ag)
-   ("C-c C-f" . fk/helm-rg-switch-helm-rg-non-fuzzy)
    ("C-c C-d" . fk/helm-rg-switch-deadgrep))
   :config
   (defun fk/helm-rg-dwim (&optional query)
@@ -2159,9 +2157,7 @@ Note: I use [[#helm-rg][helm-rg]] for search (grep) functionality, keep helm-ag 
     (let ((helm-rg-default-directory (or (projectile-project-root) default-directory))
           (query (or (fk/get-selected-text) query)))
       (cl-letf (((symbol-function 'helm-rg--get-thing-at-pt) (lambda () query)))
-        (if fk/helm-rg-fuzzy-match
-            (call-interactively 'helm-rg)
-          (fk/helm-rg-non-fuzzy)))))
+        (call-interactively 'helm-rg))))
 
   (defun fk/helm-rg-dwim-with-glob (glob &optional query)
     (interactive)
@@ -2169,27 +2165,21 @@ Note: I use [[#helm-rg][helm-rg]] for search (grep) functionality, keep helm-ag 
       (fk/helm-rg-dwim query)))
 
 
-  ;;;; Non-fuzzy version
-
-  (defun fk/helm-rg-non-fuzzy ()
-    "Non-fuzzy (`helm-rg's special transformation disabled) version of `helm-rg'."
-    (cl-letf (((symbol-function 'helm-rg--helm-pattern-to-ripgrep-regexp)
-               (lambda (str)
-                 (string-replace " " ".*" (fk/convert-string-to-rg-compatible str)))))
-      (call-interactively 'helm-rg)))
-
-  (defun fk/helm-rg-non-fuzzy-dwim (&optional query)
-    "Non-fuzzy (`helm-rg's special transformation disabled) version of `fk/helm-rg-dwim'."
-    (interactive)
-    (let ((fk/helm-rg-fuzzy-match nil))
-      (fk/helm-rg-dwim query)))
-
-
   ;;;; Input normalization
 
+  (defvar fk/helm-rg-fuzzy-max-words 6)  ; rg returns "Arguments list too long" after this point
+
   (defun fk/helm-input-to-ripgrep-regexp (func input)
-    "Make `helm-rg' input ripgrep compatible."
-    (apply func (list (fk/convert-string-to-rg-compatible input))))
+    "Make `helm-rg' input ripgrep compatible. Escape special
+characters and disable fuzzy matching if input has more than
+`fk/helm-rg-fuzzy-max-words' words."
+    (let* ((processed-input (fk/convert-string-to-rg-compatible input))
+           (word-count (with-temp-buffer
+                         (insert processed-input)
+                         (count-words (point-min) (point-max)))))
+      (if (> word-count fk/helm-rg-fuzzy-max-words)
+          (string-replace " " ".*" processed-input)  ; simpler fuzzy
+        (apply func (list processed-input)))))
 
   (advice-add 'helm-rg--helm-pattern-to-ripgrep-regexp :around 'fk/helm-input-to-ripgrep-regexp)
 
@@ -2214,15 +2204,6 @@ Note: I use [[#helm-rg][helm-rg]] for search (grep) functionality, keep helm-ag 
     (helm-rg--run-after-exit
      (require 'helm-ag)
      (fk/helm-ag-dwim helm-pattern))
-    (minibuffer-keyboard-quit))
-
-  (defun fk/helm-rg-switch-helm-rg-non-fuzzy ()
-    "Switch to `helm-rg-non-fuzzy-dwim' to use a simpler search,
-especially when `helm-rg's special transformation generates too
-much argument."
-    (interactive)
-    (helm-rg--run-after-exit
-     (fk/helm-rg-non-fuzzy-dwim helm-pattern))
     (minibuffer-keyboard-quit))
 
   (defun fk/helm-rg-switch-deadgrep ()
