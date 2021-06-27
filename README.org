@@ -1135,7 +1135,9 @@ size. This function also handles icons and modeline font sizes."
                      move-to-window-line-top-bottom
                      ace-select-window
                      ace-swap-window
-                     aw-flip-window))
+                     aw-flip-window
+                     avy-goto-word-or-subword-1
+                     avy-pop-mark))
     (eval `(defadvice ,command (after blink activate)
              (fk/beacon-blink))))
   (dolist (hook '(find-file-hook
@@ -1268,6 +1270,7 @@ size. This function also handles icons and modeline font sizes."
                      (agenda . 0)))  ; I override the insert-agenda function
   :custom-face
   (dashboard-heading ((t (:inherit font-lock-keyword-face :height 1.2))))
+  (dashboard-items-face ((t (:weight normal))))
   :hook
   (dashboard-mode . (lambda () (setq-local cursor-type nil)))
   :config
@@ -4039,7 +4042,8 @@ _P_: Priority     _h_: Home      _M_: Movie       ^^
   (calendar-week-start-day 1)  ; start at Monday
   :hook
   ;; bigger calendar like OS calendars
-  (calendar-mode . (lambda () (text-scale-increase 8))))
+  (calendar-mode . (lambda () (text-scale-increase 8)))
+  (calendar-mode . delete-other-windows))
 #+END_SRC
 
 ** Version Control
