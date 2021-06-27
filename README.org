@@ -52,7 +52,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#general][General]]
   - [[#helpful][Helpful]]
   - [[#menu-style-keybindings][Menu Style Keybindings]]
-  - [[#susudo][Su/Sudo]]
+  - [[#local-variables][Local Variables]]
 - [[#appearance][Appearance]]
   - [[#notes-2][Notes]]
   - [[#better-defaults-1][Better Defaults]]
@@ -288,6 +288,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#ob-restclient][ob-restclient]]
     - [[#password-mode][Password Mode]]
   - [[#eaf][EAF]]
+  - [[#sudo-edit][Sudo Edit]]
   - [[#google-translate][Google Translate]]
   - [[#pdf][PDF]]
     - [[#pdf-tools][PDF Tools]]
@@ -718,16 +719,15 @@ Menu style keybindings like Spacemacs.
  :map fk/menu-map :prefix-map windows         :prefix "w")
 #+END_SRC
 
-** Su/Sudo
-+read-only files will be writable but if you attempt to save your modifications,
-emacs will ask root user's password if needed.+
+** Local Variables
 #+BEGIN_SRC emacs-lisp
-;; (use-package su
-;;   :straight (:host github :repo "PythonNut/su.el")
-;;   :config (su-mode))
+(defun fk/straight-ignore-local-variables (orig-func &rest args)
+  "Ignore local variables when visiting an installed package
+which is generally not intended to be edited."
+  (unless (string-prefix-p (straight--dir) default-directory)
+    (apply orig-func args)))
 
-(use-package sudo-edit
-  :commands sudo-edit)
+(advice-add 'hack-local-variables-confirm :override 'fk/straight-ignore-local-variables)
 #+END_SRC
 
 * Appearance
@@ -1895,7 +1895,7 @@ org-mode activated."
 (defun fk/find-installed-packages ()
   "Quick way of opening the source code of an installed package."
   (interactive)
-  (helm-find-files-1 (expand-file-name "straight/repos/" user-emacs-directory)))
+  (helm-find-files-1 (straight--repos-dir)))
 #+END_SRC
 
 *** switch-last-buffer
@@ -1954,7 +1954,7 @@ org-mode activated."
   ;; Use with `helm-recentf'
   :straight (:type built-in)
   :custom
-  (recentf-exclude `(,(expand-file-name "straight/build/" user-emacs-directory)
+  (recentf-exclude `(,(straight--build-dir)
                      ,(expand-file-name "eln-cache/" user-emacs-directory)
                      "/usr/share/emacs/"
                      "/usr/local/share/emacs/"
@@ -4391,6 +4391,12 @@ the `docker-container-prompt-regexp'."
   :commands eaf-open-browser eaf-open-camera
   :custom
   (eaf-python-command "/usr/bin/python"))  ; don't use venv python
+#+END_SRC
+
+** Sudo Edit
+#+BEGIN_SRC emacs-lisp
+(use-package sudo-edit
+  :commands sudo-edit)
 #+END_SRC
 
 ** Google Translate
