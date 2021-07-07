@@ -4072,6 +4072,7 @@ _P_: Priority     _h_: Home      _M_: Movie       ^^
 **** Magit
 #+BEGIN_SRC emacs-lisp
 (use-package magit
+  :straight (:files ("lisp/*.el"))
   :commands magit
   :custom
   (magit-section-initial-visibility-alist '((stashes . show)
