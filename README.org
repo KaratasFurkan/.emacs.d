@@ -171,6 +171,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#backward-kill-word-or-region][backward-kill-word-or-region]]
     - [[#newline-below][newline-below]]
     - [[#remove-hypens-and-underscores-region][remove-hypens-and-underscores-region]]
+    - [[#increment-number-at-point][increment-number-at-point]]
   - [[#keybindings-2][Keybindings]]
   - [[#electric-indent-mode-][Electric Indent Mode-]]
   - [[#undo-tree][Undo Tree]]
@@ -2511,12 +2512,23 @@ otherwise."
       (insert clean-str))))
 #+END_SRC
 
+*** increment-number-at-point
+#+BEGIN_SRC emacs-lisp
+(defun fk/increment-number-at-point ()
+  "Increment the number at point."
+  (interactive)
+  (when (number-at-point)
+    (skip-chars-backward "0-9")
+    (replace-match (number-to-string (1+ (string-to-number (match-string 0)))))))
+#+END_SRC
+
 ** Keybindings
 #+BEGIN_SRC emacs-lisp
 (keyboard-translate ?\C-h ?\C-?)  ; C-h as DEL, (F1 as `help-command')
 (add-hook 'server-after-make-frame-hook (lambda () (keyboard-translate ?\C-h ?\C-?)))  ; Fix emacs --daemon
 (global-set-key (kbd "C-w") 'fk/backward-kill-word-or-region)
 (global-set-key (kbd "C-o") 'fk/newline-below)
+(global-set-key (kbd "C-c C-i") 'fk/increment-number-at-point)
 
 (bind-keys*
  :map text
