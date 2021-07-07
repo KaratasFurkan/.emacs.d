@@ -1417,18 +1417,16 @@ than reading it in normal way."
 ** Tree Sitter
 #+BEGIN_SRC emacs-lisp
 (use-package tree-sitter
-  :defer t
-  :straight
-  (tree-sitter :host github
-               :repo "ubolonton/emacs-tree-sitter"
-               :files ("lisp/*.el")))
+  :commands fk/tree-sitter-hl-mode
+  :config
+  (defun fk/tree-sitter-hl-mode ()
+    "Require `tree-sitter-langs' + Activate `tree-sitter-hl-mode'."
+    (interactive)
+    (require 'tree-sitter-langs)
+    (call-interactively 'tree-sitter-hl-mode)))
 
 (use-package tree-sitter-langs
-  :defer t
-  :straight
-  (tree-sitter-langs :host github
-                     :repo "ubolonton/emacs-tree-sitter"
-                     :files ("langs/*.el" "langs/queries")))
+  :defer t)
 #+END_SRC
 
 ** Visual Fill Column
@@ -3050,7 +3048,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
                                (car (last (f-split (f-parent (buffer-file-name)))))
                                "tests"))
                      (fk/hide-second-level-blocks))))
-  (python-mode . (lambda () (require 'tree-sitter-langs) (tree-sitter-hl-mode)))
+  (python-mode . fk/tree-sitter-hl-mode)
   (python-mode . (lambda () (setq-local fill-column 88)))
   :config
   ;;;; Smart f-strings
