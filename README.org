@@ -3687,6 +3687,14 @@ otherwise, open the file in a new buffer."
     ("C-c t" . org-todo)
     ("C-c C-p" . org-priority-down)
     ("C-M-j" . org-open-at-point)
+    ("C-c r" . org-shiftright)
+    ("C-c l" . org-shiftleft)
+    ("C-c u" . org-shiftup)
+    ("C-c d" . org-shiftdown)
+    ("C-c R" . org-metaright)
+    ("C-c L" . org-metaleft)
+    ("C-c U" . org-metaup)
+    ("C-c D" . org-metadown)
     :map org-src-mode-map
     ("C-c C-c" . org-edit-src-exit)
     ;; Better, intuitive movement when selecting a date for schedule or deadline
