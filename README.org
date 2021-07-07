@@ -1323,7 +1323,12 @@ than reading it in normal way."
   (defface org-agenda-current-time nil nil)
   (defface org-agenda-calendar-event nil nil)
   (defface org-scheduled-today nil nil)
-  (defface org-time-grid nil nil))
+  (defface org-time-grid nil nil)
+  (defface org-warning nil nil)
+  (defface org-agenda-date-weekend nil nil)
+  (defface org-upcoming-deadline nil nil)
+  (defface org-upcoming-distant-deadline nil nil)
+  (defface org-agenda-date-weekend nil nil))
 #+END_SRC
 
 ** Stripe Buffer
