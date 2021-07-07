@@ -1053,6 +1053,8 @@ size. This function also handles icons and modeline font sizes."
 
 (add-hook 'post-command-hook 'fk/minibuffer-modeline-update)
 
+(setq fk/minibuffer-modeline-timer (run-at-time nil 30 'fk/minibuffer-modeline-update))
+
 ;;; Advices to not lose minibuffer modeline info  ; FIXME: breaks when using isearch
 
 ;; (defun fk/minibuffer-modeline-message (func &rest args)
@@ -2391,7 +2393,7 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
   :custom
   (persp-mode-prefix-key (kbd "M-m p"))
   (persp-state-default-file (no-littering-expand-var-file-name "perspective.el"))
-  (persp-modestring-dividers `(,(format "[%s " persp-icon) "]" "|"))
+  (persp-modestring-dividers `(,(format "[%s " persp-icon) "]" " • "))
   (persp-show-modestring nil)  ; I show this in `fk/minibuffer-modeline-update' manually.
   :custom-face
   (persp-selected-face ((t (:foreground nil :inherit 'doom-modeline-warning))))
@@ -2468,8 +2470,7 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
 (use-package goto-line-preview
   :commands goto-line-preview
   :bind
-  ( :map global-map
-    ([remap goto-line] . goto-line-preview)))
+  ([remap goto-line] . goto-line-preview))
 #+END_SRC
 
 * Text Editing
@@ -4650,7 +4651,7 @@ the `docker-container-prompt-regexp'."
 
   ;; Use a dedicated perspective for pomidor
   (advice-add 'pomidor :before (lambda () (persp-switch "pomidor")))
-  (advice-add 'pomidor-quit :after (lambda () (persp-kill  "pomidor"))))
+  (advice-add 'pomidor-quit :after (lambda () (persp-kill "pomidor"))))
 #+END_SRC
 
 ** Speed Type
