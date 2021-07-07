@@ -133,8 +133,9 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#go-messages][go-messages]]
     - [[#go-home-][go-home-]]
     - [[#split-window-and-switch][split-window-and-switch]]
-    - [[#generate-random-scratch][generate-random-scratch]]
+    - [[#generate-random-elisp-scratch][generate-random-elisp-scratch]]
     - [[#generate-random-org-scratch][generate-random-org-scratch]]
+    - [[#generate-random-text-scratch][generate-random-text-scratch]]
     - [[#convert-string-to-rg-compatible][convert-string-to-rg-compatible]]
     - [[#get-selected-text][get-selected-text]]
     - [[#find-installed-packages][find-installed-packages]]
@@ -1855,12 +1856,13 @@ company-yasnippet' to all company backends."
   (other-window 1))
 #+END_SRC
 
-*** generate-random-scratch
+*** generate-random-elisp-scratch
 #+BEGIN_SRC emacs-lisp
-(defun fk/generate-random-scratch ()
-  "Create and switch to a temporary scratch buffer with a random name."
+(defun fk/generate-random-elisp-scratch ()
+  "Create and switch to a temporary scratch buffer with a random name and
+`emacs-lisp-mode' activated."
   (interactive)
-  (switch-to-buffer (make-temp-name "scratch-"))
+  (switch-to-buffer (make-temp-name "scratch-elisp-"))
   (emacs-lisp-mode))
 #+END_SRC
 
@@ -1868,10 +1870,20 @@ company-yasnippet' to all company backends."
 #+BEGIN_SRC emacs-lisp
 (defun fk/generate-random-org-scratch ()
   "Create and switch to a temporary scratch buffer with a random name and
-org-mode activated."
+`org-mode' activated."
   (interactive)
   (switch-to-buffer (make-temp-name "scratch-org-"))
   (org-mode))
+#+END_SRC
+
+*** generate-random-text-scratch
+#+BEGIN_SRC emacs-lisp
+(defun fk/generate-random-text-scratch ()
+  "Create and switch to a temporary scratch buffer with a random name and
+`text-mode' activated."
+  (interactive)
+  (switch-to-buffer (make-temp-name "scratch-text-"))
+  (text-mode))
 #+END_SRC
 
 *** convert-string-to-rg-compatible
@@ -1941,8 +1953,9 @@ org-mode activated."
 (bind-keys*
  :map buffers
  ("s" . fk/scratch)
- ("r" . fk/generate-random-scratch)
+ ("r" . fk/generate-random-elisp-scratch)
  ("o" . fk/generate-random-org-scratch)
+ ("t" . fk/generate-random-text-scratch)
  ("h" . fk/home)
  ("m" . fk/messages))
 
