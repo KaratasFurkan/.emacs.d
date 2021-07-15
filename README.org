@@ -2351,9 +2351,14 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
 ** Avy
 #+BEGIN_SRC emacs-lisp
 (use-package avy
+  :custom
+  (avy-dispatch-alist '((?c . avy-action-copy)
+                        (?y . avy-action-yank)
+                        (?t . avy-action-teleport)))
   :bind
   ("M-j" . avy-goto-word-or-subword-1)
-  ("C-M-u" . avy-pop-mark))
+  ("C-M-u" . avy-pop-mark)
+  ("C-M-i" . (lambda () (interactive) (avy-push-mark))))
 #+END_SRC
 
 ** Treemacs
@@ -3279,7 +3284,7 @@ TODO: seperate sections (html, css..)
 (use-package web-mode
   :custom
   (css-indent-offset 2)
-  ;;(web-mode-markup-indent-offset 2) set in .dir-locals.el according to project
+  (web-mode-markup-indent-offset 2)
   (web-mode-enable-auto-indentation nil)
   (web-mode-enable-auto-pairing nil)
   (web-mode-engines-alist '(("django" . "\\.html\\'")))
