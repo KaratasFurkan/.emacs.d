@@ -1435,7 +1435,15 @@ than reading it in normal way."
     (call-interactively 'tree-sitter-hl-mode)))
 
 (use-package tree-sitter-langs
-  :defer t)
+  :defer t
+  :config
+  ;; Custom patterns to make it look like in old versions:
+  ;; See: https://github.com/ubolonton/emacs-tree-sitter/issues/153
+  (tree-sitter-hl-add-patterns 'python
+    [(assignment left: (identifier) @variable)])
+
+  (tree-sitter-hl-add-patterns 'python
+    [(decorator (call (identifier) @function.special))]))
 #+END_SRC
 
 ** Visual Fill Column
