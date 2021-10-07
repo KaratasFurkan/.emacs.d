@@ -2174,7 +2174,8 @@ Note: I use [[#helm-rg][helm-rg]] for search (grep) functionality, keep helm-ag 
     `(progn ,@(cl-loop for expr in args
                        collect `(fk/helm-rg-define-search-command ,@expr))))
   :custom
-  (helm-rg--extra-args '("--max-columns" "400"))
+  (helm-rg-default-extra-args '("--max-columns" "400"
+                                "-g" "!{*.min.css,*.min.js,*.svg}"))
   :custom-face
   (helm-rg-file-match-face ((t (:inherit font-lock-type-face :weight bold :underline nil))))
   (helm-rg-line-number-match-face ((t (:inherit line-number))))
