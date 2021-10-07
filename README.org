@@ -3693,9 +3693,10 @@ otherwise, open the file in a new buffer."
   (org-agenda-calendar-event ((t (:weight bold))))
   :bind
   ( :map org
-    ("a" . org-agenda)
+    ("a" . org-agenda-list)
     ("f" . (lambda () (interactive) (helm-find-files-1 "~/org/")))
     ("c" . (lambda () (interactive) (org-capture :keys "i")))
+    ("t" . fk/org-babel-tangle-block)
     :map org-mode-map
     ("C-c C-e" . org-edit-special)
     ("M-n" . org-next-visible-heading)
@@ -3747,6 +3748,12 @@ otherwise, open the file in a new buffer."
     (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
                                                              (emacs-lisp . t)
                                                              (shell . t))))
+
+  (defun fk/org-babel-tangle-block()
+    (interactive)
+    (let ((current-prefix-arg '(4)))
+      (call-interactively 'org-babel-tangle)))
+
   (with-eval-after-load 'org-agenda
     (bind-key "m" 'org-agenda-month-view org-agenda-mode-map))
 
