@@ -1331,7 +1331,11 @@ than reading it in normal way."
   (defface org-agenda-date-weekend nil nil)
   (defface org-upcoming-deadline nil nil)
   (defface org-upcoming-distant-deadline nil nil)
-  (defface org-agenda-date-weekend nil nil))
+  (defface org-agenda-date-weekend nil nil)
+  (defface org-habit-clear-future-face nil nil)
+  (defface org-habit-ready-face nil nil)
+  (defface org-habit-alert-face nil nil)
+  (defface org-habit-overdue-future-face nil nil))
 #+END_SRC
 
 ** Stripe Buffer
