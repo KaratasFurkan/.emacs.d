@@ -4677,7 +4677,13 @@ the `docker-container-prompt-regexp'."
 
   ;; Use a dedicated perspective for pomidor
   (advice-add 'pomidor :before (lambda () (persp-switch "pomidor")))
-  (advice-add 'pomidor-quit :after (lambda () (persp-kill "pomidor"))))
+  (advice-add 'pomidor-quit :after (lambda () (persp-kill "pomidor")))
+
+  ;; Unhold with space
+  (advice-add 'pomidor-break :around (lambda (orig-func &rest args)
+                                       (if pomidor--system-on-hold-p
+                                           (pomidor-unhold)
+                                         (apply orig-func args)))))
 #+END_SRC
 
 ** Speed Type
