@@ -1507,7 +1507,7 @@ current buffer."
 * Completion
 ** Better Defaults
 #+BEGIN_SRC emacs-lisp
-;;(add-to-list 'completion-styles 'flex t)
+(add-to-list 'completion-styles 'flex t)
 #+END_SRC
 
 ** Which Key (Keybinding Completion)
