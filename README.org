@@ -710,6 +710,7 @@ Menu style keybindings like Spacemacs.
  :prefix "M-m"
  ("M-m" . which-key-show-full-major-mode)
  ("M-h" . help-command)
+ ("M-u" . universal-argument)
  :map fk/menu-map :prefix-map buffers         :prefix "b"
  :map fk/menu-map :prefix-map comments        :prefix "c"
  :map fk/menu-map :prefix-map django          :prefix "d"
@@ -1954,11 +1955,13 @@ company-yasnippet' to all company backends."
 ** Keybindings
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "<F1>") 'help-command)
+(bind-key* (kbd "M-h") 'help-command)
+(bind-key* (kbd "M-h M-h") 'help-for-help)
 (global-set-key (kbd "C-x c") 'fk/persp-switch-config)
 (global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-x C-k") 'kill-current-buffer)
 (global-set-key (kbd "M-l") 'move-to-window-line-top-bottom)
-(bind-key* "M-q" 'fk/switch-last-window)
+(bind-key* "C-q" 'fk/switch-last-window)
 
 ;; Split & Switch
 ;; I use `fk/smart-C-x-1' for (kbd "C-1"), see Appearance / Olivetti
@@ -2421,7 +2424,7 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
     ("C-M-o" . persp-next)
     ("C-x p" . persp-switch)
     ("C-x C-p" . persp-switch-quick)
-    ("C-M-q" . persp-switch-last)
+    ("M-q" . persp-switch-last)
     :map perspective-map
     ("p" . persp-switch)
     ("k" . persp-kill)
@@ -2549,7 +2552,7 @@ otherwise."
 
 ** Keybindings
 #+BEGIN_SRC emacs-lisp
-(keyboard-translate ?\C-h ?\C-?)  ; C-h as DEL, (F1 as `help-command')
+(keyboard-translate ?\C-h ?\C-?)  ; C-h as DEL, (I use F1 and M-h as `help-command')
 (add-hook 'server-after-make-frame-hook (lambda () (keyboard-translate ?\C-h ?\C-?)))  ; Fix emacs --daemon
 (global-set-key (kbd "C-w") 'fk/backward-kill-word-or-region)
 (global-set-key (kbd "C-o") 'fk/newline-below)
@@ -4293,12 +4296,14 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :bind
   ( :map vterm-mode-map
     ("C-c C-e" . vterm-copy-mode)
+    ("C-c C-n" . fk/vterm-next-prompt)
+    ("C-c C-p" . fk/vterm-previous-prompt)
+    ;; Disabled vterm keybindings: (in order to use their global values)
     ("M-m" . nil)
     ("M-u" . nil)
     ("M-j" . nil)
     ("<f1>" . nil)
-    ("C-c C-n" . fk/vterm-next-prompt)
-    ("C-c C-p" . fk/vterm-previous-prompt)
+    ("C-M-s" . nil)
     :map vterm-copy-mode-map
     ("C-c C-e" . vterm-copy-mode)
     ("C-c C-c" . vterm-copy-mode)
