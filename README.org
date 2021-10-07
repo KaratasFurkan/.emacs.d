@@ -1018,6 +1018,7 @@ size. This function also handles icons and modeline font sizes."
   (doom-modeline-buffer-encoding nil)
   (doom-modeline-vcs-max-length 40)
   (doom-modeline-bar-width 1)
+  (doom-modeline-env-python-executable "python")
   :custom-face
   (mode-line ((t (:background ,fk/dark-color))))
   (mode-line-inactive ((t (:background ,fk/dark-color5))))
