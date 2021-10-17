@@ -1273,7 +1273,8 @@ size. This function also handles icons and modeline font sizes."
                               (agenda . "a")))
   (dashboard-items '((recents  . 10)
                      (projects . 5)
-                     (agenda . 0)))  ; I override the insert-agenda function
+                     (agenda . 0)  ; I override the insert-agenda function
+                     (pinned-items . 0)))  ; Custom section
   :custom-face
   (dashboard-heading ((t (:inherit font-lock-keyword-face :height 1.2))))
   (dashboard-items-face ((t (:weight normal))))
@@ -1311,13 +1312,13 @@ than reading it in normal way."
                  (clean-output (string-replace "#<marker" "<marker" output))
                  (agenda (car (read-from-string clean-output))))
             (kill-buffer output-buffer)
-            agenda)
+            (string-trim agenda))
         "Emacs server (daemon) is not running, Agenda couldn't loaded.")))
 
   (defun dashboard-insert-agenda (&rest _)
     "Insert a copy of org-agenda buffer."
     (dashboard-insert-heading "Agenda for today:")
-    (insert "\n" (fk/dashboard-get-agenda)))
+    (insert "\n\n" (fk/dashboard-get-agenda)))
 
   ;; Colorize agenda section even if org-agenda.el hasn't loaded.
   ;; Note: defining faces is enough, color values comes from propertized string
@@ -1336,7 +1337,21 @@ than reading it in normal way."
   (defface org-habit-clear-future-face nil nil)
   (defface org-habit-ready-face nil nil)
   (defface org-habit-alert-face nil nil)
-  (defface org-habit-overdue-future-face nil nil))
+  (defface org-habit-overdue-future-face nil nil)
+
+
+  ;; Custom section:  Pinned Items
+  ;; I use this to pin the things I need to remember.
+  (setq fk/dashboard-pinned-items '("Fill Worksheet"))
+
+  (defun fk/dashboard-insert-pinned-items (&rest _)
+    "Insert pinned items."
+    (insert (all-the-icons-octicon "pin" :height 1.2 :v-adjust 0.02 :face 'dashboard-heading)
+            (propertize " Pinned Items:\n" 'face 'dashboard-heading 'line-spacing 5))
+    (dolist (item fk/dashboard-pinned-items)
+      (insert (format "  %s %s\n" (all-the-icons-octicon "primitive-dot" :height 1.0 :v-adjust 0.02) item))))
+
+  (add-to-list 'dashboard-item-generators  '(pinned-items . fk/dashboard-insert-pinned-items)))
 #+END_SRC
 
 ** Stripe Buffer
