@@ -3662,6 +3662,8 @@ otherwise, open the file in a new buffer."
   (org-tags-column 0)
   (org-imenu-depth 20)
   (org-hide-emphasis-markers t)
+  (org-catch-invisible-edits 'show-and-error)
+  (org-cycle-separator-lines 0)  ; Never leave empty lines between headings in collapsed view
   ;;;; Getting Things Done ;;;;
   (org-directory "~/org")  ; This is default already but lets declare explicitly
   (org-agenda-files `(,(expand-file-name "agenda.org" org-directory)))
