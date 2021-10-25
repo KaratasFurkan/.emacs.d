@@ -2642,7 +2642,7 @@ otherwise."
 (use-package multiple-cursors
   :custom
   (mc/always-run-for-all t)
-  :bind
+  :bind*
   (("C-M-n" . mc/mark-next-like-this)
    ("C-M-p" . mc/mark-previous-like-this)
    ("C-M-S-n" . mc/skip-to-next-like-this)
