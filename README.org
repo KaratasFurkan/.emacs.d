@@ -1043,8 +1043,19 @@ size. This function also handles icons and modeline font sizes."
                          (string-join (let ((persp-show-modestring t))
                                         (persp-update-modestring)
                                         (persp-mode-line)))))
+         (pomidor (when (featurep 'pomidor)
+                    (format " [%s%s]"
+                            (when pomidor--system-on-hold-p "⏸ ")
+                            (string-limit
+                             (let* ((break (pomidor--break-duration (car (last pomidor-global-state))))
+                                    (overwork (pomidor--overwork-duration (car (last pomidor-global-state))))
+                                    (work (pomidor--work-duration (car (last pomidor-global-state)))))
+                               (cond
+                                (break (propertize (pomidor--format-duration break) 'face 'pomidor-break-face))
+                                (overwork (propertize (pomidor--format-duration overwork) 'face 'pomidor-overwork-face))
+                                (work (propertize (pomidor--format-duration work) 'face 'pomidor-work-face)))) 5))))
          (time (propertize (format-time-string " %H:%M %a %d/%m" (current-time)) 'face 'font-lock-comment-face))
-         (info (string-join (list pyvenv perspectives time) " "))
+         (info (string-join (list pyvenv perspectives pomidor time) " "))
          (message (if fk/minibuffer-modeline--message fk/minibuffer-modeline--message ""))
          (right-padding 2)
          (left-padding (make-string (max 0 (- (frame-width) (length message) (length info) right-padding)) ?\ )))
@@ -1055,7 +1066,7 @@ size. This function also handles icons and modeline font sizes."
 
 (add-hook 'post-command-hook 'fk/minibuffer-modeline-update)
 
-(setq fk/minibuffer-modeline-timer (run-at-time nil 30 'fk/minibuffer-modeline-update))
+(setq fk/minibuffer-modeline-timer (run-at-time nil 10 'fk/minibuffer-modeline-update))
 
 ;;; Advices to not lose minibuffer modeline info  ; FIXME: breaks when using isearch
 
