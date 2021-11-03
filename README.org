@@ -1043,9 +1043,8 @@ size. This function also handles icons and modeline font sizes."
                          (string-join (let ((persp-show-modestring t))
                                         (persp-update-modestring)
                                         (persp-mode-line)))))
-         (pomidor (when (featurep 'pomidor)
-                    (format " [%s%s]"
-                            (if pomidor--system-on-hold-p "⏸ " "")
+         (pomidor (when (and (featurep 'pomidor) pomidor-timer)
+                    (format " [%s]"
                             (string-limit
                              (let* ((break (pomidor--break-duration (car (last pomidor-global-state))))
                                     (overwork (pomidor--overwork-duration (car (last pomidor-global-state))))
