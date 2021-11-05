@@ -4164,7 +4164,7 @@ _P_: Priority     _h_: Home      _M_: Movie       ^^
   (magit-todos-auto-group-items 30)
   :bind*
   ( :map version-control
-    ("t" . helm-magit-todos))
+    ("T" . helm-magit-todos))
   :hook (magit-mode . magit-todos-mode))
 #+END_SRC
 
@@ -4293,13 +4293,19 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 *** Git Link
 #+BEGIN_SRC emacs-lisp
 (use-package git-link
-  :commands git-link)
+  :commands git-link
+  :bind
+  ( :map version-control
+    ("l" . git-link)))
 #+END_SRC
 
 *** Git Timemachine
 #+BEGIN_SRC emacs-lisp
 (use-package git-timemachine
-  :commands git-timemachine)
+  :commands git-timemachine
+  :bind
+  ( :map version-control
+    ("t" . git-timemachine)))
 #+END_SRC
 
 *** Git Blame (vc-msg)
