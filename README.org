@@ -3109,7 +3109,6 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   ;; With pyright
   ;; sudo npm install -g pyright && pip install flake8 black(optional)
   ;; NOTE: these hooks runs in reverse order
-  ;;(python-mode . fk/python-auto-f-string-mode)
   (python-mode . (lambda () (setq-local company-prescient-sort-length-enable nil)))
   (python-mode . (lambda () (unless (and buffer-file-name (file-in-directory-p buffer-file-name "~/.virtualenvs/"))
                               (flycheck-mode))))
@@ -3129,50 +3128,17 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (python-mode . fk/tree-sitter-hl-mode)
   (python-mode . (lambda () (setq-local fill-column 88)))
   :config
-  ;;;; Smart f-strings
-  ;; https://github.com/ubolonton/emacs-tree-sitter/issues/52
-  ;; TODO: Create a mode from this
-  (defun fk/python-f-string-ify ()
-    ;; Does nothing if major-mode is not python or point is not on a string.
-    (when-let* ((python-mode-p (eq major-mode 'python-mode))
-                (str (tree-sitter-node-at-point 'string))
-                (text (ts-node-text str)))
-      (let* ((is-f-string (string-match-p "^[bru]*f+[bru]*\\(\"\\|'\\)" text))
-             (end-of-string (ts-node-end-position (tree-sitter-node-at-point 'string)))
-             (is-there-format-method (string= ".format"
-                                              (buffer-substring-no-properties end-of-string(+ end-of-string 7))))
-             (should-f-string (and (s-contains-p "{" text)
-                                   (s-contains-p "}" text)
-                                   (not is-there-format-method))))
-        (if should-f-string
-            (unless is-f-string
-              (save-excursion
-                (goto-char (ts-node-start-position str))
-                (insert "f")))
-          (when is-f-string
-            (save-excursion
-              (goto-char (ts-node-start-position str))
-              (when (char-equal (char-after) ?f)
-                (delete-char 1))))))))
+  (defvar python-walrus-operator-regexp ":=")
 
-  (define-minor-mode fk/python-auto-f-string-mode  ; TODO: does not work well
-    "Toggle fk/python-auto-f-string-mode which adds 'f' at the
-beginning of the string that has curly brackets in it."
-    :global nil
-    (if fk/python-auto-f-string-mode
-        (progn
-          (defadvice wrap-region-trigger (after smart-f-string activate) (fk/python-f-string-ify))
-          (defadvice delete-char (after smart-f-string activate) (fk/python-f-string-ify))
-          (defadvice delete-active-region (after smart-f-string activate) (fk/python-f-string-ify))
-          (defadvice kill-region (after smart-f-string activate) (fk/python-f-string-ify)))
-      (ad-remove-advice 'wrap-region-trigger 'after 'smart-f-string)
-      (ad-update 'wrap-region-trigger)
-      (ad-remove-advice 'delete-char 'after 'smart-f-string)
-      (ad-update 'delete-char)
-      (ad-remove-advice 'delete-active-region 'after 'smart-f-string)
-      (ad-update 'delete-active-region)
-      (ad-remove-advice 'kill-region 'after 'smart-f-string)
-      (ad-update 'kill-region))))
+  (defface python-walrus-operator-face
+    '((t (:inherit escape-glyph)))
+    "Face for python walrus operator \":=\".")
+
+  ;; Make walrus operator ":=" more visible
+  (font-lock-add-keywords
+   'python-mode
+   `((,python-walrus-operator-regexp 0 'python-walrus-operator-face t))
+   'set))
 #+END_SRC
 
 *** Pyvenv
