@@ -3130,14 +3130,10 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   :config
   (defvar python-walrus-operator-regexp ":=")
 
-  (defface python-walrus-operator-face
-    '((t (:inherit escape-glyph)))
-    "Face for python walrus operator \":=\".")
-
   ;; Make walrus operator ":=" more visible
   (font-lock-add-keywords
    'python-mode
-   `((,python-walrus-operator-regexp 0 'python-walrus-operator-face t))
+   `((,python-walrus-operator-regexp 0 'escape-glyph t))
    'set))
 #+END_SRC
 
