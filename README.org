@@ -3654,6 +3654,7 @@ otherwise, open the file in a new buffer."
                         ("agenda.org" :level . 1)))
   (org-default-priority ?A)  ; Highest
   (org-log-done 'time)
+  (org-log-into-drawer t)  ; Log TODO state changes into :LOGBOOK: drawer insted of directly adding lines to the subtree
   (org-todo-keywords '((sequence "TODO(1)" "WIP(w)" "WAITING_REVIEW(r)" "WAITING_TEST(t)" "READY_PROD(p)" "HOLD(h)" "|"
                                  "DONE(d)" "CANCELLED(c)")))
   (org-todo-keyword-faces
