@@ -1540,6 +1540,7 @@ current buffer."
 #+BEGIN_SRC emacs-lisp
 (use-package which-key-posframe
   :custom
+  (which-key-idle-delay 2)
   (which-key-idle-secondary-delay 0)
   (which-key-posframe-border-width 2)
   (which-key-posframe-parameters '((left-fringe . 5) (right-fringe . 5)))
