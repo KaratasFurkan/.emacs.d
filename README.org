@@ -1984,7 +1984,6 @@ company-yasnippet' to all company backends."
 (bind-key* (kbd "M-h") 'help-command)
 (bind-key* (kbd "M-h M-h") 'help-for-help)
 (global-set-key (kbd "C-x c") 'fk/persp-switch-config)
-(global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "C-x C-k") 'kill-current-buffer)
 (global-set-key (kbd "M-l") 'move-to-window-line-top-bottom)
 (bind-key* "C-q" 'fk/switch-last-window)
@@ -2057,17 +2056,18 @@ company-yasnippet' to all company backends."
   :custom
   (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (aw-ignore-current t)
+  (aw-dispatch-when-more-than 3)
   :custom-face
-  (aw-leading-char-face ((t (:height 1000 :foreground "red"))))
-  :bind*
-  ( :map windows
-    ("w" . ace-window)
-    ("D" . ace-delete-window)
-    ("s" . ace-swap-window)
-    ("l" . aw-flip-window))
-  ;; :config
-  ;;(ace-window-posframe-mode)  ; FIXME: Posframe is very slow at the first time
-  )
+  (aw-leading-char-face ((t (:height 15.0 :foreground "orangered2"))))
+  :bind
+  (("M-o" . ace-window)
+   :map windows
+   ("w" . ace-window)
+   ("D" . ace-delete-window)
+   ("s" . ace-swap-window)
+   ("l" . aw-flip-window))
+  :config
+  (ace-window-posframe-mode))
 #+END_SRC
 
 *** Dependents
