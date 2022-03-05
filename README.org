@@ -3629,6 +3629,7 @@ otherwise, open the file in a new buffer."
   (org-ellipsis "↴") ;; ↴, ▼, ▶, ⤵
   (org-src-window-setup 'current-window)
   (org-startup-indented t)
+  (org-startup-folded 'content)  ; show only headlines (and sub headlines, recursively) at startup
   (org-startup-with-inline-images t)
   (org-image-actual-width '(400))
   (org-hierarchical-todo-statistics nil)
