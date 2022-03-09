@@ -3649,6 +3649,8 @@ otherwise, open the file in a new buffer."
   (org-directory "~/org")  ; This is default already but lets declare explicitly
   (org-agenda-files `(,(expand-file-name "agenda.org" org-directory)))
   (org-agenda-start-on-weekday nil)
+  (org-agenda-window-setup 'only-window)
+  (org-agenda-restore-windows-after-quit t)
   (org-deadline-warning-days 5)
   (org-display-custom-times t)
   (org-time-stamp-custom-formats '("<%d/%m/%Y %A>" . "<%d/%m/%Y %A %H:%M>"))
