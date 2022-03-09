@@ -4440,7 +4440,10 @@ the `docker-container-prompt-regexp'."
 (use-package ob-restclient
   :after org
   :config
-  (org-babel-do-load-languages 'org-babel-load-languages '((restclient . t))))
+  (org-babel-do-load-languages 'org-babel-load-languages '((restclient . t)))  ; TODO: this may slow down org load
+  (add-hook 'org-babel-after-execute-hook (lambda () (let ((lang (nth 0 (org-babel-get-src-block-info))))
+                                                       (when (string= lang "restclient")
+                                                        (save-buffer))))))
 #+END_SRC
 
 *** Password Mode
