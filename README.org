@@ -2382,7 +2382,10 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
    ("M-s" . helm-multi-swoop-all-from-helm-swoop)
    :map helm-swoop-edit-map
    ("C-c C-c" . helm-swoop--edit-complete)
-   ("C-c C-k" . helm-swoop--edit-cancel)))
+   ("C-c C-k" . helm-swoop--edit-cancel))
+  :config
+  (with-eval-after-load 'shackle
+    (setq helm-swoop-split-window-function 'display-buffer)))  ; shackle rules doesn't work without this
 #+END_SRC
 
 ** Deadgrep
