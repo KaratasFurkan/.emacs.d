@@ -3462,6 +3462,14 @@ TODO: seperate sections (html, css..)
 (use-package dired
   :straight (:type built-in)
   :custom
+  ;; ls parameters:
+  ;; -l     use a long listing format
+  ;; -A, --almost-all
+  ;;        do not list implied . and ..
+  ;; -h, --human-readable
+  ;;        with -l and -s, print sizes like 1K 234M 2G etc.
+  ;; -p, --indicator-style=slash
+  ;;        append / indicator to directories
   (dired-listing-switches "-lAhp --group-directories-first")
   (dired-dwim-target t)
   (mouse-1-click-follows-link nil)
