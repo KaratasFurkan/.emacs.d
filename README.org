@@ -311,10 +311,12 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#emacs-everywhere][Emacs Everywhere]]
   - [[#pomidor-pomodoro][Pomidor (Pomodoro)]]
   - [[#speed-type][Speed Type]]
+  - [[#docker][Docker]]
+  - [[#sozluk][Sozluk]]
 - [[#file-modes][File Modes]]
   - [[#markdown][Markdown]]
   - [[#fish][Fish]]
-  - [[#docker][Docker]]
+  - [[#docker-1][Docker]]
     - [[#dockerfile][Dockerfile]]
     - [[#docker-compose][Docker Compose]]
   - [[#yaml][Yaml]]
@@ -4732,6 +4734,22 @@ typing with actual code."
       (setq-local show-paren-mode nil)))
 
   (advice-add 'speed-type--play-next :override 'fk/speed-type-project))
+#+END_SRC
+
+** Docker
+#+BEGIN_SRC emacs-lisp
+(use-package docker
+  :commands docker)
+#+END_SRC
+
+** Sozluk
+#+BEGIN_SRC emacs-lisp
+(use-package sozluk
+  :straight (:host github :repo "isamert/sozluk.el")
+  :commands sozluk
+  :config
+  (with-eval-after-load 'shackle
+    (add-to-list 'shackle-rules '("\\`\\*sozluk.*?\\*\\'" :regexp t :align t :size 0.4))))
 #+END_SRC
 
 * File Modes
