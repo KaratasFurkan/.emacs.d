@@ -2925,15 +2925,16 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 (use-package eglot
   :commands eglot
+  :init
+  (setq eglot-stay-out-of '(flymake))
   :custom
   (eglot-ignored-server-capabilites '(:documentHighlightProvider))
-  (eglot-stay-out-of '(flymake))
   (eglot-autoshutdown t)
   :hook
-  (eglot-managed-mode . eldoc-box-hover-mode)
+  ;; (eglot-managed-mode . eldoc-box-hover-mode)
   (eglot-managed-mode . fk/company-enable-snippets)
-  (eglot-managed-mode . (lambda () (flymake-mode 0)))
   :config
+  (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio")))
   (with-eval-after-load 'eglot
     (load-library "project")))
 #+END_SRC
