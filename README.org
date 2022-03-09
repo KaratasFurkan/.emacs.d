@@ -1188,10 +1188,11 @@ size. This function also handles icons and modeline font sizes."
 #+BEGIN_SRC emacs-lisp
 (use-package shackle
   :custom
-  (shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :size 0.4)  ; I use helm-posframe now, this is unnecessary but i want to keep just in case
-                   ("\\`\\*helpful.*?\\*\\'" :regexp t :align t :size 0.4)
-                   ("\\`\\*Go Translate*?\\*\\'" :regexp t :align t :size 0.4)
-                   (help-mode :align t :size 0.4 :select t)))
+  (shackle-default-size 0.4)
+  (shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t)  ; I use helm-posframe now, this is unnecessary but i want to keep just in case
+                   ("\\`\\*helpful.*?\\*\\'" :regexp t :align t)
+                   ("\\`\\*Go Translate*?\\*\\'" :regexp t :align t)
+                   (help-mode :align t :select t)))
   :hook
   (dashboard-after-initialize . shackle-mode))
 #+END_SRC
