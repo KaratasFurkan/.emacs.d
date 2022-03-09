@@ -4818,9 +4818,7 @@ typing with actual code."
 (use-package csv-mode
   :mode "\\.csv\\'"
   :custom
-  (csv-invisibility-default nil)
-  :hook
-  (csv-mode . csv-align-mode))
+  (csv-invisibility-default nil))
 #+END_SRC
 
 ** Po
