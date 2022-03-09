@@ -1271,7 +1271,7 @@ size. This function also handles icons and modeline font sizes."
 (use-package dashboard
   :custom
   ;; Source for logo: https://github.com/tecosaur/emacs-config/blob/master/config.org#splash-screen
-  (dashboard-startup-banner (fk/expand-static-file-name "logos/emacs-e-small.png"))
+  (dashboard-startup-banner (fk/expand-static-file-name "logos/emacs-e-medium.png"))
   ;; Do not show package count, it is meaningless because of lazy loading.
   (dashboard-banner-logo-title "Welcome to Emacs!\n")
   (dashboard-init-info (format "Emacs started in %s\n\n" (fk/time-since-startup)))
@@ -1281,7 +1281,7 @@ size. This function also handles icons and modeline font sizes."
   (dashboard-item-shortcuts '((recents . "r")
                               (projects . "p")
                               (agenda . "a")))
-  (dashboard-items '((recents  . 10)
+  (dashboard-items '((recents  . 5)
                      (projects . 5)
                      (agenda . 0)  ; I override the insert-agenda function
                      (pinned-items . 0)))  ; Custom section
