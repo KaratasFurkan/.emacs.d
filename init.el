@@ -1,5 +1,5 @@
-(defconst config-org (expand-file-name "README.org" user-emacs-directory))
-(defconst config-el (expand-file-name "config.el" user-emacs-directory))
+(defconst config-org (locate-user-emacs-file "README.org"))
+(defconst config-el (locate-user-emacs-file "config.el"))
 
 (unless (file-exists-p config-el)
   (require 'org)

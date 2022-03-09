@@ -362,8 +362,8 @@ too but some parts needs Emacs 27+.
 ** init.el
 init.el is just used to load literate config.
 #+BEGIN_SRC emacs-lisp :tangle init.el
-(defconst config-org (expand-file-name "README.org" user-emacs-directory))
-(defconst config-el (expand-file-name "config.el" user-emacs-directory))
+(defconst config-org (locate-user-emacs-file "README.org"))
+(defconst config-el (locate-user-emacs-file "config.el"))
 
 (unless (file-exists-p config-el)
   (require 'org)
@@ -400,7 +400,7 @@ code blocks on every save to update configuration.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'org-mode-hook
           (lambda ()
-            (if (equal (buffer-file-name) config-org)
+            (if (equal buffer-file-truename config-org)
                 (fk/add-local-hook 'after-save-hook 'fk/tangle-config))))
 #+END_SRC
 
@@ -411,7 +411,7 @@ Taken from: https://github.com/raxod502/straight.el#getting-started
 #+BEGIN_SRC emacs-lisp
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+       (locate-user-emacs-file "straight/repos/straight.el/bootstrap.el"))
       (bootstrap-version 5))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
@@ -620,7 +620,7 @@ Keep Emacs directory clean.
       (call-interactively 'eval-last-sexp)
       (kill-buffer)))
 
-  (defconst fk/static-directory (expand-file-name "static/" user-emacs-directory))
+  (defconst fk/static-directory (locate-user-emacs-file "static/"))
 
   (defun fk/expand-static-file-name (file)
     "Expand filename FILE relative to `fk/static-directory'."
@@ -2034,7 +2034,7 @@ company-yasnippet' to all company backends."
   :straight (:type built-in)
   :custom
   (recentf-exclude `(,(straight--build-dir)
-                     ,(expand-file-name "eln-cache/" user-emacs-directory)
+                     ,(locate-user-emacs-file "eln-cache/")
                      "/usr/share/emacs/"
                      "/usr/local/share/emacs/"
                      "emacs/src/"
