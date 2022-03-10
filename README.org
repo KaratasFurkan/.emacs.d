@@ -4299,7 +4299,9 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :commands git-timemachine
   :bind
   ( :map version-control
-    ("t" . git-timemachine)))
+    ("t" . git-timemachine))
+  :hook
+  (git-timemachine-mode . fk/tree-sitter-hl-mode))
 #+END_SRC
 
 *** Git Blame (vc-msg)
