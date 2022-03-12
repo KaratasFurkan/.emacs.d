@@ -1294,7 +1294,7 @@ size. This function also handles icons and modeline font sizes."
   (dashboard-items '((recents  . 5)
                      (projects . 5)
                      (agenda . 0)  ; I override the insert-agenda function
-                     (pinned-items . 0)))  ; Custom section
+                     (inbox-entries . 0)))  ; Custom section
   :custom-face
   (dashboard-heading ((t (:inherit font-lock-keyword-face :height 1.2))))
   (dashboard-items-face ((t (:weight normal))))
@@ -1320,7 +1320,8 @@ than reading it in normal way."
     (let* ((output-buffer (get-buffer-create "*agenda*"))
            (exit-status (call-process "emacsclient" nil output-buffer nil
                                       "--eval"
-                                      "(let ((org-agenda-span 2))
+                                      "(progn
+                                         (setq org-agenda-span 2)
                                          (org-agenda-list)
                                          (read-only-mode -1)
                                          (goto-char (point-min))
@@ -1340,13 +1341,16 @@ than reading it in normal way."
     (dashboard-insert-heading "Agenda for today:")
     (insert "\n\n" (fk/dashboard-get-agenda)))
 
-  ;; Colorize agenda section even if org-agenda.el hasn't loaded.
+  ;; Colorize agenda & inbox entries section even if org.el or org-agenda.el hasn't loaded.
   ;; Note: defining faces is enough, color values comes from propertized string
+  (defface org-level-1 nil nil)
+  (defface org-link nil nil)
   (defface org-agenda-structure nil nil)
   (defface org-agenda-date nil nil)
   (defface org-agenda-date-today nil nil)
   (defface org-agenda-current-time nil nil)
   (defface org-agenda-calendar-event nil nil)
+  (defface org-scheduled nil nil)
   (defface org-scheduled-today nil nil)
   (defface org-time-grid nil nil)
   (defface org-warning nil nil)
@@ -1359,19 +1363,37 @@ than reading it in normal way."
   (defface org-habit-alert-face nil nil)
   (defface org-habit-overdue-future-face nil nil)
 
+  (defun fk/dashboard-get-inbox-entries ()
+    "Get inbox entry list from Emacs daemon. Faster
+than reading it in normal way."
+    (let* ((output-buffer (get-buffer-create "*inbox-entries*"))
+           (exit-status (call-process "emacsclient" nil output-buffer nil
+                                      "--eval"
+                                      "(let* ((file (expand-file-name \"inbox.org\" org-directory))
+                                                  (entries (org-map-entries
+                                                            (lambda ()
+                                                              (buffer-substring (point) (line-end-position)))
+                                                            \"LEVEL=1\" (list file))))
+                                             (with-temp-buffer
+                                               (dolist (entry entries)
+                                                 (insert (format \"  %s\n\" entry)))
+                                               (buffer-string)))")))
+      (if (zerop exit-status)
+          (let* ((output (with-current-buffer output-buffer
+                           (buffer-substring-no-properties (point-min) (point-max))))
+                 (clean-output (string-replace "#<marker" "<marker" output))
+                 (agenda (car (read-from-string clean-output))))
+            (kill-buffer output-buffer)
+            (string-trim agenda))
+        "Emacs server (daemon) is not running, Agenda couldn't loaded.")))
 
-  ;; Custom section:  Pinned Items
-  ;; I use this to pin the things I need to remember.
-  (setq fk/dashboard-pinned-items '("Fill Worksheet"))
-
-  (defun fk/dashboard-insert-pinned-items (&rest _)
-    "Insert pinned items."
+  (defun fk/dashboard-insert-inbox-entries (&rest _)
+    "Insert inbox entries items."
     (insert (all-the-icons-octicon "pin" :height 1.2 :v-adjust 0.02 :face 'dashboard-heading)
-            (propertize " Pinned Items:\n" 'face 'dashboard-heading 'line-spacing 5))
-    (dolist (item fk/dashboard-pinned-items)
-      (insert (format "  %s %s\n" (all-the-icons-octicon "primitive-dot" :height 1.0 :v-adjust 0.02) item))))
+            (propertize " Inbox Entries:\n" 'face 'dashboard-heading 'line-spacing 5)
+            "  " (fk/dashboard-get-inbox-entries)))
 
-  (add-to-list 'dashboard-item-generators  '(pinned-items . fk/dashboard-insert-pinned-items)))
+  (add-to-list 'dashboard-item-generators  '(inbox-entries . fk/dashboard-insert-inbox-entries)))
 #+END_SRC
 
 ** Stripe Buffer
