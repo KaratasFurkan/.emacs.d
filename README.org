@@ -3682,8 +3682,9 @@ otherwise, open the file in a new buffer."
                         ("someday.org" :level . 1)
                         ("archive.org" :level . 1)
                         ("agenda.org" :level . 1)))
-  (org-default-priority ?A)  ; Highest
-  (org-log-done 'time)
+  (org-priority-default ?A)  ; Highest
+  ;; (org-log-done 'time)
+  (org-fontify-done-headline nil)
   (org-log-into-drawer t)  ; Log TODO state changes into :LOGBOOK: drawer insted of directly adding lines to the subtree
   (org-todo-keywords '((sequence "TODO(1)" "WIP(w)" "WAITING_REVIEW(r)" "WAITING_TEST(t)" "READY_PROD(p)" "HOLD(h)" "|"
                                  "DONE(d)" "CANCELLED(c)")))
@@ -3706,7 +3707,7 @@ otherwise, open the file in a new buffer."
   (org-level-1 ((t (:height 1.3 :weight bold))))
   (org-drawer ((t (:foreground nil :inherit font-lock-comment-face))))
   (org-table ((t (:family ,fk/default-font-family :foreground "white"))))
-  (org-document-title ((t (:height 1.5))))
+  (org-document-title ((t (:height 3.0))))
   (org-block-begin-line ((t (:foreground ,fk/light-color3 :background ,fk/background-color :extend t))))
   (org-document-info-keyword ((t (:foreground ,fk/light-color3 :height 10))))  ; Make #+TITLE: invisible
   (org-meta-line ((t (:foreground ,fk/light-color3))))  ; Less distractive
@@ -3720,6 +3721,7 @@ otherwise, open the file in a new buffer."
     ("f" . (lambda () (interactive) (helm-find-files-1 "~/org/")))
     ("c" . (lambda () (interactive) (org-capture :keys "i")))
     ("t" . fk/org-babel-tangle-block)
+    ("d" . (lambda () (interactive) (org-todo "DONE")))
     :map org-mode-map
     ("C-c C-e" . org-edit-special)
     ("M-n" . org-next-visible-heading)
@@ -3750,12 +3752,6 @@ otherwise, open the file in a new buffer."
     ("C-v". (lambda () (interactive) (org-eval-in-calendar '(calendar-forward-month 1))))
     ("M-v". (lambda () (interactive) (org-eval-in-calendar '(calendar-backward-month 1)))))
   :hook
-  ;; TODO: bunlar yerine prettify + box face'i ile yap
-  (org-mode . prettify-symbols-mode)
-  (org-mode . (lambda () (setq prettify-symbols-alist
-                               '(("[ ]" . "☐")
-                                 ("[X]" . "☑") ;; ✔
-                                 ("[-]" . "◿"))))) ;; ◪, ⬔
   (org-babel-after-execute . org-redisplay-inline-images)
   (org-mode . (lambda () (fk/add-local-hook 'before-save-hook 'org-redisplay-inline-images)))
   (org-after-refile-insert . (lambda () (fk/org-sort-by-priority) (save-buffer)))
@@ -3826,29 +3822,35 @@ otherwise, open the file in a new buffer."
   (defhydra org-refile-hydra
     (:color red :hint nil)
     "
-^Move^            ^Todo^         ^Someday^        ^Archive^
-^^────────────────^^─────────────^^───────────────^^─────────
-_n_: Next         _w_: Work      _E_: Emacs       _d_: Done
-_p_: Previous     _e_: Emacs     _T_: Tech        _t_: Trash
-_P_: Priority     _h_: Home      _M_: Movie       ^^
-^^                _o_: Other     _S_: TV Show     ^^
-^^                ^^             _A_: Anime       ^^
-^^                ^^             _V_: Video       ^^
-^^                ^^             _F_: Food        ^^
-^^                ^^             _O_: Other       ^^
+^Move^                 ^Todo^         ^Someday^          ^Archive^
+-----------------------------------------------------------
+_n_: Next              _w_: Work      _E_: Emacs         _d_: Done
+_p_: Previous          _e_: Emacs     _R_: Presentation  _x_: Trash
+_P_: Priority          _t_: Tech      _T_: Tech          ^^
+_1_: Low Priority      _h_: Home      _M_: Movie         ^^
+_2_: Medium Priority   _o_: Other     _S_: TV Show       ^^
+_3_: High Priority     ^^             _A_: Anime         ^^
+^^                     ^^             _V_: Video         ^^
+^^                     ^^             _F_: Food          ^^
+^^                     ^^             _O_: Other         ^^
 
 "
     ;; Move
     ("n" next-line)
     ("p" previous-line)
     ("P" org-priority-down)
+    ("1" (lambda () (interactive) (org-priority ?C)))
+    ("2" (lambda () (interactive) (org-priority ?B)))
+    ("3" (lambda () (interactive) (org-priority ?A)))
     ;; Todo
     ("w" (lambda () (interactive) (fk/org-refile-fixed-location "todos.org" "Work")))
     ("e" (lambda () (interactive) (fk/org-refile-fixed-location "todos.org" "Emacs")))
+    ("t" (lambda () (interactive) (fk/org-refile-fixed-location "todos.org" "Tech")))
     ("h" (lambda () (interactive) (fk/org-refile-fixed-location "todos.org" "Home")))
     ("o" (lambda () (interactive) (fk/org-refile-fixed-location "todos.org" "Other")))
     ;; Someday
     ("E" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Emacs")))
+    ("R" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Emacs Presentation")))
     ("T" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Tech")))
     ("M" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Movie")))
     ("S" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "TV Show")))
@@ -3858,7 +3860,7 @@ _P_: Priority     _h_: Home      _M_: Movie       ^^
     ("O" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Other")))
     ;; Archive
     ("d" fk/org-refile-done)
-    ("t" fk/org-refile-trash)
+    ("x" fk/org-refile-trash)
     ;; General
     ("m" org-refile "Refile manually")
     ("s" save-buffer "Save buffer")
