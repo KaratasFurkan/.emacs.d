@@ -3971,7 +3971,6 @@ _3_: High Priority     ^^             _A_: Anime         ^^
     (org-agenda-list)
     (fk/darken-background))
   (let ((frame (posframe-show org-agenda-buffer
-                              :position (point)
                               :poshandler 'posframe-poshandler-frame-center
                               :border-width 30
                               :border-color fk/dark-color)))
