@@ -688,6 +688,10 @@ FILTER is function that runs after the process is finished, its args should be
 (add-hook 'server-after-make-frame-hook (lambda () (select-frame-set-input-focus (selected-frame))))
 
 (defalias 'narrow-quit 'widen)  ; I forget `widen' everytime
+
+(defmacro fk/advice-add (symbol where function &rest args)
+  "Add advice even the arguments are not the same."
+  `(advice-add ,symbol ,where (lambda (&rest _) (interactive) (apply ,function '(,@args)))))
 #+END_SRC
 
 ** Helpful
@@ -735,7 +739,7 @@ which is generally not intended to be edited."
   (unless (string-prefix-p (straight--dir) default-directory)
     (apply orig-func args)))
 
-(advice-add 'hack-local-variables-confirm :override 'fk/straight-ignore-local-variables)
+(advice-add 'hack-local-variables-confirm :around 'fk/straight-ignore-local-variables)
 #+END_SRC
 
 * Appearance
