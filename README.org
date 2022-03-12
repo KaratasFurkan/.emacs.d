@@ -107,6 +107,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#goggles-mode-highlight-changes][Goggles Mode (Highlight Changes)]]
   - [[#hideshow][Hide/Show]]
   - [[#topspace-upper-margin][Topspace (Upper margin)]]
+  - [[#redacted-hide-text][Redacted (Hide text)]]
 - [[#completion][Completion]]
   - [[#better-defaults-2][Better Defaults]]
   - [[#which-key-keybinding-completion][Which Key (Keybinding Completion)]]
@@ -1541,6 +1542,14 @@ current buffer."
   :bind
   ( :map windows
     ("m" . topspace-mode)))
+#+END_SRC
+
+** Redacted (Hide text)
+#+BEGIN_SRC emacs-lisp
+(use-package redacted
+  :commands redacted-mode
+  :hook
+  (redacted-mode . (lambda () (read-only-mode (if redacted-mode 1 -1)))))
 #+END_SRC
 
 * Completion
