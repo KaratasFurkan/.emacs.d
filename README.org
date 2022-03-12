@@ -3241,6 +3241,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 
 (fk/helm-rg-define-search-commands
  ("django-search-models"      django "m" "models.py"        "^class ")
+ ("django-search-factories"   django "f" "factories.py"     "^class ")
  ("django-search-views"       django "v" "views*.py"        "^class ")
  ("django-search-serializers" django "s" "*serializers*.py" "^class ")
  ("django-search-tests"       django "t" "*test*.py"        "^class ")
@@ -3252,7 +3253,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 
 ;; Utility functions for Django
 
-(defvar fk/django-test-args "" "Should be set as directory local variable.")
+(defcustom fk/django-test-args "" "Should be set as directory local variable.")
 
 (defun fk/django-get-module ()
   "pony-get-module originally."
@@ -3283,7 +3284,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
     (if (window-live-p (get-buffer-window vterm-buffer))
         (select-window (get-buffer-window vterm-buffer))
       (fk/projectile-vterm)))
-  (vterm-insert (format "python manage.py test %s %s" fk/django-test-args
+  (vterm-insert (format "python manage.py test --keepdb %s %s" fk/django-test-args
                         (substring-no-properties (pop kill-ring)))))
 
 (bind-keys*
