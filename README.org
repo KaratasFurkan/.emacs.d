@@ -2974,6 +2974,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (lsp-completion-provider :none)
   (lsp-file-watch-threshold 1500)  ; pyright has more than 1000
   (lsp-enable-links nil)
+  (lsp-headerline-breadcrumb-enable nil)
   ;; Maybe set in future:
   ;;(lsp-enable-on-type-formatting nil)
   :custom-face
@@ -3057,6 +3058,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   :commands (symbol-overlay-mode symbol-overlay-put fk/highlight-occurrences)
   :hook
   (emacs-lisp-mode . symbol-overlay-mode)
+  (python-mode . symbol-overlay-mode)
   :config
   (defun fk/highlight-occurrences ()
     "Put highlight to occurrences of the string in region."
@@ -3142,12 +3144,12 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (python-mode . (lambda () (setq-local company-prescient-sort-length-enable nil)))
   (python-mode . (lambda () (unless (and buffer-file-name (file-in-directory-p buffer-file-name "~/.virtualenvs/"))
                               (flycheck-mode))))
-  (python-mode . lsp-deferred)
+  ;; (python-mode . lsp-deferred)
   ;;(python-mode . (lambda () (fk/add-local-hook 'before-save-hook 'eglot-format-buffer)))
-  ;;(python-mode . eglot-ensure)
+  (python-mode . eglot-ensure)
   ;; importmagic runs ~100mb ipython process per python file, and it does not
   ;; always find imports, 60%-70% maybe. I stop using this, but still want to keep.
-  ;;(python-mode . importmagic-mode)
+  ;; (python-mode . importmagic-mode)
   (python-mode . fk/activate-pyvenv)
   (python-mode . (lambda ()
                    (when (and (buffer-file-name)
