@@ -2391,7 +2391,6 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
 (use-package helm-swoop
   :custom
   (helm-swoop-speed-or-color t)
-  (helm-swoop-split-window-function 'display-buffer)
   (helm-swoop-min-overlay-length 0)
   ;;(helm-swoop-use-fuzzy-match t)
   :custom-face
