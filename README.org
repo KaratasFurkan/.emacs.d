@@ -3087,11 +3087,19 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
   (python-mode . symbol-overlay-mode)
   :config
   (defun fk/highlight-occurrences ()
-    "Put highlight to occurrences of the string in region."
+    "Put highlight to the occurrences of the symbol at point or the
+string in the region. Uses `hi-lock' to highlight,
+`symbol-overlay' to generate a random face. To remove highlights,
+use `hi-lock-unface-buffer' or disable `hi-lock-mode'."
     (interactive)
     (let ((str (fk/get-selected-text))
           (face (nth (random (length symbol-overlay-faces)) symbol-overlay-faces)))
-      (highlight-regexp (regexp-quote str) face))))
+      (if str
+          (highlight-regexp (regexp-quote str) face)
+        (hi-lock-face-symbol-at-point))))
+
+  (defalias 'fk/highlight-remove (lambda () (interactive) (hi-lock-unface-buffer t)))
+  (defalias 'fk/highlight-remove-one-by-one 'hi-lock-unface-buffer))
 #+END_SRC
 
 *** Rainbow Mode
