@@ -2521,10 +2521,15 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
       "Rename current perspective according to current project name."
       (interactive)
       (when (projectile-project-p)
-        (let ((project-name (projectile-project-name)))
-          (persp-rename (if (> (length project-name) 10)
-                            (concat (substring project-name 0 9) "…")
-                          project-name)))))
+        (let* ((project-name (projectile-project-name))
+               (ellipsis "…")
+               (short-name (if (> (length project-name) 10)
+                               (concat (substring project-name 0 9) ellipsis)
+                             project-name))
+               (name (if (gethash short-name (perspectives-hash))
+                         (concat "2—" short-name)
+                       short-name)))
+          (persp-rename name))))
 
     (define-minor-mode fk/perspective-auto-rename-mode
       "Rename perspectives according to project name automatically."
