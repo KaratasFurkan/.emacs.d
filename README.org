@@ -3585,7 +3585,12 @@ otherwise, open the file in a new buffer."
   (defun fk/dired-open-systems-file-manager ()
     "Open current directory with the system's default file manager."
     (interactive)
-    (call-process-shell-command (concat "xdg-open " default-directory " &"))))
+    (call-process-shell-command (concat "xdg-open " default-directory " &")))
+
+  (defun fk/dired-sort-by-extension ()
+    "Sort files by extension."
+    (interactive)
+    (dired-sort-other (concat dired-listing-switches " -X"))))
 #+END_SRC
 
 *** Dired-X
