@@ -252,6 +252,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#dired-show-readme][Dired Show Readme]]
     - [[#dired-posframe][Dired Posframe]]
     - [[#dired-recent][Dired Recent]]
+    - [[#dired-git-info-][Dired Git Info-]]
   - [[#org][Org]]
     - [[#org-1][Org]]
     - [[#custom-functions-6][Custom Functions]]
@@ -279,11 +280,13 @@ File explorer (treemacs), auto complete (company), git&github integration
       - [[#magit-1][Magit]]
       - [[#magit-todos][Magit Todos]]
       - [[#magit-forge][Magit Forge]]
+      - [[#magit-delta][Magit Delta]]
     - [[#diff-hl][diff-hl]]
     - [[#smerge][Smerge]]
     - [[#git-link][Git Link]]
     - [[#git-timemachine][Git Timemachine]]
     - [[#git-blame-vc-msg][Git Blame (vc-msg)]]
+    - [[#dired-git-info][Dired Git Info]]
   - [[#terminal-emulation][Terminal Emulation]]
     - [[#vterm][Vterm]]
     - [[#shell-pop][Shell Pop]]
@@ -644,8 +647,8 @@ Keep Emacs directory clean.
  revert-without-query '(".*")          ; `revert-buffer' without confirmation
  uniquify-buffer-name-style 'forward   ; non-unique buffer name display: unique-part/non-unique-filename
  fast-but-imprecise-scrolling t        ; supposed to make scrolling faster on hold
- window-resize-pixelwise t)            ; correctly resize windows by pixels (e.g. in split-window functions)
-
+ window-resize-pixelwise t             ; correctly resize windows by pixels (e.g. in split-window functions)
+ native-comp-async-report-warnings-errors nil)
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (global-auto-revert-mode)
@@ -717,7 +720,7 @@ Menu style keybindings like Spacemacs.
 (bind-keys*
  :prefix-map fk/menu-map
  :prefix "M-m"
- ("M-m" . which-key-show-full-major-mode)
+ ("M-m" . which-key-show-major-mode)
  ("M-h" . help-command)
  ("M-u" . universal-argument)
  :map fk/menu-map :prefix-map buffers         :prefix "b"
@@ -787,7 +790,7 @@ I use this to darken non-file buffers like treemacs, helm etc.
   :global t
   (if fk/presentation-mode
       (progn
-        (fk/adjust-font-size 20)
+        (fk/adjust-font-size 40)
         (dimmer-mode 1)
         (setq zoom-size '(100 . 30))
         (zoom-mode 1)
@@ -888,18 +891,17 @@ Change default window dividers to a better built-in alternative.
 ** Font
 *** Font
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
-(defconst fk/default-font-family "Roboto Mono")
+(defconst fk/default-font-family "RobotoMono Nerd Font")
 (defconst fk/default-font-size 90)
 (defconst fk/default-icon-size 15)
 
 (defconst fk/variable-pitch-font-family "Noto Serif")
-(defconst fk/variable-pitch-font-size fk/default-font-size)  ; TODO: adjust this and use in org-mode
 
 (custom-set-faces
  `(default ((t (:family ,fk/default-font-family :height ,fk/default-font-size))))
- `(variable-pitch ((t (:family ,fk/variable-pitch-font-family :height ,fk/variable-pitch-font-size))))
+ `(variable-pitch ((t (:family ,fk/variable-pitch-font-family :height 1.0))))
  ;; Characters with fixed pitch face do not shown when height is 90.
- `(fixed-pitch-serif ((t (:height 100)))))
+ `(fixed-pitch-serif ((t (:height 1.2)))))
 #+END_SRC
 
 *** Custom Functions
@@ -1102,7 +1104,13 @@ size. This function also handles icons and modeline font sizes."
   :hook
   (dashboard-after-initialize . global-page-break-lines-mode)
   :config
-  (add-to-list 'page-break-lines-modes 'c-mode))
+  (add-to-list 'page-break-lines-modes 'c-mode)
+  (defun fk/insert-page-break-line ()
+    "Insert a page break line character ''."
+    (interactive)
+    (insert "")))
+
+(global-set-key (kbd "C-,") 'quoted-insert)
 #+END_SRC
 
 ** [[#trailing-white-space][Trailing White Space-]]
@@ -1186,9 +1194,9 @@ size. This function also handles icons and modeline font sizes."
   (highlight-indent-guides-method 'character)
   (highlight-indent-guides-responsive 'top)
   (highlight-indent-guides-auto-enabled nil)
-  :custom-face
-  (highlight-indent-guides-character-face ((t (:foreground ,fk/light-color7))))
-  (highlight-indent-guides-top-character-face ((t (:foreground ,fk/light-color5))))
+  :custom-face  ; NOTE: The character does not work with "RobotoMono Nerd Font"
+  (highlight-indent-guides-character-face ((t (:family "Source Code Pro" :foreground ,fk/light-color7))))
+  (highlight-indent-guides-top-character-face ((t (:family "Source Code Pro" :foreground ,fk/light-color5))))
   :hook
   (prog-mode . highlight-indent-guides-mode))
 #+END_SRC
@@ -1364,28 +1372,25 @@ than reading it in normal way."
   (defface org-habit-overdue-future-face nil nil)
 
   (defun fk/dashboard-get-inbox-entries ()
+    ;; TODO: appearance is not consistent, seems like there is some sort of caching
     "Get inbox entry list from Emacs daemon. Faster
 than reading it in normal way."
     (let* ((output-buffer (get-buffer-create "*inbox-entries*"))
            (exit-status (call-process "emacsclient" nil output-buffer nil
                                       "--eval"
                                       "(let* ((file (expand-file-name \"inbox.org\" org-directory))
-                                                  (entries (org-map-entries
-                                                            (lambda ()
-                                                              (buffer-substring (point) (line-end-position)))
-                                                            \"LEVEL=1\" (list file))))
-                                             (with-temp-buffer
-                                               (dolist (entry entries)
-                                                 (insert (format \"  %s\n\" entry)))
-                                               (buffer-string)))")))
+                                              (entries (org-map-entries
+                                                        (lambda ()
+                                                          (buffer-substring (line-beginning-position) (line-end-position)))
+                                                        \"LEVEL=1\" (list file))))
+                                         (mapconcat (lambda (s) (format \"  %s\" s)) entries \"\n\"))")))
       (if (zerop exit-status)
           (let* ((output (with-current-buffer output-buffer
                            (buffer-substring-no-properties (point-min) (point-max))))
-                 (clean-output (string-replace "#<marker" "<marker" output))
-                 (agenda (car (read-from-string clean-output))))
+                 (inbox-entries (car (read-from-string output))))
             (kill-buffer output-buffer)
-            (string-trim agenda))
-        "Emacs server (daemon) is not running, Agenda couldn't loaded.")))
+            (string-trim inbox-entries))
+        "Emacs server (daemon) is not running, Inbox entries couldn't loaded.")))
 
   (defun fk/dashboard-insert-inbox-entries (&rest _)
     "Insert inbox entries items."
@@ -1442,17 +1447,18 @@ than reading it in normal way."
 #+BEGIN_SRC emacs-lisp
 (use-package olivetti
   :straight (:host github :repo "KaratasFurkan/olivetti")
+  :preface
+  ;; Body width
+  (setq fk/olivetti-body-width-default 120)
+  (setq fk/olivetti-body-width-large 180)
+  (setq olivetti-body-width fk/olivetti-body-width-default)
+  ;; Borders
+  (setq olivetti-enable-borders t)
+  (setq fk/default-olivetti-borders-color fk/dark-color2)
+  (setq fk/darker-olivetti-borders-color fk/dark-color9)
   :custom
   (olivetti-enable-visual-line-mode nil)
   (olivetti-window-local t)
-  ;; Body width
-  (fk/olivetti-body-width-default 120)
-  (fk/olivetti-body-width-large 180)
-  (olivetti-body-width fk/olivetti-body-width-default)
-  ;; Borders
-  (olivetti-enable-borders t)
-  (fk/default-olivetti-borders-color fk/dark-color2)
-  (fk/darker-olivetti-borders-color fk/dark-color9)
   :custom-face
   (olivetti-borders-face ((t (:background ,fk/default-olivetti-borders-color))))
   :bind*
@@ -1470,7 +1476,7 @@ than reading it in normal way."
   :config
   (setq olivetti-excluded-buffer-regexps
         `(,@olivetti-excluded-buffer-regexps
-          "\\`\\*vterm" "\\`\\*pomidor\\*" "*fireplace*"))
+          "\\`\\*vterm" "*fireplace*"))
 
   (defun fk/smart-C-x-1 ()
     (interactive)
@@ -1814,6 +1820,7 @@ company-yasnippet' to all company backends."
 *** Company Box
 #+BEGIN_SRC emacs-lisp
 (use-package company-box
+  :disabled
   :straight (:host github :repo "KaratasFurkan/company-box" :branch "consider-icon-right-margin-for-frame")
   :custom
   ;; Disable `single-candidate' and `echo-area' frontends
@@ -1822,8 +1829,13 @@ company-yasnippet' to all company backends."
   ;;(company-box-frame-behavior 'point)
   (company-box-icon-right-margin 0.5)
   (company-box-backends-colors '((company-yasnippet . (:annotation default))))
+  ;;:hook
+  ;;(company-mode . company-box-mode)
+  )
+
+(use-package company-posframe
   :hook
-  (company-mode . company-box-mode))
+  (company-mode . company-posframe-mode))
 #+END_SRC
 
 *** Company Statistics/Prescient
@@ -1871,14 +1883,14 @@ company-yasnippet' to all company backends."
 #+BEGIN_SRC emacs-lisp
 (use-package hydra
   :defer t
-  :custom
-  (hydra-hint-display-type 'posframe)
-  (hydra-posframe-show-params
-   `( :internal-border-width 2
-      :internal-border-color ,fk/light-color
-      :left-fringe 5
-      :right-fringe 5
-      :poshandler posframe-poshandler-frame-bottom-center)))
+  :init
+  (setq hydra-hint-display-type 'posframe)
+  (setq hydra-posframe-show-params
+        `( :internal-border-width 2
+           :internal-border-color ,fk/light-color
+           :left-fringe 5
+           :right-fringe 5
+           :poshandler posframe-poshandler-frame-bottom-center)))
 #+END_SRC
 
 * Search & Navigation
@@ -2035,6 +2047,11 @@ company-yasnippet' to all company backends."
 (global-set-key (kbd "C-x C-k") 'kill-current-buffer)
 (global-set-key (kbd "M-l") 'move-to-window-line-top-bottom)
 (bind-key* "C-q" 'fk/switch-last-window)
+(global-set-key (kbd "M-g M-g") (lambda ()
+                                  (interactive)
+                                  (require 'avy)
+                                  (avy-push-mark)
+                                  (goto-line 1)))
 
 ;; Split & Switch
 ;; I use `fk/smart-C-x-1' for (kbd "C-1"), see Appearance / Olivetti
@@ -2056,6 +2073,40 @@ company-yasnippet' to all company backends."
  ("h" . fk/home)
  ("m" . fk/messages))
 
+;; (defmacro fk/define-scratch-command (name mode kbd)
+;;   "Define a scratch generator command and keybinding with the given
+;; major-mode. Usage:
+;; (fk/define-scratch-command
+;;  \"my-search\" global-map \"C-M-s\" \"*.el\" \"foo\")"
+;;   `(progn
+;;      (defun ,(intern (concat "fk/" name)) ()
+;;        (interactive)
+;;        (require 'helm-rg)
+;;        (fk/helm-rg-dwim-with-glob (or ,glob "") ,query))
+;;      (define-key ,keymap (kbd ,kbd) ',(intern (concat "fk/" name)))))
+
+;; (defmacro fk/helm-rg-define-search-commands (&rest args)
+;;   "Define multiple search command at once. Usage:
+;; (fk/helm-rg-define-search-commands
+;;  (\"my-search\" global-map \"C-M-s\" \"*.el\" \"foo\")
+;;  (\"my-other-search\" global-map \"C-M-S\" \"*.el\" \"bar\"))"
+;;   `(progn ,@(cl-loop for expr in args
+;;                      collect `(fk/helm-rg-define-search-command ,@expr))))
+
+;; (defun fk/generate-random-elisp-scratch ()
+;;   "Create and switch to a temporary scratch buffer with a random name and
+;; `emacs-lisp-mode' activated."
+;;   (interactive)
+;;   (switch-to-buffer (make-temp-name "scratch-elisp-"))
+;;   (emacs-lisp-mode))
+
+;; (fk/define-scratch-commands
+;;  ("generate-elisp-scratch"  'emacs-lisp-mode "b")
+;;  ("generate-org-scratch"    'org-mode        "o")
+;;  ("generate-text-scratch"   'text-mode       "t")
+;;  ("generate-python-scratch" 'python-mode     "p")
+;;  ("generate-json-scratch"   'json-mode       "j")
+
 (bind-keys*
  :map windows
  ("b" . balance-windows)
@@ -2068,6 +2119,8 @@ company-yasnippet' to all company backends."
 (use-package recentf
   ;; Use with `helm-recentf'
   :straight (:type built-in)
+  :preface
+  (setq recentf-max-saved-items 200)
   :custom
   (recentf-exclude `(,(straight--build-dir)
                      ,(locate-user-emacs-file "eln-cache/")
@@ -2076,8 +2129,7 @@ company-yasnippet' to all company backends."
                      "emacs/src/"
                      ,(expand-file-name "~/.virtualenvs")
                      "/usr/lib/node_modules/"
-                     "/tmp/"))
-  (recentf-max-saved-items 200))
+                     "/tmp/")))
 #+END_SRC
 
 ** Winner Mode
@@ -2104,7 +2156,7 @@ company-yasnippet' to all company backends."
   :custom
   (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (aw-ignore-current t)
-  (aw-dispatch-when-more-than 3)
+  (aw-dispatch-when-more-than 3)  ; TODO: does not work
   :custom-face
   (aw-leading-char-face ((t (:height 15.0 :foreground "orangered2"))))
   :bind
@@ -2455,7 +2507,7 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
   :bind
   ("M-j" . avy-goto-word-or-subword-1)
   ("C-M-u" . avy-pop-mark)
-  ("C-M-i" . (lambda () (interactive) (avy-push-mark))))
+  ("C-M-i" . (lambda () (interactive) (require 'avy) (avy-push-mark))))
 #+END_SRC
 
 ** Treemacs
@@ -2492,6 +2544,7 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
 (use-package perspective
   :preface
   (defvar persp-icon (all-the-icons-material "dashboard" :height 0.9 :v-adjust -0.17 :face 'all-the-icons-blue))
+  (defcustom persp-project-name nil "Should be set as directory local variable.")
   :custom
   (persp-mode-prefix-key (kbd "M-m p"))
   (persp-state-default-file (no-littering-expand-var-file-name "perspective.el"))
@@ -2521,7 +2574,7 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
       "Rename current perspective according to current project name."
       (interactive)
       (when (projectile-project-p)
-        (let* ((project-name (projectile-project-name))
+        (let* ((project-name (or persp-project-name (projectile-project-name)))
                (ellipsis "…")
                (short-name (if (> (length project-name) 10)
                                (concat (substring project-name 0 9) ellipsis)
@@ -3115,13 +3168,13 @@ use `hi-lock-unface-buffer' or disable `hi-lock-mode'."
 
 *** Bug Reference Mode
 #+BEGIN_SRC emacs-lisp
-(use-package bug-reference
-  :straight (:type built-in)
-  ;; In default, this package is auto-activated and sometimes breaks syntax
-  ;; highlighting by putting unrelevant bug-reference highlight and clickable
-  ;; link.
-  ;; E.g. `#112' at `my_color = "#112233"' gets bug-reference highlight.
-  :disabled)
+;; (use-package bug-reference
+;;   :straight (:type built-in)
+;;   ;; In default, this package is auto-activated and sometimes breaks syntax
+;;   ;; highlighting by putting unrelevant bug-reference highlight and clickable
+;;   ;; link.
+;;   ;; E.g. `#112' at `my_color = "#112233"' gets bug-reference highlight.
+;;   :disabled)
 #+END_SRC
 
 ** Emacs Lisp
@@ -3680,6 +3733,11 @@ otherwise, open the file in a new buffer."
   ;; :hook
   ;; (dired-mode . dired-show-readme-mode)
   )
+
+;; Alternative
+(use-package dired-auto-readme
+  :straight (:host github :repo "amno1/dired-auto-readme")
+  :commands dired-auto-readme-mode)
 #+END_SRC
 
 *** Dired Posframe
@@ -3692,14 +3750,14 @@ otherwise, open the file in a new buffer."
 *** Dired Recent
 #+BEGIN_SRC emacs-lisp
 (use-package dired-recent
-  :after dired  ; TODO: is bind still defer?
   :bind
   ( :map files
     ("d" . dired-recent-open))
-  :config
-  (dired-recent-mode))
+  :hook
+  (dashboard-after-initialize . dired-recent-mode))
 #+END_SRC
 
+*** [[#dired-git-info][Dired Git Info-]]
 ** Org
 *** Org
 #+BEGIN_SRC emacs-lisp
@@ -4107,6 +4165,8 @@ _3_: High Priority     ^^             _A_: Anime         ^^
     ("<f8>" . org-tree-slide-content)
     ("<f9>" . org-tree-slide-move-previous-tree)
     ("<f10>" . org-tree-slide-move-next-tree)
+    ("<left>" . org-tree-slide-move-previous-tree)
+    ("<right>" . org-tree-slide-move-next-tree)
     ("C-n" . (lambda () (interactive) (if cursor-type
                                           (next-line)
                                         (setq-local cursor-type t)
@@ -4122,6 +4182,8 @@ _3_: High Priority     ^^             _A_: Anime         ^^
   (org-tree-slide-after-narrow . org-display-inline-images)
   (org-tree-slide-play . fk/org-tree-slide-update-modeline)
   (org-tree-slide-stop . fk/org-tree-slide-update-modeline)
+  (org-tree-slide-mode . (lambda () (fk/adjust-font-size 40)))
+  ;; (org-tree-slide-stop . (lambda () (fk/adjust-font-size -40)))
   ;; (org-tree-slide-play . (lambda () (setq-local olivetti-body-width 95) (olivetti-mode 1)))
   ;; (org-tree-slide-stop . (lambda () (setq-local olivetti-body-width 120) (olivetti-mode 1)))
   (org-tree-slide-mode . (lambda () (org-appear-mode -1)))
@@ -4242,8 +4304,9 @@ Pull Requests, Issues etc.
   :straight (:host github :repo "KaratasFurkan/forge" :branch "add-pr-message-prefix-and-number-prefix")
   :after magit
   :preface
-  (defvar fk/forge-reviewers       nil "Should be set as directory local variable.")
-  (defvar fk/forge-review-labels   nil "Should be set as directory local variable.")
+  (defcustom forge-create-pullreq-message-prefix       nil "Should be set as directory local variable.")
+  (defcustom fk/forge-reviewers                        nil "Should be set as directory local variable.")
+  (defcustom fk/forge-review-labels                    nil "Should be set as directory local variable.")
   :custom
   (forge-create-pullreq-message-number-prefix t)
   :config
@@ -4277,6 +4340,12 @@ and set LABELS (a string list of labels) if given."
            '("--stat" "--no-ext-diff"))))))
 
   (advice-add 'forge-visit-pullreq :override 'fk/forge-pullreq-diff))
+#+END_SRC
+
+**** Magit Delta
+#+BEGIN_SRC emacs-lisp
+;; (use-package magit-delta
+;;   :hook (magit-mode . magit-delta-mode))
 #+END_SRC
 
 *** diff-hl
@@ -4386,12 +4455,29 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     ("b" . vc-msg-show)))
 #+END_SRC
 
+*** Dired Git Info
+#+BEGIN_SRC emacs-lisp
+;; (use-package dired-git-info
+;;   :hook (dired-after-readin . dired-git-info-auto-enable)
+;;   :config
+;;   (defun dired-subtree-toggle-advice (orig-fn &rest args)
+;;     "Source: https://github.com/clemera/dired-git-info/issues/9#issuecomment-1013520395"
+;;     (cond ((bound-and-true-p dired-git-info-mode)
+;;            (dired-git-info-mode -1)
+;;            (apply orig-fn args)
+;;            (dired-git-info-mode +1))
+;;           (t (apply orig-fn args))))
+
+;;   (advice-add 'dired-subtree-toggle :around 'dired-subtree-toggle-advice))
+#+END_SRC
+
 ** Terminal Emulation
 *** Vterm
 #+BEGIN_SRC emacs-lisp
 (use-package vterm
   :custom
   (vterm-max-scrollback 100000)
+  (vterm-buffer-name "vterm")
   :custom-face
   ;; match with fk/darken-background
   (vterm-color-default ((t (:background ,fk/dark-color))))
@@ -4415,7 +4501,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (vterm-mode . (lambda () (setq-local global-hl-line-mode nil
                                        show-trailing-whitespace nil)))
   (vterm-mode . fk/darken-background)
-  (vterm-mode . hack-dir-local-variables-non-file-buffer)
+  (vterm-mode . hack-dir-local-variables-non-file-buffer)  ; TODO: doesn't work
   (vterm-copy-mode . (lambda ()
                        (face-remap-add-relative 'hl-line :background fk/background-color)
                        (call-interactively 'hl-line-mode)))
@@ -4526,8 +4612,8 @@ the `docker-container-prompt-regexp'."
   :config
   (org-babel-do-load-languages 'org-babel-load-languages '((restclient . t)))  ; TODO: this may slow down org load
   (add-hook 'org-babel-after-execute-hook (lambda () (let ((lang (nth 0 (org-babel-get-src-block-info))))
-                                                       (when (string= lang "restclient")
-                                                        (save-buffer))))))
+                                                       (when (and buffer-file-name (string= lang "restclient"))
+                                                         (save-buffer))))))
 #+END_SRC
 
 *** Password Mode
@@ -4549,11 +4635,15 @@ the `docker-container-prompt-regexp'."
 ** EAF
 #+BEGIN_SRC emacs-lisp
 (use-package eaf
-  :straight
-  (:host github :repo "manateelazycat/emacs-application-framework" :depth 1 :files ("*"))
+  :load-path "~/.emacs.d/straight/repos/emacs-application-framework"  ; manually cloned
+  ;; :straight
+  ;; (:host github :repo "emacs-eaf/emacs-application-framework" :depth 1 :files ("*"))
   :commands eaf-open-browser eaf-open-camera
   :custom
-  (eaf-python-command "/usr/bin/python"))  ; don't use venv python
+  (eaf-python-command "/usr/bin/python")  ; don't use venv python
+  :config
+  (require 'eaf-browser)
+  (require 'eaf-camera))
 #+END_SRC
 
 ** Sudo Edit
@@ -4696,8 +4786,9 @@ the `docker-container-prompt-regexp'."
 #+BEGIN_SRC emacs-lisp
 (use-package plantuml-mode
   :mode "\\.plantuml\\'"
+  :preface
+  (setq plantuml-jar-path (concat no-littering-etc-directory "plantuml.jar"))
   :custom
-  (plantuml-jar-path (concat no-littering-etc-directory "plantuml.jar"))
   (plantuml-default-exec-mode 'jar)
   (plantuml-indent-level 4)
   :init
@@ -4905,7 +4996,8 @@ typing with actual code."
 (use-package csv-mode
   :mode "\\.csv\\'"
   :custom
-  (csv-invisibility-default nil))
+  (csv-invisibility-default nil)
+  (csv-align-max-width 999))
 #+END_SRC
 
 ** Po
