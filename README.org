@@ -3597,7 +3597,7 @@ TODO: seperate sections (html, css..)
   (dired-mode . dired-hide-details-mode)
   ;; Fix `save-place' in dired when opening from bookmarks (mostly from dashboard)
   (bookmark-after-jump . save-place-dired-hook)
-  (dired-after-readin . (lambda () (when (string= (dired-current-directory) (concat (expand-file-name "" "~") "/"))
+  (dired-after-readin . (lambda () (when (string= (dired-current-directory) (concat (getenv "HOME") "/"))
                                      (dired-omit-mode))))
   :config
   (defun fk/dired-left-click (event)
