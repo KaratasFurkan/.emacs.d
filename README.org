@@ -327,7 +327,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#yaml][Yaml]]
   - [[#requirementstxt-pip][requirements.txt (pip)]]
   - [[#pdf-][PDF-]]
-  - [[#gitignore][.gitignore]]
+  - [[#git-modes][Git Modes]]
   - [[#csv][Csv]]
   - [[#po][Po]]
   - [[#terraform][Terraform]]
@@ -4987,10 +4987,11 @@ typing with actual code."
 #+END_SRC
 
 ** [[#pdf][PDF-]]
-** .gitignore
+** Git Modes
 #+BEGIN_SRC emacs-lisp
-(use-package gitignore-mode
-  :mode "/\\.gitignore\\'")
+(use-package git-modes
+  :mode (("/.gitignore\\'" . gitignore-mode)
+         ("/.dockerignore\\'" . gitignore-mode)))
 #+END_SRC
 
 ** Csv
