@@ -57,7 +57,6 @@
  ("emacs-hcl-mode" . "e12b1df2ca28d2b06c471cd709c038a2dc0bcdbd")
  ("emacs-ipython-notebook" . "09af85821e4fce64675d5287fe9f3a6847d1c5d2")
  ("emacs-keypression" . "9427241f3fa539e4b5ad7581a05eb7e49f2cf518")
- ("emacs-libvterm" . "d9dfa624679afdd5db6ad25429ef86d3dd91401e")
  ("emacs-request" . "f3a5b4352e9f444ace2a332939abff504b573887")
  ("emacs-slack" . "ae1d742a0193fba38698931055708a28cc382bcf")
  ("emacs-tree-sitter" . "7f5d0938002092ec08830a73f64961021303e1e9")

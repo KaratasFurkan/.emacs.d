@@ -535,7 +535,7 @@ minibuffer interaction (helm etc.).
 
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (setq file-name-handler-alist default-file-name-handler-alist)) 100)
+            (setq file-name-handler-alist default-file-name-handler-alist)) 95)
 #+END_SRC
 
 ** Others
@@ -695,6 +695,10 @@ FILTER is function that runs after the process is finished, its args should be
 (defmacro fk/advice-add (symbol where function &rest args)
   "Add advice even the arguments are not the same."
   `(advice-add ,symbol ,where (lambda (&rest _) (interactive) (apply ,function '(,@args)))))
+
+(defun fk/get-current-line ()
+  "Return current line as string with properties."
+  (buffer-substring (line-beginning-position) (line-end-position)))
 #+END_SRC
 
 ** Helpful
@@ -1302,6 +1306,7 @@ size. This function also handles icons and modeline font sizes."
   (dashboard-items '((recents  . 5)
                      (projects . 5)
                      (agenda . 0)  ; I override the insert-agenda function
+                     (todo-items . 0)  ; Custom section
                      (inbox-entries . 0)))  ; Custom section
   :custom-face
   (dashboard-heading ((t (:inherit font-lock-keyword-face :height 1.2))))
@@ -1322,36 +1327,85 @@ size. This function also handles icons and modeline font sizes."
         (switch-to-buffer dashboard-buffer-name)
       (dashboard-refresh-buffer)))
 
-  (defun fk/dashboard-get-agenda ()
-    "Get a copy of the agenda buffer from Emacs daemon. Faster
-than reading it in normal way."
-    (let* ((output-buffer (get-buffer-create "*agenda*"))
+  (defun fk/dashboard-get-section (expression)
+    "Get expression output from Emacs daemon. Faster than reading it
+in normal way if required libraries are already loaded in
+daemon."
+    (let* ((output-buffer (generate-new-buffer "*dashboard-temp*"))
            (exit-status (call-process "emacsclient" nil output-buffer nil
-                                      "--eval"
-                                      "(progn
-                                         (setq org-agenda-span 2)
-                                         (org-agenda-list)
-                                         (read-only-mode -1)
-                                         (goto-char (point-min))
-                                         (kill-line)
-                                         (buffer-string))")))
+                                      "--eval" expression)))
       (if (zerop exit-status)
           (let* ((output (with-current-buffer output-buffer
                            (buffer-substring-no-properties (point-min) (point-max))))
-                 (clean-output (string-replace "#<marker" "<marker" output))
-                 (agenda (car (read-from-string clean-output))))
+                 (clean-output (string-trim (string-replace "#<marker" "<marker" output)))
+                 (propertized-output (car (read-from-string clean-output))))
             (kill-buffer output-buffer)
-            (string-trim agenda))
-        "Emacs server (daemon) is not running, Agenda couldn't loaded.")))
+            propertized-output)
+        "Emacs server (daemon) is not running, Section couldn't loaded.")))
+
+  (defun fk/dashboard-get-agenda ()
+    "Get a copy of the agenda buffer from Emacs daemon."
+    (fk/dashboard-get-section
+     "(progn
+        (setq org-agenda-span 2)
+        (org-agenda-list)
+        (read-only-mode -1)
+        (goto-char (point-min))
+        (kill-line)
+        (buffer-string))"))
 
   (defun dashboard-insert-agenda (&rest _)
     "Insert a copy of org-agenda buffer."
     (dashboard-insert-heading "Agenda for today:")
-    (insert "\n\n" (fk/dashboard-get-agenda)))
+    (insert "\n" (fk/dashboard-get-agenda)))
 
-  ;; Colorize agenda & inbox entries section even if org.el or org-agenda.el hasn't loaded.
+  (defun fk/dashboard-get-inbox-entries ()
+    ;; TODO: appearance is not consistent, seems like there is some sort of caching
+    "Get inbox entry list from Emacs daemon."
+    (fk/dashboard-get-section
+     "(let* ((file (expand-file-name \"inbox.org\" org-directory))
+             (entries (org-map-entries
+                       (lambda ()
+                         (buffer-substring (line-beginning-position) (line-end-position)))
+                       \"LEVEL=1\" (list file))))
+        (string-replace \"*\" \"  ⁖\" (string-replace \"**\" \"   ⁖\" (string-join entries \"\n\"))))"))
+
+  (defun fk/dashboard-insert-inbox-entries (&rest _)
+    "Insert inbox entries items."
+    (insert (all-the-icons-octicon "pin" :height 1.2 :v-adjust 0.02 :face 'dashboard-heading)
+            (propertize " Inbox Entries:\n" 'face 'dashboard-heading 'line-spacing 5)
+            "  " (fk/dashboard-get-inbox-entries)))
+
+  (defun fk/dashboard-get-todo-items ()
+    "Get high priority todo items from Emacs daemon."
+    (fk/dashboard-get-section
+     "(let* ((file (expand-file-name \"todos.org\" org-directory))
+             (file-buffer (find-file-noselect file))
+             (file-content (with-current-buffer file-buffer (buffer-string)))
+             (temp-buffer (generate-new-buffer \"*dashboard-temp*\")))
+        (with-current-buffer temp-buffer
+          (kill-buffer file-buffer)
+          (org-mode)
+          (insert file-content)
+          (delete-matching-lines (regexp-quote \"[#B]\") (point-min) (point-max))
+          (delete-matching-lines (regexp-quote \"[#C]\") (point-min) (point-max))
+          (delete-non-matching-lines \"^*\" (point-min) (point-max))
+          (string-replace \"*\" \"   ⁖\" (string-replace \"**\" \"    ⁖\" (buffer-string)))))"))
+
+  (defun fk/dashboard-insert-todo-items (&rest _)
+    "Insert high priority todo items."
+    (insert (all-the-icons-octicon "pin" :height 1.2 :v-adjust 0.02 :face 'dashboard-heading)
+            (propertize " TODOs:\n" 'face 'dashboard-heading 'line-spacing 15)
+            (fk/dashboard-get-todo-items)))
+
+  (add-to-list 'dashboard-item-generators  '(inbox-entries . fk/dashboard-insert-inbox-entries))
+  (add-to-list 'dashboard-item-generators  '(todo-items . fk/dashboard-insert-todo-items))
+
+  ;; Colorize org entries even if org.el or org-agenda.el hasn't loaded.
   ;; Note: defining faces is enough, color values comes from propertized string
   (defface org-level-1 nil nil)
+  (defface org-level-2 nil nil)
+  (defface org-hide nil nil)
   (defface org-link nil nil)
   (defface org-agenda-structure nil nil)
   (defface org-agenda-date nil nil)
@@ -1363,42 +1417,15 @@ than reading it in normal way."
   (defface org-time-grid nil nil)
   (defface org-warning nil nil)
   (defface org-agenda-date-weekend nil nil)
+  (defface org-agenda-date-weekend-today nil nil)
+  (defface org-imminent-deadline nil nil)
   (defface org-upcoming-deadline nil nil)
   (defface org-upcoming-distant-deadline nil nil)
   (defface org-agenda-date-weekend nil nil)
   (defface org-habit-clear-future-face nil nil)
   (defface org-habit-ready-face nil nil)
   (defface org-habit-alert-face nil nil)
-  (defface org-habit-overdue-future-face nil nil)
-
-  (defun fk/dashboard-get-inbox-entries ()
-    ;; TODO: appearance is not consistent, seems like there is some sort of caching
-    "Get inbox entry list from Emacs daemon. Faster
-than reading it in normal way."
-    (let* ((output-buffer (get-buffer-create "*inbox-entries*"))
-           (exit-status (call-process "emacsclient" nil output-buffer nil
-                                      "--eval"
-                                      "(let* ((file (expand-file-name \"inbox.org\" org-directory))
-                                              (entries (org-map-entries
-                                                        (lambda ()
-                                                          (buffer-substring (line-beginning-position) (line-end-position)))
-                                                        \"LEVEL=1\" (list file))))
-                                         (mapconcat (lambda (s) (format \"  %s\" s)) entries \"\n\"))")))
-      (if (zerop exit-status)
-          (let* ((output (with-current-buffer output-buffer
-                           (buffer-substring-no-properties (point-min) (point-max))))
-                 (inbox-entries (car (read-from-string output))))
-            (kill-buffer output-buffer)
-            (string-trim inbox-entries))
-        "Emacs server (daemon) is not running, Inbox entries couldn't loaded.")))
-
-  (defun fk/dashboard-insert-inbox-entries (&rest _)
-    "Insert inbox entries items."
-    (insert (all-the-icons-octicon "pin" :height 1.2 :v-adjust 0.02 :face 'dashboard-heading)
-            (propertize " Inbox Entries:\n" 'face 'dashboard-heading 'line-spacing 5)
-            "  " (fk/dashboard-get-inbox-entries)))
-
-  (add-to-list 'dashboard-item-generators  '(inbox-entries . fk/dashboard-insert-inbox-entries)))
+  (defface org-habit-overdue-future-face nil nil))
 #+END_SRC
 
 ** Stripe Buffer
@@ -1653,7 +1680,8 @@ current buffer."
   (with-eval-after-load 'helm-buffers
     (dolist (regexp '("\\*epc con" "\\*helm" "\\*EGLOT" "\\*straight" "\\*Flymake"
                       "\\*eldoc" "\\*Compile-Log" "\\*xref" "\\*company"
-                      "\\*aw-posframe" "\\*Warnings" "\\*Backtrace"))
+                      "\\*aw-posframe" "\\*Warnings" "\\*Backtrace" "\\*helpful"
+                      "\\*Messages" "\\*dashboard"))
       (add-to-list 'helm-boring-buffer-regexp-list regexp))
     (bind-keys
      :map helm-buffer-map
@@ -2196,8 +2224,8 @@ from melpa. TODO: fix this
   ("M-7" . winum-select-window-7)
   ("M-8" . winum-select-window-8)
   ("M-9" . winum-select-window-9)
-  :config
-  (winum-mode))
+  :hook
+  (dashboard-after-initialize . winum-mode))
 #+END_SRC
 
 ** Mwim (Move Where I Mean)
@@ -2519,18 +2547,14 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
   :bind
   ("M-0" . treemacs-select-window)
   :hook
-  ;; Add current project to treemacs if not already added
-  (treemacs-select . (lambda ()
-                       (let* ((project-path (projectile-project-root))
-                              (project-name (treemacs--filename project-path)))
-                         (unless (treemacs--find-project-for-path project-path)
-                           (treemacs-add-project project-path project-name)))))
   (treemacs-mode . (lambda ()
-                     (face-remap-add-relative 'default :height .75)
+                     (face-remap-add-relative 'default :height .85)
                      (face-remap-add-relative 'mode-line-inactive :background fk/dark-color)
                      (face-remap-add-relative 'mode-line :background fk/dark-color)
                      (face-remap-add-relative 'hl-line :background fk/background-color :weight 'bold)
-                     (fk/darken-background))))
+                     (fk/darken-background)))
+  :config
+  (treemacs-project-follow-mode))
 #+END_SRC
 
 *** Treemacs Projectile
@@ -2708,6 +2732,7 @@ otherwise."
 (use-package undo-tree
   :custom
   (undo-tree-visualizer-diff t)
+  (undo-tree-enable-undo-in-region t)
   :bind
   (("C-u" . undo-tree-undo)
    ("C-S-u" . undo-tree-redo))
@@ -3140,6 +3165,10 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 #+BEGIN_SRC emacs-lisp
 (use-package symbol-overlay
   :commands (symbol-overlay-mode symbol-overlay-put fk/highlight-occurrences)
+  :bind
+  ( :map symbol-overlay-mode-map
+    ("C-c C-n" . symbol-overlay-jump-next)
+    ("C-c C-p" . symbol-overlay-jump-prev))
   :hook
   (emacs-lisp-mode . symbol-overlay-mode)
   (python-mode . symbol-overlay-mode)
@@ -4477,6 +4506,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 *** Vterm
 #+BEGIN_SRC emacs-lisp
 (use-package vterm
+  :load-path "~/.emacs.d/straight/repos/emacs-libvterm"  ; manually cloned
   :custom
   (vterm-max-scrollback 100000)
   (vterm-buffer-name "vterm")
