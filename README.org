@@ -1394,8 +1394,8 @@ daemon."
 
   (defun fk/dashboard-insert-todo-items (&rest _)
     "Insert high priority todo items."
-    (insert (all-the-icons-octicon "pin" :height 1.2 :v-adjust 0.02 :face 'dashboard-heading)
-            (propertize " TODOs:\n" 'face 'dashboard-heading 'line-spacing 15)
+    (insert (all-the-icons-octicon "checklist" :height 1.2 :v-adjust 0.02 :face 'dashboard-heading)
+            (propertize " TODOs:\n" 'face 'dashboard-heading 'line-spacing 10)
             (fk/dashboard-get-todo-items)))
 
   (add-to-list 'dashboard-item-generators  '(inbox-entries . fk/dashboard-insert-inbox-entries))
