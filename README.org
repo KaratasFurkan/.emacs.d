@@ -1343,6 +1343,7 @@ daemon."
             propertized-output)
         "Emacs server (daemon) is not running, Section couldn't loaded.")))
 
+  ;; TODO: convert these string codes to normal code, investigate how emacs-async do that
   (defun fk/dashboard-get-agenda ()
     "Get a copy of the agenda buffer from Emacs daemon."
     (fk/dashboard-get-section
@@ -1364,17 +1365,20 @@ daemon."
     "Get inbox entry list from Emacs daemon."
     (fk/dashboard-get-section
      "(let* ((file (expand-file-name \"inbox.org\" org-directory))
-             (entries (org-map-entries
-                       (lambda ()
-                         (buffer-substring (line-beginning-position) (line-end-position)))
-                       \"LEVEL=1\" (list file))))
-        (string-replace \"*\" \"  ⁖\" (string-replace \"**\" \"   ⁖\" (string-join entries \"\n\"))))"))
+             (entries (string-join
+                       (org-map-entries
+                        (lambda ()
+                          (buffer-substring (line-beginning-position) (line-end-position)))
+                        \"LEVEL=1\" (list file))
+                       \"\n\"))
+             (bullet (propertize \"⁖\" 'face 'org-level-1)))
+        (string-replace \"*\" (format \"   %s\" bullet) entries))"))
 
   (defun fk/dashboard-insert-inbox-entries (&rest _)
     "Insert inbox entries items."
     (insert (all-the-icons-octicon "pin" :height 1.2 :v-adjust 0.02 :face 'dashboard-heading)
             (propertize " Inbox Entries:\n" 'face 'dashboard-heading 'line-spacing 5)
-            "  " (fk/dashboard-get-inbox-entries)))
+            (fk/dashboard-get-inbox-entries)))
 
   (defun fk/dashboard-get-todo-items ()
     "Get high priority todo items from Emacs daemon."
@@ -1382,7 +1386,8 @@ daemon."
      "(let* ((file (expand-file-name \"todos.org\" org-directory))
              (file-buffer (find-file-noselect file))
              (file-content (with-current-buffer file-buffer (buffer-string)))
-             (temp-buffer (generate-new-buffer \"*dashboard-temp*\")))
+             (temp-buffer (generate-new-buffer \"*dashboard-temp*\"))
+             (bullet (propertize \"⁖\" 'face 'org-level-1)))
         (with-current-buffer temp-buffer
           (kill-buffer file-buffer)
           (org-mode)
@@ -1390,7 +1395,7 @@ daemon."
           (delete-matching-lines (regexp-quote \"[#B]\") (point-min) (point-max))
           (delete-matching-lines (regexp-quote \"[#C]\") (point-min) (point-max))
           (delete-non-matching-lines \"^*\" (point-min) (point-max))
-          (string-replace \"*\" \"   ⁖\" (string-replace \"**\" \"    ⁖\" (buffer-string)))))"))
+          (string-replace \"*\" (format \"  %s\" bullet) (string-replace \"**\" (format \"   %s\" bullet) (buffer-string)))))"))
 
   (defun fk/dashboard-insert-todo-items (&rest _)
     "Insert high priority todo items."
