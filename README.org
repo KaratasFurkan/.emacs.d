@@ -699,6 +699,19 @@ FILTER is function that runs after the process is finished, its args should be
 (defun fk/get-current-line ()
   "Return current line as string with properties."
   (buffer-substring (line-beginning-position) (line-end-position)))
+
+;; TODO: lset would be useful too
+(defmacro l (func &rest args)
+  "Shorter lambda."
+  `(lambda nil (apply ,func '(,@args))))
+
+(defmacro li (func &rest args)
+  "Shorter lambda, interactive."
+  `(lambda nil (interactive) (apply ,func '(,@args))))
+
+;; Examples:
+;; (global-set-key (kbd "C-V") (lambda () (interactive) (next-line 10))) <-- Classical
+;; (global-set-key (kbd "C-V") (li 'next-line 10)) <-- With li macro
 #+END_SRC
 
 ** Helpful
