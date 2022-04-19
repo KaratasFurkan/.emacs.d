@@ -3848,18 +3848,13 @@ otherwise, open the file in a new buffer."
                         ("agenda.org" :level . 1)))
   (org-priority-default ?A)  ; Highest
   ;; (org-log-done 'time)
-  (org-fontify-done-headline nil)
+  (org-fontify-done-headline t)
   (org-log-into-drawer t)  ; Log TODO state changes into :LOGBOOK: drawer insted of directly adding lines to the subtree
-  (org-todo-keywords '((sequence "TODO(1)" "WIP(w)" "WAITING_REVIEW(r)" "WAITING_TEST(t)" "READY_PROD(p)" "HOLD(h)" "|"
-                                 "DONE(d)" "CANCELLED(c)")))
+  (org-todo-keywords '((sequence "TODO(t)" "WIP(w)" "HOLD(h)" "|" "DONE(d)")))
   (org-todo-keyword-faces
    '(("TODO" :foreground "orangered2" :weight bold)
      ("WIP" :foreground "#86DC2F" :weight bold)
-     ("WAITING_REVIEW" :foreground "cyan" :weight bold)
-     ("WAITING_TEST" :foreground "cyan" :weight bold)
-     ("READY_PROD" :foreground "greenyellow" :weight bold)
-     ("HOLD" :foreground "#DC752F" :weight bold)
-     ("CANCELLED" :inherit org-done)))
+     ("HOLD" :foreground "#DC752F" :weight bold)))
   ;;;; Getting Things Done ;;;;
   :custom-face
   (org-block ((t (:family ,fk/default-font-family :extend t))))
