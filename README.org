@@ -4556,7 +4556,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
                        (face-remap-add-relative 'hl-line :background fk/background-color)
                        (call-interactively 'hl-line-mode)))
   :config
-  (defvar docker-container-prompt-regexp "^[\\^A-Z]*root@[A-z0-9]*:/[^#]*# ")
+  (defvar docker-container-prompt-regexp "^[\\^A-Z]*root@[A-z0-9-]*:/[^#]*# ")
   (defvar python-pdb-prompt-regexp "^[\\^A-Z]*(Pdb) ")  ; TODO: add next-prompt function for this one too
 
   (defface docker-container-prompt-face
