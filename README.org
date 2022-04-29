@@ -1378,19 +1378,21 @@ daemon."
     "Get inbox entry list from Emacs daemon."
     (fk/dashboard-get-section
      "(let* ((file (expand-file-name \"inbox.org\" org-directory))
-             (entries (string-join
-                       (org-map-entries
-                        (lambda ()
-                          (buffer-substring (line-beginning-position) (line-end-position)))
-                        \"LEVEL=1\" (list file))
-                       \"\n\"))
+             (file-buffer (find-file-noselect file))
+             (file-content (with-current-buffer file-buffer (buffer-string)))
+             (temp-buffer (generate-new-buffer \"*dashboard-temp*\"))
              (bullet (propertize \"⁖\" 'face 'org-level-1)))
-        (string-replace \"*\" (format \"   %s\" bullet) entries))"))
+        (with-current-buffer temp-buffer
+          (kill-buffer file-buffer)
+          (org-mode)
+          (insert file-content)
+          (delete-non-matching-lines \"^*\" (point-min) (point-max))
+          (string-replace \"*\" (format \"  %s\" bullet) (string-replace \"**\" (format \"   %s\" bullet) (buffer-string)))))"))
 
   (defun fk/dashboard-insert-inbox-entries (&rest _)
     "Insert inbox entries items."
     (insert (all-the-icons-octicon "pin" :height 1.2 :v-adjust 0.02 :face 'dashboard-heading)
-            (propertize " Inbox Entries:\n" 'face 'dashboard-heading 'line-spacing 5)
+            (propertize " Inbox Entries:\n" 'face 'dashboard-heading 'line-spacing 10)
             (fk/dashboard-get-inbox-entries)))
 
   (defun fk/dashboard-get-todo-items ()
