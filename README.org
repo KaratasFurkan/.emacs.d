@@ -1555,7 +1555,29 @@ daemon."
     "Require `tree-sitter-langs' + Activate `tree-sitter-hl-mode'."
     (interactive)
     (require 'tree-sitter-langs)
-    (call-interactively 'tree-sitter-hl-mode)))
+    (call-interactively 'tree-sitter-hl-mode))
+
+  (with-eval-after-load 'expand-region
+    (defun tree-sitter-mark-bigger-node ()
+      (interactive)
+      (let* ((p (point))
+             (m (or (mark) p))
+             (beg (min p m))
+             (end (max p m))
+             (root (ts-root-node tree-sitter-tree))
+             (node (ts-get-descendant-for-position-range root beg end))
+             (node-beg (ts-node-start-position node))
+             (node-end (ts-node-end-position node)))
+        ;; Node fits the region exactly. Try its parent node instead.
+        (when (and (= beg node-beg) (= end node-end))
+          (when-let ((node (ts-get-parent node)))
+            (setq node-beg (ts-node-start-position node)
+                  node-end (ts-node-end-position node))))
+        (set-mark node-end)
+        (goto-char node-beg)))
+
+    (setq er/try-expand-list (append er/try-expand-list
+                                     '(tree-sitter-mark-bigger-node)))))
 
 (use-package tree-sitter-langs
   :defer t
