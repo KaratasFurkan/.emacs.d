@@ -1423,30 +1423,36 @@ daemon."
 
   ;; Colorize org entries even if org.el or org-agenda.el hasn't loaded.
   ;; Note: defining faces is enough, color values comes from propertized string
-  (defface org-agenda-calendar-event nil nil)
-  (defface org-agenda-current-time nil nil)
-  (defface org-agenda-date nil nil)
-  (defface org-agenda-date-today nil nil)
-  (defface org-agenda-date-weekend nil nil)
-  (defface org-agenda-date-weekend nil nil)
-  (defface org-agenda-date-weekend-today nil nil)
-  (defface org-agenda-structure nil nil)
-  (defface org-checkbox-statistics-todo nil nil)
-  (defface org-habit-alert-face nil nil)
-  (defface org-habit-clear-future-face nil nil)
-  (defface org-habit-overdue-future-face nil nil)
-  (defface org-habit-ready-face nil nil)
-  (defface org-hide nil nil)
-  (defface org-imminent-deadline nil nil)
-  (defface org-level-1 nil nil)
-  (defface org-level-2 nil nil)
-  (defface org-link nil nil)
-  (defface org-scheduled nil nil)
-  (defface org-scheduled-today nil nil)
-  (defface org-time-grid nil nil)
-  (defface org-upcoming-deadline nil nil)
-  (defface org-upcoming-distant-deadline nil nil)
-  (defface org-warning nil nil))
+  (defmacro fk/defface-nil (&rest faces)
+    "Macro for defining nil faces. Instead of:
+`(defface org-level-1 nil nil)'"
+    `(progn ,@(cl-loop for face in faces
+                       collect `(defface ,face nil nil))))
+  (fk/defface-nil
+   org-agenda-calendar-event
+   org-agenda-current-time
+   org-agenda-date
+   org-agenda-date-today
+   org-agenda-date-weekend
+   org-agenda-date-weekend
+   org-agenda-date-weekend-today
+   org-agenda-structure
+   org-checkbox-statistics-todo
+   org-habit-alert-face
+   org-habit-clear-future-face
+   org-habit-overdue-future-face
+   org-habit-ready-face
+   org-hide
+   org-imminent-deadline
+   org-level-1
+   org-level-2
+   org-link
+   org-scheduled
+   org-scheduled-today
+   org-time-grid
+   org-upcoming-deadline
+   org-upcoming-distant-deadline
+   org-warning))
 #+END_SRC
 
 ** Stripe Buffer
