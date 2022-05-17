@@ -174,6 +174,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#newline-below][newline-below]]
     - [[#remove-hypens-and-underscores-region][remove-hypens-and-underscores-region]]
     - [[#increment-number-at-point][increment-number-at-point]]
+    - [[#decrement-number-at-point][decrement-number-at-point]]
   - [[#keybindings-2][Keybindings]]
   - [[#electric-indent-mode-][Electric Indent Mode-]]
   - [[#undo-tree][Undo Tree]]
@@ -2761,13 +2762,23 @@ otherwise."
     (replace-match (number-to-string (1+ (string-to-number (match-string 0)))))))
 #+END_SRC
 
+*** decrement-number-at-point
+#+BEGIN_SRC emacs-lisp
+(defun fk/decrement-number-at-point ()
+  "Decrement the number at point."
+  (interactive)
+  (when (number-at-point)
+    (skip-chars-backward "0-9")
+    (replace-match (number-to-string (1- (string-to-number (match-string 0)))))))
+#+END_SRC
 ** Keybindings
 #+BEGIN_SRC emacs-lisp
 (keyboard-translate ?\C-h ?\C-?)  ; C-h as DEL, (I use F1 and M-h as `help-command')
 (add-hook 'server-after-make-frame-hook (lambda () (keyboard-translate ?\C-h ?\C-?)))  ; Fix emacs --daemon
 (global-set-key (kbd "C-w") 'fk/backward-kill-word-or-region)
 (global-set-key (kbd "C-o") 'fk/newline-below)
-(global-set-key (kbd "C-c C-i") 'fk/increment-number-at-point)
+(global-set-key (kbd "C-x C-=") 'fk/increment-number-at-point)
+(global-set-key (kbd "C-x C--") 'fk/decrement-number-at-point)
 
 (bind-keys*
  :map text
@@ -2846,7 +2857,8 @@ otherwise."
    ("C-M-S-p" . mc/skip-to-previous-like-this)
    ("C-S-n" . mc/unmark-previous-like-this)
    ("C-S-p" . mc/unmark-next-like-this)
-   ("C-M-<mouse-1>" . mc/add-cursor-on-click)))
+   ("C-M-<mouse-1>" . mc/add-cursor-on-click)
+   ("C-x C-n" . mc/insert-numbers)))
 #+END_SRC
 
 ** Wrap Region
