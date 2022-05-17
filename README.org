@@ -3981,7 +3981,8 @@ otherwise, open the file in a new buffer."
     (interactive)
     (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
                                                              (emacs-lisp . t)
-                                                             (shell . t))))
+                                                             (shell . t)
+                                                             (ein . t))))
 
   (defun fk/org-babel-tangle-block()
     (interactive)
