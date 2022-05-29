@@ -3922,7 +3922,7 @@ otherwise, open the file in a new buffer."
   (org-level-8 ((t (:height 1.0 :weight bold))))
   (org-drawer ((t (:foreground nil :inherit font-lock-comment-face))))
   (org-table ((t (:family ,fk/default-font-family :foreground "white"))))
-  (org-document-title ((t (:height 3.0))))
+  (org-document-title ((t (:family "AV Qest" :height 3.0))))
   (org-block-begin-line ((t (:foreground ,fk/light-color3 :background ,fk/background-color :extend t))))
   (org-document-info-keyword ((t (:foreground ,fk/light-color3 :height 10))))  ; Make #+TITLE: invisible
   (org-meta-line ((t (:foreground ,fk/light-color3))))  ; Less distractive
