@@ -1310,8 +1310,8 @@ size. This function also handles icons and modeline font sizes."
   ;; Source for logo: https://github.com/tecosaur/emacs-config/blob/master/config.org#splash-screen
   (dashboard-startup-banner (fk/expand-static-file-name "logos/emacs-e-medium.png"))
   ;; Do not show package count, it is meaningless because of lazy loading.
-  (dashboard-banner-logo-title "Welcome to Emacs!\n")
-  (dashboard-init-info (format "Emacs started in %s\n\n" (fk/time-since-startup)))
+  (dashboard-banner-logo-title "Welcome to Emacs!                          \n")
+  (dashboard-init-info (format "  Emacs started in %s\n\n" (fk/time-since-startup)))
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
@@ -1326,6 +1326,7 @@ size. This function also handles icons and modeline font sizes."
   :custom-face
   (dashboard-heading ((t (:inherit font-lock-keyword-face :height 1.2))))
   (dashboard-items-face ((t (:weight normal))))
+  (dashboard-banner-logo-title ((t (:family "AV Qest" :height 3.0 :weight bold :foreground "#8583C7"))))
   :hook
   (dashboard-mode . (lambda () (setq-local cursor-type nil)))
   :config
