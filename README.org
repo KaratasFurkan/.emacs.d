@@ -4485,14 +4485,14 @@ and set LABELS (a string list of labels) if given."
     (
      :color red
      :hint nil
-     :pre (progn
-            (setq-local global-hl-line-mode nil)
-            (when tree-sitter-hl-mode
-              (tree-sitter-hl-mode -1))
-            (smerge-mode))
-     :post (progn
-             (smerge-auto-leave)
-             (setq-local global-hl-line-mode t)))
+     ;; :pre (progn
+     ;;        (setq-local global-hl-line-mode nil)
+     ;;        (when tree-sitter-hl-mode
+     ;;          (tree-sitter-hl-mode -1))
+     ;;        (smerge-mode))
+     ;; :post (progn
+     ;;         (smerge-auto-leave)
+     ;;         (setq-local global-hl-line-mode t)))
     "
 ^Move^       ^Keep^               ^Diff^                 ^Other^
 ^^-----------^^-------------------^^---------------------^^-------
