@@ -4227,6 +4227,7 @@ _3_: High Priority     ^^             _A_: Anime         ^^
 **** Company Org Roam
 #+BEGIN_SRC emacs-lisp
 (use-package company-org-roam
+  :disabled
   :after org-roam
   :config
   (add-to-list 'company-backends 'company-org-roam))
