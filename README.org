@@ -4492,7 +4492,8 @@ and set LABELS (a string list of labels) if given."
      ;;        (smerge-mode))
      ;; :post (progn
      ;;         (smerge-auto-leave)
-     ;;         (setq-local global-hl-line-mode t)))
+     ;;         (setq-local global-hl-line-mode t))
+     )
     "
 ^Move^       ^Keep^               ^Diff^                 ^Other^
 ^^-----------^^-------------------^^---------------------^^-------
