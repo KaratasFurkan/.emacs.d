@@ -320,6 +320,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#speed-type][Speed Type]]
   - [[#docker][Docker]]
   - [[#sozluk][Sozluk]]
+  - [[#epub][Epub]]
 - [[#file-modes][File Modes]]
   - [[#markdown][Markdown]]
   - [[#fish][Fish]]
@@ -5035,6 +5036,13 @@ typing with actual code."
   (with-eval-after-load 'shackle
     (add-to-list 'shackle-rules '("\\`\\*sozluk.*?\\*\\'" :regexp t :align t :size 0.4))))
 #+END_SRC
+
+** Epub
+#+BEGIN_SRC emacs-lisp
+(use-package nov
+  :mode ("\\.epub\\'" . nov-mode))
+#+END_SRC
+
 
 * File Modes
 ** Markdown
