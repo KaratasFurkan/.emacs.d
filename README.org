@@ -1453,6 +1453,7 @@ daemon."
    org-link
    org-scheduled
    org-scheduled-today
+   org-tag
    org-time-grid
    org-upcoming-deadline
    org-upcoming-distant-deadline
