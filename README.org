@@ -638,20 +638,22 @@ Keep Emacs directory clean.
 ** General
 #+BEGIN_SRC emacs-lisp
 (setq-default
- ring-bell-function 'ignore            ; prevent beep sound.
- inhibit-startup-screen t              ; TODO: maybe better on early-init or performance?
- initial-major-mode 'fundamental-mode  ; TODO: maybe better on early-init or performance?
- initial-scratch-message nil           ; TODO: maybe better on early-init?
- create-lockfiles nil                  ; .#locked-file-name
- confirm-kill-processes nil            ; exit emacs without asking to kill processes
- backup-by-copying t                   ; prevent linked files
- require-final-newline t               ; always end files with newline
- delete-old-versions t                 ; don't ask to delete old backup files
- revert-without-query '(".*")          ; `revert-buffer' without confirmation
- uniquify-buffer-name-style 'forward   ; non-unique buffer name display: unique-part/non-unique-filename
- fast-but-imprecise-scrolling t        ; supposed to make scrolling faster on hold
- window-resize-pixelwise t             ; correctly resize windows by pixels (e.g. in split-window functions)
- native-comp-async-report-warnings-errors nil)
+ ring-bell-function 'ignore                    ; prevent beep sound.
+ inhibit-startup-screen t                      ; TODO: maybe better on early-init or performance?
+ initial-major-mode 'fundamental-mode          ; TODO: maybe better on early-init or performance?
+ initial-scratch-message nil                   ; TODO: maybe better on early-init?
+ create-lockfiles nil                          ; .#locked-file-name
+ confirm-kill-processes nil                    ; exit emacs without asking to kill processes
+ backup-by-copying t                           ; prevent linked files
+ require-final-newline t                       ; always end files with newline
+ delete-old-versions t                         ; don't ask to delete old backup files
+ revert-without-query '(".*")                  ; `revert-buffer' without confirmation
+ uniquify-buffer-name-style 'forward           ; non-unique buffer name display: unique-part/non-unique-filename
+ fast-but-imprecise-scrolling t                ; supposed to make scrolling faster on hold
+ window-resize-pixelwise t                     ; correctly resize windows by pixels (e.g. in split-window functions)
+ native-comp-async-report-warnings-errors nil  ; disable annoying native-comp warnings
+ ad-redefinition-action 'accept)               ; disable annoying "ad-handle-definition: ‘some-function’ got redefined" warnings
+
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (global-auto-revert-mode)
