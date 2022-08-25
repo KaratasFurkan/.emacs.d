@@ -4052,6 +4052,7 @@ _1_: Low Priority      _h_: Home      _M_: Movie         ^^
 _2_: Medium Priority   _o_: Other     _S_: TV Show       ^^
 _3_: High Priority     ^^             _A_: Anime         ^^
 ^^                     ^^             _V_: Video         ^^
+^^                     ^^             _B_: Book          ^^
 ^^                     ^^             _F_: Food          ^^
 ^^                     ^^             _O_: Other         ^^
 
@@ -4077,6 +4078,7 @@ _3_: High Priority     ^^             _A_: Anime         ^^
     ("S" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "TV Show")))
     ("A" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Anime")))
     ("V" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Video")))
+    ("B" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Book")))
     ("F" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Food")))
     ("O" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Other")))
     ;; Archive
