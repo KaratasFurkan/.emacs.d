@@ -4398,45 +4398,104 @@ _3_: High Priority     ^^             _A_: Anime         ^^
 Pull Requests, Issues etc.
 #+BEGIN_SRC emacs-lisp
 (use-package forge
-  :straight (:host github :repo "KaratasFurkan/forge" :branch "add-pr-message-prefix-and-number-prefix")
   :after magit
-  :preface
-  (defcustom forge-create-pullreq-message-prefix       nil "Should be set as directory local variable.")
-  (defcustom fk/forge-reviewers                        nil "Should be set as directory local variable.")
-  (defcustom fk/forge-review-labels                    nil "Should be set as directory local variable.")
-  :custom
-  (forge-create-pullreq-message-number-prefix t)
   :config
-  (defadvice magit-pull-from-upstream (after forge-pull activate)
-    (forge-pull))
-  (defadvice magit-fetch-all (after forge-pull activate)
-    (forge-pull))
+  (advice-add 'magit-pull-from-upstream :after
+              (lambda (&rest _) (call-interactively 'forge-pull)))
+  (advice-add 'magit-fetch-all :after
+              (lambda (&rest _) (call-interactively 'forge-pull)))
 
-  (defun fk/forge-request-review (reviewers &optional labels)
-    "Request review from REVIEWERS (a string list of usernames)
-and set LABELS (a string list of labels) if given."
-    (let* ((topic (forge-current-pullreq))
-           (repo  (forge-get-repository topic)))
-      (forge--set-topic-review-requests repo topic reviewers)
-      (when labels
-        (forge--set-topic-labels repo topic labels))))
+  (defun fk/forge-create-pullreq--read-args ()
+    (let* ((source  (magit-completing-read
+                     "Source branch"
+                     (magit-list-remote-branch-names)
+                     ;; `magit-get-current-branch' as initial input
+                     nil t (concat "origin/" (magit-get-current-branch)) 'magit-revision-history
+                     (or (and-let* ((d (magit-branch-at-point)))
+                           (if (magit-remote-branch-p d)
+                               d
+                             (magit-get-push-branch d t)))
+                         (and-let* ((d (magit-get-current-branch)))
+                           (if (magit-remote-branch-p d)
+                               d
+                             (magit-get-push-branch d t))))))
+           (repo    (forge-get-repository t))
+           (remote  (oref repo remote))
+           (targets (delete source (magit-list-remote-branch-names remote)))
+           (target  (magit-completing-read
+                     ;; TODO: show history at first
+                     "Target branch" targets nil t nil 'magit-revision-history
+                     (let* ((d (cdr (magit-split-branch-name source)))
+                            (d (and (magit-branch-p d) d))
+                            (d (and d (magit-get-upstream-branch d)))
+                            (d (and d (if (magit-remote-branch-p d)
+                                          d
+                                        (magit-get-upstream-branch d))))
+                            (d (or d (concat remote "/"
+                                             (or (oref repo default-branch)
+                                                 "master")))))
+                       (car (member d targets))))))
+      (list source target)))
 
-  (defun fk/forge-project-request-review ()
-    (interactive)
-    (fk/forge-request-review fk/forge-reviewers fk/forge-review-labels))
+  (defun fk/forge-prepare-topic (source target)
+    "Prepare topic for `forge-create-pullreq'."
+    (let* ((target-name (upcase (string-remove-prefix "origin/" target)))
+           (source-name (string-remove-prefix "origin/" source))
+           (match (string-match "^[a-z]*-[0-9]*" source-name))
+           (issue-id (when match (upcase (match-string-no-properties 0 source-name))))
+           ;; Branch may not have issue-id
+           (issue-id-string (if issue-id (format "%s | " issue-id) "")))
+      (format "# %s | %s" target-name issue-id-string)))
 
-  ;; TODO: Does not work when PR is merged, because there are no diff remains.
-  (defun fk/forge-pullreq-diff (&rest _)
-    "Like github's `Files changed' tab."
-    (interactive)
-    (let ((topic (forge-topic-at-point)))
-      (when (forge-pullreq-p topic)
-        (with-slots (base-ref head-ref) topic
-          (magit-diff-range
-           (format "%s...%s" base-ref head-ref)
-           '("--stat" "--no-ext-diff"))))))
+  (defun fk/forge--prepare-post-buffer (filename &optional header source target)
+    (let ((file (magit-git-dir
+                 (convert-standard-filename
+                  (concat "magit/posts/" filename)))))
+      (make-directory (file-name-directory file) t)
+      (let ((prevbuf (current-buffer))
+            (resume (and (file-exists-p file)
+                         (> (file-attribute-size (file-attributes file)) 0)))
+            (buf (find-file-noselect file)))
+        (with-current-buffer buf
+          (forge-post-mode)
+          (when header
+            (magit-set-header-line-format header))
+          (setq forge--pre-post-buffer prevbuf)
+          (when resume
+            (forge--display-post-buffer buf)
+            (when (magit-read-char-case "A draft already exists.  " nil
+                    (?r "[r]esume editing existing draft")
+                    (?d "[d]iscard draft and start over" t))
+              (erase-buffer)
+              (setq resume nil)))
+          (when (and (not resume) (string-prefix-p "new" filename))
+            (let-alist (forge--topic-template
+                        (forge-get-repository t)
+                        (if source 'forge-pullreq 'forge-issue))
+              (cond
+               (.url
+                (browse-url .url)
+                (forge-post-cancel)
+                (setq buf nil)
+                (message "Using browser to visit %s instead of opening an issue"
+                         .url))
+               (.name
+                ;; A Github issue with yaml frontmatter.
+                (save-excursion (insert .text))
+                (unless (re-search-forward "^title: " nil t)
+                  (when (re-search-forward "^---" nil t 2)
+                    (beginning-of-line)
+                    (insert "title: \n")
+                    (backward-char))))
+               (t
+                ;; Custom part:
+                (insert (fk/forge-prepare-topic source target)))))))
+        buf)))
 
-  (advice-add 'forge-visit-pullreq :override 'fk/forge-pullreq-diff))
+  ;; I just added `magit-get-current-branch' as initial input
+  (advice-add 'forge-create-pullreq--read-args :override 'fk/forge-create-pullreq--read-args)
+  ;; I just added a custom dynamic topic template: `fk/forge-prepare-topic'
+  (advice-add 'forge--prepare-post-buffer :override 'fk/forge--prepare-post-buffer))
 #+END_SRC
 
 **** Magit Delta
