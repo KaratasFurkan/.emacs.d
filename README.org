@@ -4360,7 +4360,6 @@ _3_: High Priority     ^^             _A_: Anime         ^^
 **** Magit
 #+BEGIN_SRC emacs-lisp
 (use-package magit
-  :straight (:files ("lisp/*.el"))
   :commands magit
   :custom
   (magit-section-initial-visibility-alist '((stashes . show)
@@ -4378,8 +4377,6 @@ _3_: High Priority     ^^             _A_: Anime         ^^
              (recenter-top-bottom)))
     ("C-c C-f" . magit-find-file))
   :hook
-  ;;(magit-mode . magit-toggle-margin) FIXME: does not work
-  ;;(magit-mode . magit-toggle-margin-details)
   (git-commit-setup . git-commit-turn-on-flyspell)
   (magit-mode . hack-dir-local-variables-non-file-buffer))
 #+END_SRC
@@ -4387,15 +4384,13 @@ _3_: High Priority     ^^             _A_: Anime         ^^
 **** Magit Todos
 #+BEGIN_SRC emacs-lisp
 (use-package magit-todos
-  :commands helm-magit-todos
+  :commands magit-todos-list
   :custom
-  (magit-todos-ignored-keywords '("DONE"))
-  (magit-todos-exclude-globs '("*jquery*.js" "*min.js" "*min.css"))
-  (magit-todos-max-items 30)
-  (magit-todos-auto-group-items 30)
+  (magit-todos-exclude-globs '("*jquery*.js" "*min.js" "*min.css" "*.mjml"))
+  (magit-todos-max-items 40)  ; It's actually 20 but needed to set x2 for some reason
   :bind*
   ( :map version-control
-    ("T" . helm-magit-todos))
+    ("T" . magit-todos-list))
   :hook (magit-mode . magit-todos-mode))
 #+END_SRC
 
