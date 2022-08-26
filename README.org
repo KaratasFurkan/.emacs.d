@@ -697,14 +697,6 @@ FILTER is function that runs after the process is finished, its args should be
 
 (defalias 'narrow-quit 'widen)  ; I forget `widen' everytime
 
-(defmacro fk/advice-add (symbol where function &rest args)
-  "Add advice even the arguments are not the same."
-  `(advice-add ,symbol ,where (lambda (&rest _) (interactive) (apply ,function '(,@args)))))
-
-(defun fk/get-current-line ()
-  "Return current line as string with properties."
-  (buffer-substring (line-beginning-position) (line-end-position)))
-
 ;; TODO: lset would be useful too
 (defmacro l (func &rest args)
   "Shorter lambda."
