@@ -4439,16 +4439,17 @@ Pull Requests, Issues etc.
 
   (defun fk/forge-prepare-topic (source target)
     "Prepare topic for `forge-create-pullreq'."
-    (let* ((target-name (upcase (string-remove-prefix "origin/" target)))
-           (source-name (string-remove-prefix "origin/" source))
-           (match (string-match "^[a-z]*-[0-9]*" source-name))
-           (match-string (match-string-no-properties 0 source-name))
-           (issue-id (when match (upcase match-string)))
-           ;; Branch may not have issue-id
-           (issue-id-string (if issue-id (format "%s | " issue-id) ""))
-           (topic (string-remove-prefix (concat match-string "-") source-name))
-           (capitalized-topic (upcase-initials (string-replace "-" " " topic))))
-      (format "# %s | %s%s" target-name issue-id-string capitalized-topic)))
+    (if-let* ((target-name (upcase (string-remove-prefix "origin/" target)))
+              (source-name (string-remove-prefix "origin/" source))
+              (match (string-match "^[a-z]*-[0-9]*" source-name))
+              (match-string (match-string-no-properties 0 source-name))
+              (issue-id (when match (upcase match-string)))
+              ;; Branch may not have issue-id
+              (issue-id-string (if issue-id (format "%s | " issue-id) ""))
+              (topic (string-remove-prefix (concat match-string "-") source-name))
+              (capitalized-topic (upcase-initials (string-replace "-" " " topic))))
+        (format "# %s | %s%s" target-name issue-id-string capitalized-topic)
+      (format "# %s | " target-name )))
 
   (defun fk/forge--prepare-post-buffer (filename &optional header source target)
     (let ((file (magit-git-dir
