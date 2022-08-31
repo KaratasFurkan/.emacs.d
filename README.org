@@ -2883,7 +2883,8 @@ otherwise."
   (wrap-region-add-wrapper "#" "#" nil 'org-mode)
   (wrap-region-add-wrapper "`" "`" nil 'markdown-mode)
   (wrap-region-add-wrapper "`" "`" nil 'forge-post-mode)
-  (wrap-region-add-wrapper "_(" ")" "_" 'python-mode))
+  (wrap-region-add-wrapper "_(" ")" "_" 'python-mode)
+  (wrap-region-add-wrapper "len(" ")" "l" 'python-mode))
 #+END_SRC
 
 ** Fill-Unfill Paragraph
