@@ -168,6 +168,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#ibuffer-sidebar-][IBuffer Sidebar-]]
   - [[#block-nav][Block Nav]]
   - [[#goto-line-preview][Goto Line Preview]]
+  - [[#god-mode][God Mode]]
 - [[#text-editing][Text Editing]]
   - [[#better-defaults-4][Better Defaults]]
   - [[#custom-functions-4][Custom Functions]]
@@ -987,6 +988,7 @@ size. This function also handles icons and modeline font sizes."
   (fixed-pitch ((t (:family "Noto Sans Mono"))))
   :config
   (load-theme 'doom-spacegrey t)
+  (defconst fk/cursor-color (face-attribute 'cursor :background))
   (defconst fk/font-color (face-attribute 'default :foreground))
   (defconst fk/background-color (face-attribute 'default :background))
   (defconst fk/dark-color (doom-darken fk/background-color 0.15))
@@ -1156,10 +1158,9 @@ size. This function also handles icons and modeline font sizes."
 ** Beacon
 #+BEGIN_SRC emacs-lisp
 (use-package beacon
-  ;; :preface
-  ;; (defconst cursor-color+1 (format "#%x" (+ 1 (string-to-number (string-remove-prefix "#" (face-attribute 'cursor :background)) 16))))
   :custom
-  (beacon-color "#D08771")  ; TODO: cursor-color+1 does not work with emacs --daemon
+  ;; beacon-mode doesn't work properly with same color as cursor
+  (beacon-color (doom-darken fk/cursor-color 0.001))
   ;; (beacon-blink-when-point-moves-vertically 10)
   (beacon-dont-blink-major-modes '(dashboard-mode minibuff))
   :config
@@ -2712,6 +2713,26 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
   :commands goto-line-preview
   :bind
   ([remap goto-line] . goto-line-preview))
+#+END_SRC
+
+** God Mode
+#+BEGIN_SRC emacs-lisp
+(use-package god-mode
+  :preface
+  (setq god-mode-cursor-color "#FFF8DC")
+  :bind
+  (("C-;" . god-mode-all)
+   :map god-local-mode-map
+   ("j" . avy-goto-word-or-subword-1))
+  :hook
+  (god-mode-enabled . (lambda ()
+                        (set-face-attribute 'cursor nil :background god-mode-cursor-color)
+                        ;; beacon-mode doesn't work properly with same color as cursor
+                        (setq beacon-color (doom-darken god-mode-cursor-color 0.001))))
+  (god-mode-disabled . (lambda ()
+                         (set-face-attribute 'cursor nil :background fk/cursor-color)
+                         ;; beacon-mode doesn't work properly with same color as cursor
+                         (setq beacon-color (doom-darken fk/cursor-color 0.001)))))
 #+END_SRC
 
 * Text Editing
