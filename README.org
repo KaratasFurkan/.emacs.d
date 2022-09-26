@@ -1311,12 +1311,7 @@ size. This function also handles icons and modeline font sizes."
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
-  (dashboard-item-shortcuts '((recents . "r")
-                              (projects . "p")
-                              (agenda . "a")))
-  (dashboard-items '(;; (recents  . 5)
-                     (projects . 5)
-                     (agenda . 0)  ; I override the insert-agenda function
+  (dashboard-items '((agenda . 0)  ; I override the insert-agenda function
                      (todo-items . 0)  ; Custom section
                      (inbox-entries . 0)))  ; Custom section
   :custom-face
