@@ -258,6 +258,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#dired-git-info-][Dired Git Info-]]
   - [[#org][Org]]
     - [[#org-1][Org]]
+    - [[#org-super-agenda][Org Super Agenda]]
     - [[#custom-functions-6][Custom Functions]]
       - [[#org-screenshot][org-screenshot]]
       - [[#org-indent-src-block][org-indent-src-block]]
@@ -1365,7 +1366,7 @@ daemon."
   (defun dashboard-insert-agenda (&rest _)
     "Insert a copy of org-agenda buffer."
     (dashboard-insert-heading "Agenda for today:")
-    (insert "\n" (fk/dashboard-get-agenda)))
+    (insert (fk/dashboard-get-agenda)))
 
   (defun fk/dashboard-get-inbox-entries ()
     ;; TODO: appearance is not consistent, seems like there is some sort of caching
@@ -3900,7 +3901,8 @@ otherwise, open the file in a new buffer."
   (org-directory "~/org")  ; This is default already but lets declare explicitly
   (org-agenda-files `(,(expand-file-name "agenda.org" org-directory)))
   (org-agenda-start-on-weekday nil)
-  (org-agenda-current-time-string "—————————— now ——————————")
+  (org-agenda-current-time-string "────────── now ──────────")
+  (org-agenda-format-date (lambda (date) (concat "\n" (org-agenda-format-date-aligned date))))
   (org-agenda-prefix-format '((agenda  . "     %i %?-12t% s")
                               (todo  . " %i %-12:c")
                               (tags  . " %i %-12:c")
@@ -4105,6 +4107,23 @@ _3_: High Priority     ^^             _A_: Anime         ^^
     ("m" org-refile "Refile manually")
     ("s" save-buffer "Save buffer")
     ("q" nil "Quit" :color blue)))
+#+END_SRC
+*** Org Super Agenda
+#+BEGIN_SRC emacs-lisp
+(use-package org-super-agenda
+  :after org-agenda
+  :custom
+  (org-super-agenda-header-prefix "")
+  (org-super-agenda-groups '(( :name "  Calendar  "
+                               :time-grid t)
+                             ( :name "  Deadlines  "
+                               :deadline t)
+                             ( :name "  Scheduled  "
+                               :scheduled t)))
+  :custom-face
+  (org-super-agenda-header ((t (:slant italic :underline "dim gray"))))
+  :config
+  (org-super-agenda-mode))
 #+END_SRC
 
 *** Custom Functions
