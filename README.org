@@ -773,12 +773,8 @@ which is generally not intended to be edited."
 
 (setq-default
  truncate-lines t
- frame-resize-pixelwise t     ; maximized emacs may not fit screen without this
- frame-title-format '((:eval  ; TODO: maybe better in "* Better Defaults"
-                       (let ((project-name (projectile-project-name)))
-                         (unless (string= "-" project-name)
-                           (format "%s| " project-name))))
-                      "%b"))  ; project-name| file-name
+ frame-resize-pixelwise t             ; maximized emacs may not fit screen without this
+ frame-title-format '("Emacs | %b"))  ; Emacs | buffer-name
 #+END_SRC
 
 ** Custom Functions
