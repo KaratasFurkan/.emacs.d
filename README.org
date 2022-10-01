@@ -259,6 +259,7 @@ File explorer (treemacs), auto complete (company), git&github integration
   - [[#org][Org]]
     - [[#org-1][Org]]
     - [[#org-super-agenda][Org Super Agenda]]
+    - [[#org-ql][Org QL]]
     - [[#custom-functions-6][Custom Functions]]
       - [[#org-screenshot][org-screenshot]]
       - [[#org-indent-src-block][org-indent-src-block]]
@@ -1221,7 +1222,8 @@ size. This function also handles icons and modeline font sizes."
   (shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t)  ; I use helm-posframe now, this is unnecessary but i want to keep just in case
                    ("\\`\\*helpful.*?\\*\\'" :regexp t :align t)
                    ("\\`\\*Go Translate*?\\*\\'" :regexp t :align t)
-                   (help-mode :align t :select t)))
+                   (help-mode :align t :select t)
+                   (org-agenda-mode :align t :select t)))
   :hook
   (dashboard-after-initialize . shackle-mode))
 #+END_SRC
@@ -3977,6 +3979,7 @@ otherwise, open the file in a new buffer."
     ("C-c L" . org-metaleft)
     ("C-c U" . org-metaup)
     ("C-c D" . org-metadown)
+    ("C-c C-x C-e" . org-set-effort)  ; ‘3:12’, ‘1:23:45’, or ‘1d3h5min’
     :map org-src-mode-map
     ("C-c C-c" . org-edit-src-exit)
     ;; Better, intuitive movement when selecting a date for schedule or deadline
@@ -4067,7 +4070,7 @@ _P_: Priority          _t_: Tech      _T_: Tech          ^^
 _1_: Low Priority      _h_: Home      _M_: Movie         ^^
 _2_: Medium Priority   _o_: Other     _S_: TV Show       ^^
 _3_: High Priority     ^^             _A_: Anime         ^^
-^^                     ^^             _V_: Video         ^^
+_4_: Set Time Effort   ^^             _V_: Video         ^^
 ^^                     ^^             _B_: Book          ^^
 ^^                     ^^             _F_: Food          ^^
 ^^                     ^^             _O_: Other         ^^
@@ -4080,6 +4083,7 @@ _3_: High Priority     ^^             _A_: Anime         ^^
     ("1" (lambda () (interactive) (org-priority ?C)))
     ("2" (lambda () (interactive) (org-priority ?B)))
     ("3" (lambda () (interactive) (org-priority ?A)))
+    ("4" org-set-effort)
     ;; Todo
     ("w" (lambda () (interactive) (fk/org-refile-fixed-location "todos.org" "Work")))
     ("e" (lambda () (interactive) (fk/org-refile-fixed-location "todos.org" "Emacs")))
@@ -4122,6 +4126,49 @@ _3_: High Priority     ^^             _A_: Anime         ^^
   :config
   (org-super-agenda-mode))
 #+END_SRC
+*** Org QL
+#+BEGIN_SRC emacs-lisp
+(use-package org-ql
+  :commands org-ql-search org-ql-view
+  :bind
+  ( :map org
+    ("q" . org-ql-view))
+  :config
+  (with-eval-after-load 'org-ql-view
+    (define-key org-ql-view-map (kbd "q") 'quit-window)
+
+    (let ((org-directory-files (progn
+                                 (require 'org-ql-search)
+                                 (org-ql-search-directories-files))))
+      (setq org-ql-views `(("Effort <=15min"
+                            :title "Effort <=15min"
+                            :buffers-files ,org-directory-files
+                            :query (effort "<=" "15min")
+                            :super-groups ((:auto-parent))
+                            :sort (priority))
+
+                           ("Effort >15min <=30min"
+                            :title "Effort >15min <=30min"
+                            :buffers-files ,org-directory-files
+                            :query (and (effort ">" "15min") (effort "<=" "30min"))
+                            :super-groups ((:auto-parent))
+                            :sort (priority))
+
+                           ("Effort >30min <=1h"
+                            :title "Effort >30min <=1h"
+                            :buffers-files ,org-directory-files
+                            :query (and (effort ">" "30min") (effort "<=" "1h"))
+                            :super-groups ((:auto-parent))
+                            :sort (priority))
+
+                           ("Effort >1h <=2h"
+                            :title "Effort >1h <=2h"
+                            :buffers-files ,org-directory-files
+                            :query (and (effort ">" "1h") (effort "<=" "2h"))
+                            :super-groups ((:auto-parent))
+                            :sort (priority)))))))
+#+END_SRC
+
 
 *** Custom Functions
 **** org-screenshot
@@ -4282,7 +4329,8 @@ _3_: High Priority     ^^             _A_: Anime         ^^
                         (?B . (:foreground "orange" :weight extrabold :height 1.3))
                         (?C . (:foreground "Burlywood" :weight extrabold :height 1.3))))
   :hook
-  (org-mode . org-fancy-priorities-mode))
+  (org-mode . org-fancy-priorities-mode)
+  (org-agenda-finalize . org-fancy-priorities-mode))
 #+END_SRC
 
 *** Org Tree Slide
