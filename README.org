@@ -1440,6 +1440,7 @@ daemon."
    org-link
    org-scheduled
    org-scheduled-today
+   org-super-agenda-header
    org-tag
    org-time-grid
    org-upcoming-deadline
@@ -3903,8 +3904,8 @@ otherwise, open the file in a new buffer."
                               (todo  . " %i %-12:c")
                               (tags  . " %i %-12:c")
                               (search . " %i %-12:c")))
-  (org-agenda-time-grid '((daily today require-timed)
-                          (1000 1200 1400 1600 1800 2000)
+  (org-agenda-time-grid '((daily today require-timed remove-match)
+                          (1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000)
                           "" "················"))
   (org-deadline-warning-days 5)
   (org-display-custom-times t)
@@ -3955,7 +3956,7 @@ otherwise, open the file in a new buffer."
     ("a" . fk/org-agenda-posframe)
     ("f" . (lambda () (interactive) (helm-find-files-1 "~/org/")))
     ("c" . (lambda () (interactive) (org-capture :keys "i")))
-    ("t" . fk/org-babel-tangle-block)
+    ;; ("t" . fk/org-babel-tangle-block)
     ("d" . (lambda () (interactive) (org-todo "DONE")))
     :map org-mode-map
     ("C-c C-e" . org-edit-special)
