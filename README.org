@@ -3997,6 +3997,10 @@ otherwise, open the file in a new buffer."
   (org-capture-mode . delete-other-windows)  ; make capture buffer fullscreen
   (org-agenda-mode . (lambda () (require 'org-habit)))
   :config
+  (setq org-gtd-files  `(,(concat org-directory "/" "inbox.org")
+                         ,(concat org-directory "/" "todos.org")
+                         ,(concat org-directory "/" "someday.org")))
+
   (add-to-list 'org-emphasis-alist '("#" (:box '(:line-width -1))))  ; FIXME: does not work.
   (setf (cdr (assoc "*" org-emphasis-alist)) '((:weight extra-bold :foreground "#DDDDDD")))
 
@@ -4132,36 +4136,21 @@ _4_: Set Time Effort   ^^                                ^^
   (with-eval-after-load 'org-ql-view
     (define-key org-ql-view-map (kbd "q") 'quit-window)
 
-    (let ((org-directory-files (progn
-                                 (require 'org-ql-search)
-                                 (org-ql-search-directories-files))))
-      (setq org-ql-views `(("Effort <=15min"
-                            :title "Effort <=15min"
-                            :buffers-files ,org-directory-files
-                            :query (effort "<=" "15min")
-                            :super-groups ((:auto-parent))
-                            :sort (priority))
+    (defmacro fk/org-ql-view (title query)
+      `'(,title
+         :title ,title
+         :buffers-files ,org-gtd-files
+         :query ,query
+         :super-groups ((:auto-parent))
+         :sort (priority)))
 
-                           ("Effort >15min <=30min"
-                            :title "Effort >15min <=30min"
-                            :buffers-files ,org-directory-files
-                            :query (and (effort ">" "15min") (effort "<=" "30min"))
-                            :super-groups ((:auto-parent))
-                            :sort (priority))
-
-                           ("Effort >30min <=1h"
-                            :title "Effort >30min <=1h"
-                            :buffers-files ,org-directory-files
-                            :query (and (effort ">" "30min") (effort "<=" "1h"))
-                            :super-groups ((:auto-parent))
-                            :sort (priority))
-
-                           ("Effort >1h <=2h"
-                            :title "Effort >1h <=2h"
-                            :buffers-files ,org-directory-files
-                            :query (and (effort ">" "1h") (effort "<=" "2h"))
-                            :super-groups ((:auto-parent))
-                            :sort (priority)))))))
+    (setq org-ql-views
+          `(,(fk/org-ql-view "Effort <=15min"         (effort "<=" "15min"))
+            ,(fk/org-ql-view "Effort >15min <=30min"  (and (effort ">" "15min") (effort "<=" "30min")))
+            ,(fk/org-ql-view "Effort >30min <=1h"     (and (effort ">" "30min") (effort "<=" "1h")))
+            ,(fk/org-ql-view "Effort >1h <=2h"        (and (effort ">" "1h") (effort "<=" "2h")))
+            ,(fk/org-ql-view "Effort >2h <=4h"        (and (effort ">" "2h") (effort "<=" "4h")))
+            ,(fk/org-ql-view "Effort >4h"             (effort ">" "4h"))))))
 #+END_SRC
 
 
