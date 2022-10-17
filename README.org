@@ -4065,21 +4065,19 @@ otherwise, open the file in a new buffer."
 ^Move^                 ^Todo^         ^Someday^          ^Archive^
 -----------------------------------------------------------
 _n_: Next              _w_: Work      _E_: Emacs         _d_: Done
-_p_: Previous          _e_: Emacs     _R_: Presentation  _x_: Trash
-_P_: Priority          _t_: Tech      _T_: Tech          ^^
-_1_: Low Priority      _h_: Home      _M_: Movie         ^^
-_2_: Medium Priority   _o_: Other     _S_: TV Show       ^^
-_3_: High Priority     ^^             _A_: Anime         ^^
-_4_: Set Time Effort   ^^             _V_: Video         ^^
-^^                     ^^             _B_: Book          ^^
-^^                     ^^             _F_: Food          ^^
+_p_: Previous          _e_: Emacs     _P_: Presentation  _x_: Trash
+^^                     _t_: Tech      _T_: Tech          ^^
+_1_: Low Priority      _h_: Home      _H_: Home          ^^
+_2_: Medium Priority   _o_: Other     _W_: Watch         ^^
+_3_: High Priority     ^^             _R_: Read          ^^
 ^^                     ^^             _O_: Other         ^^
+_4_: Set Time Effort   ^^                                ^^
+
 
 "
     ;; Move
     ("n" next-line)
     ("p" previous-line)
-    ("P" org-priority-down)
     ("1" (lambda () (interactive) (org-priority ?C)))
     ("2" (lambda () (interactive) (org-priority ?B)))
     ("3" (lambda () (interactive) (org-priority ?A)))
@@ -4092,14 +4090,11 @@ _4_: Set Time Effort   ^^             _V_: Video         ^^
     ("o" (lambda () (interactive) (fk/org-refile-fixed-location "todos.org" "Other")))
     ;; Someday
     ("E" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Emacs")))
-    ("R" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Emacs Presentation")))
+    ("P" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Emacs Presentation")))
     ("T" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Tech")))
-    ("M" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Movie")))
-    ("S" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "TV Show")))
-    ("A" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Anime")))
-    ("V" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Video")))
-    ("B" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Book")))
-    ("F" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Food")))
+    ("H" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Home")))
+    ("W" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Watch")))
+    ("R" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Read")))
     ("O" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Other")))
     ;; Archive
     ("d" fk/org-refile-done)
