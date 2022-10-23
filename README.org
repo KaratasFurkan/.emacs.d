@@ -655,9 +655,8 @@ Keep Emacs directory clean.
  fast-but-imprecise-scrolling t                ; supposed to make scrolling faster on hold
  window-resize-pixelwise t                     ; correctly resize windows by pixels (e.g. in split-window functions)
  native-comp-async-report-warnings-errors nil  ; disable annoying native-comp warnings
- ad-redefinition-action 'accept)               ; disable annoying "ad-handle-definition: ‘some-function’ got redefined" warnings
-
-(defalias 'yes-or-no-p 'y-or-n-p)
+ ad-redefinition-action 'accept                ; disable annoying "ad-handle-definition: ‘some-function’ got redefined" warnings
+ use-short-answers t)                          ; e.g. `y-or-n-p' instead of `yes-or-no-p'
 
 (global-auto-revert-mode)
 
@@ -1668,6 +1667,10 @@ current buffer."
 ** Better Defaults
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'completion-styles 'flex t)
+
+(setq completion-ignore-case t)
+(setq read-buffer-completion-ignore-case t)
+(setq read-file-name-completion-ignore-case t)
 #+END_SRC
 
 ** Which Key (Keybinding Completion)
