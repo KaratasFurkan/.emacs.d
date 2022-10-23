@@ -5212,7 +5212,7 @@ typing with actual code."
 ** Yaml
 #+BEGIN_SRC emacs-lisp
 (use-package yaml-mode
-  :mode "\\.yaml\\'"
+  :mode "\\.ya?ml\\'"
   :hook
   (yaml-mode . highlight-indent-guides-mode)
   (yaml-mode . display-line-numbers-mode))
