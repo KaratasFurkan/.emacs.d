@@ -3964,7 +3964,7 @@ otherwise, open the file in a new buffer."
   :bind
   ( :map org
     ("a" . fk/org-agenda-posframe)
-    ("f" . (lambda () (interactive) (helm-find-files-1 "~/org/")))
+    ("f" . (lambda () (interactive) (helm-find-files-1 (concat org-directory "/"))))
     ("c" . (lambda () (interactive) (org-capture :keys "i")))
     ;; ("t" . fk/org-babel-tangle-block)
     ("d" . (lambda () (interactive) (org-todo "DONE")))
@@ -4003,7 +4003,7 @@ otherwise, open the file in a new buffer."
   (org-mode . (lambda () (fk/add-local-hook 'before-save-hook 'org-redisplay-inline-images)))
   (org-after-refile-insert . (lambda () (fk/org-sort-by-priority) (save-buffer)))
   (org-capture-mode . delete-other-windows)  ; make capture buffer fullscreen
-  (org-agenda-mode . (lambda () (require 'org-habit)))
+  ;; (org-agenda-mode . (lambda () (require 'org-habit)))
   :config
   (add-to-list 'org-emphasis-alist '("#" (:box '(:line-width -1))))  ; FIXME: does not work.
   (setf (cdr (assoc "*" org-emphasis-alist)) '((:weight extra-bold :foreground "#DDDDDD")))
