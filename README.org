@@ -3899,7 +3899,7 @@ otherwise, open the file in a new buffer."
   (org-checkbox-hierarchical-statistics nil)
   (org-src-preserve-indentation t)
   (org-adapt-indentation nil)
-  (org-tags-column 0)
+  (org-tags-column -120)
   (org-imenu-depth 20)
   (org-hide-emphasis-markers t)
   (org-catch-invisible-edits 'show-and-error)
