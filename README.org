@@ -279,6 +279,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#org-export-twitter-bootstrap][Org Export Twitter Bootstrap]]
     - [[#valign-mode][Valign Mode]]
     - [[#org-appear][Org Appear]]
+    - [[#org-rainbow-tags][Org Rainbow Tags]]
   - [[#calendar][Calendar]]
   - [[#version-control][Version Control]]
     - [[#magit][Magit]]
@@ -4420,6 +4421,16 @@ _a_: Set Tags          ^^                                ^^
 #+BEGIN_SRC emacs-lisp
 (use-package org-appear
   :hook (org-mode . org-appear-mode))
+#+END_SRC
+
+*** Org Rainbow Tags
+#+BEGIN_SRC emacs-lisp
+(use-package org-rainbow-tags
+  :straight (:host github :repo "KaratasFurkan/org-rainbow-tags")
+  :custom
+  (org-rainbow-tags-hash-start-index 9)
+  :hook
+  (org-mode . org-rainbow-tags-mode))
 #+END_SRC
 
 ** Calendar
