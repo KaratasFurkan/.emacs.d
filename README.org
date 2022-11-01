@@ -657,7 +657,8 @@ Keep Emacs directory clean.
  window-resize-pixelwise t                     ; correctly resize windows by pixels (e.g. in split-window functions)
  native-comp-async-report-warnings-errors nil  ; disable annoying native-comp warnings
  ad-redefinition-action 'accept                ; disable annoying "ad-handle-definition: ‘some-function’ got redefined" warnings
- use-short-answers t)                          ; e.g. `y-or-n-p' instead of `yes-or-no-p'
+ use-short-answers t                           ; e.g. `y-or-n-p' instead of `yes-or-no-p'
+ help-enable-symbol-autoload t)                ; perform autoload if docs are missing from autoload objects.
 
 (global-auto-revert-mode)
 
