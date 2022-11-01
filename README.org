@@ -4121,15 +4121,12 @@ _a_: Set Tags          ^^                                ^^
 (use-package org-super-agenda
   :after org-agenda
   :custom
-  (org-super-agenda-header-prefix "")
-  (org-super-agenda-groups '(( :name "  Calendar  "
+  (org-super-agenda-groups '(( :name "Calendar"
                                :time-grid t)
-                             ( :name "  Deadlines  "
+                             ( :name "Deadlines"
                                :deadline t)
-                             ( :name "  Scheduled  "
+                             ( :name "Scheduled"
                                :scheduled t)))
-  :custom-face
-  (org-super-agenda-header ((t (:slant italic :underline "dim gray"))))
   :config
   (org-super-agenda-mode))
 #+END_SRC
