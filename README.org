@@ -987,9 +987,9 @@ size. This function also handles icons and modeline font sizes."
   (fixed-pitch ((t (:family "Noto Sans Mono"))))
   :config
   (load-theme 'doom-spacegrey t)
-  (defconst fk/cursor-color (face-attribute 'cursor :background))
-  (defconst fk/font-color (face-attribute 'default :foreground))
-  (defconst fk/background-color (face-attribute 'default :background))
+  (defconst fk/cursor-color (if (daemonp) "#D08770" (face-background 'cursor)))
+  (defconst fk/font-color (if (daemonp) "#C0C5CE" (face-foreground 'default)))
+  (defconst fk/background-color (if (daemonp) "#2B303B" (face-background 'default)))
   (defconst fk/dark-color (doom-darken fk/background-color 0.15))
   (defconst fk/dark-color1 (doom-darken fk/background-color 0.01))
   (defconst fk/dark-color2 (doom-darken fk/background-color 0.02))
@@ -4428,7 +4428,7 @@ _a_: Set Tags          ^^                                ^^
   :custom
   (org-rainbow-tags-hash-start-index 9)
   :hook
-  (org-mode . org-rainbow-tags-mode))
+  (org-mode . (lambda () (unless (daemonp) (org-rainbow-tags-mode)))))
 #+END_SRC
 
 ** Calendar
