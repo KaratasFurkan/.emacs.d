@@ -4679,6 +4679,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 #+BEGIN_SRC emacs-lisp
 (use-package git-link
   :commands git-link
+  :custom
+  (git-link-use-commit t)
   :bind
   ( :map version-control
     ("l" . git-link)))
