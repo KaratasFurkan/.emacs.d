@@ -4529,7 +4529,7 @@ Pull Requests, Issues etc.
     "Prepare topic for `forge-create-pullreq'."
     (if-let* ((target-name (upcase (string-remove-prefix "origin/" target)))
               (source-name (string-remove-prefix "origin/" source))
-              (match (string-match "^[a-z]*-[0-9]*" source-name))
+              (match (string-match "^[a-z]+-[0-9]+" source-name))
               (match-string (match-string-no-properties 0 source-name))
               (issue-id (when match (upcase match-string)))
               ;; Branch may not have issue-id
