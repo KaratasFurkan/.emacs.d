@@ -1058,11 +1058,13 @@ size. This function also handles icons and modeline font sizes."
 
 *** Minibuffer Modeline
 #+BEGIN_SRC emacs-lisp
+;; TODO: check `set-message-functions' to fix losing minibuffer modeline
 (defvar fk/minibuffer-modeline--message nil)
 
 (defun fk/minibuffer-modeline-update ()
   "Show global info in minibuffer instead of modeline."
-  (let* ((pyvenv-icon (all-the-icons-icon-for-mode 'python-mode :height 0.9 :v-adjust 0.01))
+  (let* ((org-clock-string (when (boundp 'fk/org-clock-string) fk/org-clock-string))
+         (pyvenv-icon (all-the-icons-icon-for-mode 'python-mode :height 0.9 :v-adjust 0.01))
          (pyvenv (when (and (featurep 'pyvenv) pyvenv-virtual-env-name)
                    (format "[%s %s]" pyvenv-icon pyvenv-virtual-env-name)))
          (perspectives (when (featurep 'perspective)
@@ -1080,7 +1082,7 @@ size. This function also handles icons and modeline font sizes."
                                 (overwork (propertize (pomidor--format-duration overwork) 'face 'pomidor-overwork-face))
                                 (work (propertize (pomidor--format-duration work) 'face 'pomidor-work-face)))) 5))))
          (time (propertize (format-time-string " %H:%M %a %d/%m" (current-time)) 'face 'font-lock-comment-face))
-         (info (string-join (list pyvenv perspectives pomidor time) " "))
+         (info (string-join (list org-clock-string pyvenv perspectives pomidor time) " "))
          (message (if fk/minibuffer-modeline--message fk/minibuffer-modeline--message ""))
          (right-padding 2)
          (left-padding (make-string (max 0 (- (frame-width) (length message) (length info) right-padding)) ?\ )))
@@ -1462,8 +1464,9 @@ daemon."
     (when (or stripe-buffer-mode stripe-table-mode)
       (dolist (overlay sb/overlays)
         (overlay-put overlay 'priority -100))))
-  :hook
-  (org-mode . turn-on-stripe-table-mode))
+  ;; :hook
+  ;; (org-mode . turn-on-stripe-table-mode)
+  )
 #+END_SRC
 
 ** Fill Column Indicator
@@ -3920,8 +3923,8 @@ otherwise, open the file in a new buffer."
                           (1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000)
                           "" "················"))
   (org-deadline-warning-days 5)
-  (org-display-custom-times t)
-  (org-time-stamp-custom-formats '("<%d/%m/%Y %A>" . "<%d/%m/%Y %A %H:%M>"))
+  ;; (org-display-custom-times t)
+  ;; (org-time-stamp-custom-formats '("<%d/%m/%Y %A>" . "<%d/%m/%Y %A %H:%M>"))
   (org-bookmark-names-plist '())  ; Do not create bookmarks
   (org-capture-templates '(("i" "Capture to inbox" entry
                             (file "inbox.org")
@@ -3940,6 +3943,7 @@ otherwise, open the file in a new buffer."
    '(("TODO" :foreground "orangered2" :weight bold)
      ("WIP" :foreground "#86DC2F" :weight bold)
      ("HOLD" :foreground "#DC752F" :weight bold)))
+  (org-clock-clocktable-default-properties '(:maxlevel 10))
   ;;;; Getting Things Done ;;;;
   :custom-face
   (org-block ((t (:family ,fk/default-font-family :extend t))))
@@ -3954,7 +3958,7 @@ otherwise, open the file in a new buffer."
   (org-level-7 ((t (:height 1.0 :weight bold))))
   (org-level-8 ((t (:height 1.0 :weight bold))))
   (org-drawer ((t (:foreground nil :inherit font-lock-comment-face))))
-  (org-table ((t (:family ,fk/default-font-family :foreground "white"))))
+  (org-table ((t (:inherit org-block :family ,fk/default-font-family :foreground ,(face-foreground 'default)))))
   (org-document-title ((t (:family "AV Qest" :height 3.0))))
   (org-block-begin-line ((t (:foreground ,fk/light-color1 :background ,fk/background-color :extend t))))
   (org-document-info-keyword ((t (:foreground ,fk/background-color))))  ; Make #+TITLE: invisible
@@ -4114,7 +4118,31 @@ _a_: Set Tags          ^^                                ^^
     ;; General
     ("m" org-refile "Refile manually")
     ("s" save-buffer "Save buffer")
-    ("q" nil "Quit" :color blue)))
+    ("q" nil "Quit" :color blue))
+
+  (set-face-attribute 'org-mode-line-clock nil :inherit 'default)
+
+  (defun fk/org-clock-update-mode-line (&optional _)
+    "Display org-clock info in echo area. See `fk/minibuffer-modeline-update'."
+    (if org-clock-effort
+        (org-clock-notify-once-if-expired)
+      (setq org-clock-task-overrun nil))
+    (setq fk/org-clock-string
+          (let ((clock-string (org-clock-get-clock-string)))
+            (if (and (> org-clock-string-limit 0)
+                     (> (length clock-string) org-clock-string-limit))
+                (substring clock-string 0 org-clock-string-limit)
+              clock-string)))
+    (if (and org-clock-task-overrun org-clock-task-overrun-text)
+        (setq fk/org-clock-string
+              (concat (propertize
+                       org-clock-task-overrun-text
+                       'face 'org-mode-line-clock-overrun)
+                      fk/org-clock-string))))
+
+  (advice-add 'org-clock-update-mode-line :override 'fk/org-clock-update-mode-line)
+  (add-hook 'org-clock-out-hook (lambda () (setq fk/org-clock-string "")))
+  (add-hook 'org-clock-cancel-hook (lambda () (setq fk/org-clock-string ""))))
 #+END_SRC
 *** Org Super Agenda
 #+BEGIN_SRC emacs-lisp
