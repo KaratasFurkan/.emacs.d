@@ -4142,7 +4142,26 @@ _a_: Set Tags          ^^                                ^^
 
   (advice-add 'org-clock-update-mode-line :override 'fk/org-clock-update-mode-line)
   (add-hook 'org-clock-out-hook (lambda () (setq fk/org-clock-string "")))
-  (add-hook 'org-clock-cancel-hook (lambda () (setq fk/org-clock-string ""))))
+  (add-hook 'org-clock-cancel-hook (lambda () (setq fk/org-clock-string "")))
+
+  (defun fk/org-clock-out-and-update-report (orig-func &rest args)
+    "Update org clock report table after clock out."
+    (interactive)
+    (let ((buffer (org-clocking-buffer)))
+      (apply orig-func args)  ; clock out
+      ;; `org-clock-report' updates the first table in the buffer
+      ;; when called with a prefix argument
+      (with-current-buffer buffer
+        (let ((current-prefix-arg 4)) (call-interactively 'org-clock-report)))))
+
+  (advice-add 'org-clock-out :around 'fk/org-clock-out-and-update-report)
+
+  ;; Similar to `fk/org-clock-out-and-update-report',
+  ;; I added this file local variable to my time tracking file to update report on save:
+  ;; # Local Variables:
+  ;; # eval: (add-hook 'before-save-hook (lambda () (save-excursion (let ((current-prefix-arg 4)) (call-interactively 'org-clock-report)))) :local t)
+  ;; # End:
+  )
 #+END_SRC
 *** Org Super Agenda
 #+BEGIN_SRC emacs-lisp
