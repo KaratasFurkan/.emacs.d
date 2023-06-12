@@ -4144,6 +4144,21 @@ _a_: Set Tags          ^^                                ^^
   (add-hook 'org-clock-out-hook (lambda () (setq fk/org-clock-string "")))
   (add-hook 'org-clock-cancel-hook (lambda () (setq fk/org-clock-string "")))
 
+  (add-hook 'org-clock-in-hook (lambda ()
+                                 (interactive)
+                                 (setq fk/org-clocking-buffer (org-clocking-buffer))
+                                 (save-buffer)))
+  (add-hook 'org-clock-out-hook (lambda ()
+                                  (interactive)
+                                  (with-current-buffer fk/org-clocking-buffer
+                                    (save-buffer))
+                                  (setq fk/org-clocking-buffer nil)))
+  (add-hook 'org-clock-cancel-hook (lambda ()
+                                     (interactive)
+                                     (with-current-buffer fk/org-clocking-buffer
+                                       (save-buffer))
+                                     (setq fk/org-clocking-buffer nil)))
+
   (defun fk/org-clock-out-and-update-report (orig-func &rest args)
     "Update org clock report table after clock out."
     (interactive)
@@ -4151,8 +4166,11 @@ _a_: Set Tags          ^^                                ^^
       (apply orig-func args)  ; clock out
       ;; `org-clock-report' updates the first table in the buffer
       ;; when called with a prefix argument
-      (with-current-buffer buffer
-        (let ((current-prefix-arg 4)) (call-interactively 'org-clock-report)))))
+      (save-excursion
+        (with-current-buffer buffer
+          (let ((current-prefix-arg 4))
+            (call-interactively 'org-clock-report)
+            (save-buffer))))))
 
   (advice-add 'org-clock-out :around 'fk/org-clock-out-and-update-report)
 
