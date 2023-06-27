@@ -3938,11 +3938,15 @@ otherwise, open the file in a new buffer."
   ;; (org-log-done 'time)
   (org-fontify-done-headline t)
   (org-log-into-drawer t)  ; Log TODO state changes into :LOGBOOK: drawer insted of directly adding lines to the subtree
-  (org-todo-keywords '((sequence "TODO(t)" "WIP(w)" "HOLD(h)" "|" "DONE(d)")))
+  (org-todo-keywords '((sequence "TODO(t)" "WAIT(w)" "HOLD(h)" "STRT(s)" "WIP.(i)" "STAG(a)" "PROD(p)" "|" "DONE(d)")))
   (org-todo-keyword-faces
    '(("TODO" :foreground "orangered2" :weight bold)
-     ("WIP" :foreground "#86DC2F" :weight bold)
-     ("HOLD" :foreground "#DC752F" :weight bold)))
+     ("WAIT" :foreground "goldenrod" :weight bold)
+     ("HOLD" :foreground "#DC752F" :weight bold)
+     ("STRT" :foreground "PaleGreen" :weight bold)
+     ("WIP." :foreground "#86DC2F" :weight bold)
+     ("STAG" :foreground "DarkTurquoise" :weight bold)
+     ("PROD" :foreground "DodgerBlue" :weight bold)))
   (org-clock-clocktable-default-properties '(:maxlevel 10))
   (org-extend-today-until 4)
   (org-clock-mode-line-total 'today)
