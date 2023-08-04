@@ -3516,6 +3516,23 @@ use `hi-lock-unface-buffer' or disable `hi-lock-mode'."
  :map django
  ("c" . fk/django-copy-path-of-test-at-point)
  ("d" . fk/django-run-test-at-point))
+
+;; Highlighting of django template blocks
+(defvar django-block-regexp (rx "{%" (zero-or-more space) (zero-or-one "end") "block" (group (zero-or-more (not (any ?\n ?{)))) "%}"))
+
+(defface django-block-keyword-face
+  '((t (:foreground "tomato" :bold t)))
+  "Face for django template blocks.")
+
+(defface django-block-name-face
+  '((t (:foreground "wheat" :bold t)))
+  "Face for django template blocks.")
+
+(font-lock-add-keywords
+ 'web-mode
+ `((,django-block-regexp 0 'django-block-keyword-face t)
+   (,django-block-regexp 1 'django-block-name-face t))
+ t)
 #+END_SRC
 
 *** Jupyter Notebook
