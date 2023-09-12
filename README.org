@@ -3518,7 +3518,7 @@ use `hi-lock-unface-buffer' or disable `hi-lock-mode'."
  ("d" . fk/django-run-test-at-point))
 
 ;; Highlighting of django template blocks
-(defvar django-block-regexp (rx "{%" (zero-or-more space) (zero-or-one "end") "block" (group (zero-or-more (not (any ?\n ?{)))) "%}"))
+(defvar django-block-regexp (rx "{%" (zero-or-more space) (zero-or-one "end") "block " (group (zero-or-more (not (any ?\n ?{)))) "%}"))
 
 (defface django-block-keyword-face
   '((t (:foreground "tomato" :bold t)))
@@ -3532,6 +3532,21 @@ use `hi-lock-unface-buffer' or disable `hi-lock-mode'."
  'web-mode
  `((,django-block-regexp 0 'django-block-keyword-face t)
    (,django-block-regexp 1 'django-block-name-face t))
+ t)
+
+;; Highlighting of django template comments
+(defvar django-comment-regexp
+  (rx "{%" (zero-or-more space) "comment" (zero-or-more space) "%}"
+      (zero-or-more anything)
+      "{%" (zero-or-more space) "endcomment" (zero-or-more space) "%}"))
+
+(defface django-comment-face
+  '((t (:inherit 'font-lock-comment-face)))
+  "Face for django template comments.")
+
+(font-lock-add-keywords
+ 'web-mode
+ `((,django-comment-regexp 0 'django-comment-face t))
  t)
 #+END_SRC
 
