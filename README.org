@@ -280,6 +280,7 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#valign-mode][Valign Mode]]
     - [[#org-appear][Org Appear]]
     - [[#org-rainbow-tags][Org Rainbow Tags]]
+  - [[#outline-mode][Outline Mode]]
   - [[#calendar][Calendar]]
   - [[#version-control][Version Control]]
     - [[#magit][Magit]]
@@ -1037,6 +1038,9 @@ size. This function also handles icons and modeline font sizes."
 ** Mode Line
 *** Doom Modeline
 #+BEGIN_SRC emacs-lisp
+(use-package nerd-icons
+  :defer t)
+
 (use-package doom-modeline
   :init
   ;; show doom-modeline at the same time with dashboard
@@ -1052,6 +1056,7 @@ size. This function also handles icons and modeline font sizes."
   (mode-line-highlight ((t (:inherit cursor :foreground "black"))))
   (doom-modeline-bar ((t (:background ,fk/dark-color))))
   (doom-modeline-buffer-path ((t (:inherit font-lock-comment-face :slant normal))))
+  (doom-modeline-buffer-modified ((t (:inherit error :weight bold))))
   :hook
   (dashboard-after-initialize . column-number-mode))
 #+END_SRC
@@ -1314,7 +1319,7 @@ size. This function also handles icons and modeline font sizes."
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
   (dashboard-items '((agenda . 0)  ; I override the insert-agenda function
-                     (todo-items . 0)  ; Custom section
+                     ;  (todo-items . 0)  ; Custom section
                      (inbox-entries . 0)))  ; Custom section
   :custom-face
   (dashboard-heading ((t (:inherit font-lock-keyword-face :height 1.2))))
@@ -1775,9 +1780,9 @@ current buffer."
             :preselect ""
             :buffer "*helm imenu*")))
 
-  (add-hook 'imenu-after-jump-hook (lambda ()
-                                     (when (derived-mode-p 'outline-mode)
-                                       (show-subtree))))
+  ;; (add-hook 'imenu-after-jump-hook (lambda ()
+  ;;                                    (when (derived-mode-p 'outline-mode)
+  ;;                                      (show-subtree))))
 
   (defun fk/yank-pop-or-helm-show-kill-ring ()
     "If called after a yank, call `yank-pop'. Otherwise, call
@@ -2583,7 +2588,15 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
   :commands deadgrep
   :bind
   ( :map deadgrep-mode-map
-    ("C-c C-e" . deadgrep-edit-mode)))
+    ("C-c C-e" . deadgrep-edit-mode)
+    ("v" . fk/deadgrep-view-result-other-window))
+  :config
+  (defun fk/deadgrep-view-result-other-window ()
+    "docstring"
+    (interactive)
+    (let ((current-window (selected-window)))
+      (deadgrep-visit-result-other-window)
+      (select-window current-window))))
 #+END_SRC
 
 ** Avy
@@ -2696,9 +2709,9 @@ Source: http://tuhdo.github.io/emacs-frame-peek.html"
   ;; (fk/block-nav-activate 'python 'python-mode-map)
   ;; (fk/block-nav-activate 'yaml-mode 'yaml-mode-map)
   ;; (fk/block-nav-activate 'docker-compose-mode 'docker-compose-mode-map)
-  (with-eval-after-load 'python
-    (define-key python-mode-map (kbd "M-n") 'block-nav-next-block)
-    (define-key python-mode-map (kbd "M-p") 'block-nav-previous-block))
+  ;; (with-eval-after-load 'python
+  ;;   (define-key python-mode-map (kbd "M-n") 'block-nav-next-block)
+  ;;   (define-key python-mode-map (kbd "M-p") 'block-nav-previous-block))
   (with-eval-after-load 'yaml-mode
     (define-key yaml-mode-map (kbd "M-n") 'block-nav-next-block)
     (define-key yaml-mode-map (kbd "M-p") 'block-nav-previous-block))
@@ -2860,7 +2873,9 @@ otherwise."
 (use-package string-inflection
   :bind
   ( :map text
-    ("t" . string-inflection-all-cycle)
+    ("t" . (lambda () (interactive) (if (eq major-mode 'python-mode)
+                                        (string-inflection-python-style-cycle)
+                                      (string-inflection-all-cycle))))
     ("k" . string-inflection-kebab-case)))
 #+END_SRC
 
@@ -2907,8 +2922,7 @@ otherwise."
   (wrap-region-add-wrapper "#" "#" nil 'org-mode)
   (wrap-region-add-wrapper "`" "`" nil 'markdown-mode)
   (wrap-region-add-wrapper "`" "`" nil 'forge-post-mode)
-  (wrap-region-add-wrapper "_(" ")" "_" 'python-mode)
-  (wrap-region-add-wrapper "len(" ")" "l" 'python-mode))
+  (wrap-region-add-wrapper "_(" ")" "_" 'python-mode))
 #+END_SRC
 
 ** Fill-Unfill Paragraph
@@ -3083,6 +3097,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 (use-package flycheck
   :custom
   (flycheck-check-syntax-automatically '(save mode-enabled))
+  (flycheck-disabled-checkers '(python-pycompile python-mypy python-pylint python-pyright))
   :bind
   ( :map errors
     ("n" . flycheck-next-error)
@@ -3165,7 +3180,8 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 (use-package lsp-mode
   :commands lsp
   :custom
-  (lsp-auto-guess-root t)
+  (lsp-auto-guess-root nil)
+  (lsp-auto-select-workspace t)
   (lsp-keymap-prefix "M-m l")
   (lsp-modeline-diagnostics-enable nil)
   (lsp-keep-workspace-alive nil)
@@ -3271,6 +3287,7 @@ active call comment-or-uncomment-region, otherwise just insert the given char."
 string in the region. Uses `hi-lock' to highlight,
 `symbol-overlay' to generate a random face. To remove highlights,
 use `hi-lock-unface-buffer' or disable `hi-lock-mode'."
+    ;; TODO: `hl-line' breaks background color
     (interactive)
     (let ((str (fk/get-selected-text))
           (face (nth (random (length symbol-overlay-faces)) symbol-overlay-faces)))
@@ -3353,7 +3370,7 @@ use `hi-lock-unface-buffer' or disable `hi-lock-mode'."
   ;; With pyls:
   ;; pip install python-language-server flake8 pyls-black(optional) pyls-isort(optional)
   ;; With pyright
-  ;; sudo npm install -g pyright && pip install flake8 black(optional)
+  ;; sudo npm install -g pyright && pip install flake8 black(optional) django-stubs(optional)
   ;; NOTE: these hooks runs in reverse order
   (python-mode . (lambda () (setq-local company-prescient-sort-length-enable nil)))
   (python-mode . (lambda () (unless (and buffer-file-name (file-in-directory-p buffer-file-name "~/.virtualenvs/"))
@@ -3386,7 +3403,7 @@ use `hi-lock-unface-buffer' or disable `hi-lock-mode'."
 *** Pyvenv
 #+BEGIN_SRC emacs-lisp
 (use-package pyvenv
-  :after python
+  :after projectile
   :config
   ;; I show this in `fk/minibuffer-modeline-update' manually.
   (setq pyvenv-mode-line-indicator nil)
@@ -3440,8 +3457,8 @@ use `hi-lock-unface-buffer' or disable `hi-lock-mode'."
 
 *** Isort
 #+BEGIN_SRC emacs-lisp
-(use-package py-isort
-  :commands py-isort-buffer)
+(use-package python-isort
+  :commands python-isort-buffer python-isort-region python-isort-on-save-mode)
 #+END_SRC
 
 *** LSP Pyright
@@ -3449,7 +3466,7 @@ use `hi-lock-unface-buffer' or disable `hi-lock-mode'."
 (use-package lsp-pyright
   :after lsp-mode
   :custom
-  (lsp-pyright-auto-import-completions nil)
+  ;; (lsp-pyright-auto-import-completions nil)
   (lsp-pyright-typechecking-mode "off")
   :config
   (fk/async-process
@@ -3537,7 +3554,7 @@ use `hi-lock-unface-buffer' or disable `hi-lock-mode'."
 ;; Highlighting of django template comments
 (defvar django-comment-regexp
   (rx "{%" (zero-or-more space) "comment" (zero-or-more space) "%}"
-      (zero-or-more anything)
+      (zero-or-more (not (any "{%")))
       "{%" (zero-or-more space) "endcomment" (zero-or-more space) "%}"))
 
 (defface django-comment-face
@@ -3548,6 +3565,20 @@ use `hi-lock-unface-buffer' or disable `hi-lock-mode'."
  'web-mode
  `((,django-comment-regexp 0 'django-comment-face t))
  t)
+
+;; djhtml indenter
+(with-eval-after-load 'web-mode
+  (require 'reformatter)
+  (reformatter-define djhtml
+    ;; provides these commands:
+    ;;
+    ;; djhtml-buffer
+    ;; djhtml-region
+    ;; djhtml-on-save-mode
+    :program "djhtml"
+    :args `(,input-file "--tabwidth" "2")
+    :stdin nil
+    :stdout nil))
 #+END_SRC
 
 *** Jupyter Notebook
@@ -3970,15 +4001,19 @@ otherwise, open the file in a new buffer."
   ;; (org-log-done 'time)
   (org-fontify-done-headline t)
   (org-log-into-drawer t)  ; Log TODO state changes into :LOGBOOK: drawer insted of directly adding lines to the subtree
-  (org-todo-keywords '((sequence "TODO(t)" "WAIT(w)" "HOLD(h)" "STRT(s)" "WIP.(i)" "STAG(a)" "PROD(p)" "|" "DONE(d)")))
+  (org-todo-keywords '((sequence "TODO(t)" "WAIT(w)" "HOLD(h)" "STRT(s)"
+                                 "WIP.(i)" "STAG(a)" "PROD(p)" "REPT(r)"
+                                 "|" "DONE(d)" "CNCL(c)")))
   (org-todo-keyword-faces
    '(("TODO" :foreground "orangered2" :weight bold)
      ("WAIT" :foreground "goldenrod" :weight bold)
      ("HOLD" :foreground "#DC752F" :weight bold)
      ("STRT" :foreground "PaleGreen" :weight bold)
      ("WIP." :foreground "#86DC2F" :weight bold)
+     ("REPT" :foreground "#939DA4" :weight bold)
      ("STAG" :foreground "DarkTurquoise" :weight bold)
      ("PROD" :foreground "DodgerBlue" :weight bold)))
+  (org-use-fast-todo-selection 'expert)
   (org-clock-clocktable-default-properties '(:maxlevel 10))
   (org-extend-today-until 4)
   (org-clock-mode-line-total 'today)
@@ -4124,8 +4159,8 @@ _p_: Previous          _e_: Emacs     _P_: Presentation  _x_: Trash
 _1_: Low Priority      _h_: Home      _H_: Home          ^^
 _2_: Medium Priority   _o_: Other     _W_: Watch         ^^
 _3_: High Priority     ^^             _R_: Read          ^^
-^^                     ^^             _O_: Other         ^^
-_c_: Set Time Effort   ^^                                ^^
+^^                     ^^             _G_: Game          ^^
+_c_: Set Time Effort   ^^             _O_: Other         ^^
 _a_: Set Tags          ^^                                ^^
 
 
@@ -4151,6 +4186,7 @@ _a_: Set Tags          ^^                                ^^
     ("H" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Home")))
     ("W" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Watch")))
     ("R" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Read")))
+    ("G" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Game")))
     ("O" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Other")))
     ;; Archive
     ("d" fk/org-refile-done)
@@ -4219,7 +4255,42 @@ _a_: Set Tags          ^^                                ^^
   ;; # Local Variables:
   ;; # eval: (add-hook 'before-save-hook (lambda () (save-excursion (let ((current-prefix-arg 4)) (call-interactively 'org-clock-report)))) :local t)
   ;; # End:
-  )
+
+  (defun fk/time-to-minutes (time)
+    "Convert a time string in 'hour:minute' format to minutes."
+    (let* ((time-list (split-string time ":"))
+           (hours (string-to-number (car time-list)))
+           (minutes (string-to-number (cadr time-list))))
+      (+ (* hours 60) minutes)))
+
+  (defun fk/number-of-weekdays-in-a-month (year month &optional until-today)
+    "Returns the number of weekdays in the given YEAR and MONTH."
+    (require 'calendar)
+    (let ((weekdays '(1 2 3 4 5))  ; 0 sun 1 mon 2 tue 3 wed 4 thu 5 fri 6 sat
+          (count 0))
+      (dotimes (day (if until-today (nth 3 (decode-time (current-time)))
+                      (calendar-last-day-of-month month year)))
+        (message "%s" day)
+        (when (memq (calendar-day-of-week `(,month ,(1+ day) ,year)) weekdays)
+          (setq count (1+ count))))
+      count))
+
+  (defun fk/org-clocktable-total-time-in-minutes ()
+    "Returns total time in an org clocktable after point in minutes."
+    (let ((time-string (save-excursion
+                         (search-forward "Total time")
+                         (org-table-next-field)
+                         (org-table-get nil nil))))
+      (fk/time-to-minutes time-string)))
+
+  (defun fk/calculate-average-working-hour (year month until-today)
+    "Calculates average working hour by dividing total time to weekday count."
+    (interactive "nEnter year: \nnEnter month: \nSUntil now (type nil for false): ")
+    (let* ((total-time (fk/org-clocktable-total-time-in-minutes))
+           (weekday-count (fk/number-of-weekdays-in-a-month year month until-today))
+           (average-working-minutes (/ total-time weekday-count)))
+      (message "Average working hour: %s hours %s minutes"
+               (/ average-working-minutes 60) (mod average-working-minutes 60)))))
 #+END_SRC
 *** Org Super Agenda
 #+BEGIN_SRC emacs-lisp
@@ -4383,9 +4454,14 @@ _a_: Set Tags          ^^                                ^^
   :commands org-pomodoro
   :custom
   (org-pomodoro-audio-player "ffplay")
+  (org-pomodoro-manual-break t)
+  (org-pomodoro-format "🍅 %s")
+  (org-pomodoro-short-break-format "🍅 Short Break %s")
+  (org-pomodoro-long-break-format "🍅 Long Break %s")
+  (org-pomodoro-keep-killed-pomodoro-time t)
   :config
   ;; Apply args for all sounds
-  (advice-add 'org-pomodoro-sound-args :override (lambda (_) "-volume 20 -nodisp -nostats -hide_banner")))
+  (advice-add 'org-pomodoro-sound-args :override (lambda (_) "-volume 15 -nodisp -nostats -hide_banner")))
 #+END_SRC
 
 *** Org Roam
@@ -4424,7 +4500,8 @@ _a_: Set Tags          ^^                                ^^
                         (?C . (:foreground "Burlywood" :weight extrabold :height 1.3))))
   :hook
   (org-mode . org-fancy-priorities-mode)
-  (org-agenda-finalize . org-fancy-priorities-mode))
+  ;; (org-agenda-finalize . org-fancy-priorities-mode)
+  )
 #+END_SRC
 
 *** Org Tree Slide
@@ -4536,6 +4613,17 @@ _a_: Set Tags          ^^                                ^^
   (org-mode . (lambda () (unless (daemonp) (org-rainbow-tags-mode)))))
 #+END_SRC
 
+** Outline Mode
+#+BEGIN_SRC emacs-lisp
+(use-package outline-minor-mode
+  :straight (:type built-in)
+  :bind
+  ( :map outline-minor-mode-map
+    ("C-<tab>" . outline-cycle))
+  :hook
+  (prog-mode . outline-minor-mode))
+#+END_SRC
+
 ** Calendar
 #+BEGIN_SRC emacs-lisp
 (use-package calendar
@@ -4642,7 +4730,7 @@ Pull Requests, Issues etc.
               (topic (string-remove-prefix (concat match-string "-") source-name))
               (capitalized-topic (upcase-initials (string-replace "-" " " topic))))
         (format "# %s | %s%s" target-name issue-id-string capitalized-topic)
-      (format "# %s | " target-name )))
+      (format "# %s | " target-name )))  ; TODO: Get the last commit or at least branch name
 
   (defun fk/forge--prepare-post-buffer (filename &optional header source target)
     (let ((file (magit-git-dir
@@ -4712,10 +4800,12 @@ Pull Requests, Issues etc.
   (diff-hl-change ((t (:background "#492949" :foreground "mediumpurple1"))))
   (diff-hl-delete ((t (:background "#492929" :foreground "orangered2"))))
   :bind
-  ( :map version-control
-    ("n" . diff-hl-next-hunk)
-    ("p" . diff-hl-previous-hunk)
-    ("r" . diff-hl-revert-hunk))
+  (("M-n" . diff-hl-next-hunk)
+   ("M-p" . diff-hl-previous-hunk)
+   :map version-control
+   ("n" . diff-hl-next-hunk)
+   ("p" . diff-hl-previous-hunk)
+   ("r" . diff-hl-revert-hunk))
   :hook
   (dashboard-after-initialize . global-diff-hl-mode)
   (diff-hl-mode . diff-hl-flydiff-mode)
@@ -4865,6 +4955,7 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   :config
   (defvar docker-container-prompt-regexp "^[\\^A-Z]*root@[A-z0-9-]*:/[^#]*# ")
   (defvar python-pdb-prompt-regexp "^[\\^A-Z]*(Pdb) ")  ; TODO: add next-prompt function for this one too
+  (defvar python-ipdb-prompt-regexp "^[\\^A-Z]*ipdb> ")
 
   (defface docker-container-prompt-face
     '((t (:foreground "green yellow")))
@@ -4874,7 +4965,8 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   (font-lock-add-keywords
    'vterm-mode
    `((,docker-container-prompt-regexp 0 'docker-container-prompt-face t)
-     (,python-pdb-prompt-regexp       0 'docker-container-prompt-face t))
+     (,python-pdb-prompt-regexp       0 'docker-container-prompt-face t)
+     (,python-ipdb-prompt-regexp      0 'docker-container-prompt-face t))
    'set)
 
   (defun fk/docker-container-next-prompt ()
@@ -5033,6 +5125,7 @@ the `docker-container-prompt-regexp'."
 *** PDF Tools
 #+BEGIN_SRC emacs-lisp
 (use-package pdf-tools
+  :disabled
   :mode ("\\.pdf\\'" . pdf-view-mode)
   :magic ("%PDF" . pdf-view-mode)
   :custom
