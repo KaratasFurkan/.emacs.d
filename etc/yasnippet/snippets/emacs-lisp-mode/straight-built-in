@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: straight-built-in
+# key: sbi
+# --
+:straight (:type built-in)

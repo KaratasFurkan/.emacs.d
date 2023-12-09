@@ -3,7 +3,8 @@ eaf
 early-init.el
 eln-cache
 elpa
-etc
+etc/*
+!etc/yasnippet/
 straight/build
 straight/build-cache.el
 straight/repos

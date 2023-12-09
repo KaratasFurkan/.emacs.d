@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: super
+# key: su
+# group: object oriented
+# --
+super().$0

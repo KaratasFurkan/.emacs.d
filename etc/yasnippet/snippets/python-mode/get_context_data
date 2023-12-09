@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: get_context_data
+# key: context
+# --
+def get_context_data(self, *args, **kwargs):
+    return {
+        **super().get_context_data(*args, **kwargs),
+        '$1': $2,
+    }

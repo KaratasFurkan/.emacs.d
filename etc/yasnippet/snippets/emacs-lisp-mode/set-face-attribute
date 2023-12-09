@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: set-face-attribute
+# key: face
+# --
+(set-face-attribute '${1:face} nil ${0:attributes})

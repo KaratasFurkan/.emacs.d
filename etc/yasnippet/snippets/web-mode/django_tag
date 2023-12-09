@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: django_tag
+# key: tag
+# --
+{% $1 "$2" %}

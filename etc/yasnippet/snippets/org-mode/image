@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: image
+# key: im
+# --
+${1:#+ATTR_ORG: :width 500px}
+[[${2:image_path}]]$0

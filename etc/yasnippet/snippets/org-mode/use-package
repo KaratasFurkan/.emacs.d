@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: use-package
+# key: u
+# --
+#+BEGIN_SRC emacs-lisp
+(use-package $0)
+#+END_SRC

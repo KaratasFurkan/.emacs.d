@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: use-package-custom-face
+# key: upc
+# --
+(${1:face} ((t (:${2:attribute}$0))))

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# contributor: Xah Lee (XahLee.org)
+# name: buffer-string
+# key: buffer-string
+# key: bs
+# --
+(buffer-string)
