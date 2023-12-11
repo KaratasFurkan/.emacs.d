@@ -171,6 +171,21 @@ with Emacs 30, though. So I install that extension manually.
 
 A very nice source: https://github.com/hlissner/doom-emacs/blob/develop/docs/faq.org#how-does-doom-start-up-so-quickly
 
+** My tricky method of delaying package loads
+
+In my configuration, you will see lots of =dashboard-after-initialize-hook=
+hooks. I use these hooks for almost all the packages that I want to load
+immediately after Emacs starts.
+
+The trick is these hooks run after the dashboard is fully initialized, and since
+I spend a few seconds to check my dashboard every time I open Emacs, packages
+can be loaded during that time without me even noticing. Thanks to the deferred
+loads, my configuration is already fast enough for me even without this trick
+but it feels much better to see the dashboard instantly.
+
+Fun fact: I'm actually the one who [[https://github.com/emacs-dashboard/emacs-dashboard/pull/258][added]] this feature to [[https://github.com/emacs-dashboard/emacs-dashboard/][emacs-dashboard]], thanks
+to the maintainers for accepting it :)
+
 ** Garbage Collection
 
 Make startup faster by reducing the frequency of garbage collection. Set
