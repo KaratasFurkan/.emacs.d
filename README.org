@@ -71,6 +71,8 @@ most of this configuration will probably work in older versions too.
 
 This *README.org* file is the actual main configuration file. I use [[file:init.el][init.el]] just
 to load the tangled/exported elisp file or generate it if it doesn't exist yet.
+
+init.el:
 #+BEGIN_SRC emacs-lisp :tangle init.el
 (defconst config-org (locate-user-emacs-file "README.org"))
 (defconst config-el (locate-user-emacs-file "config.el"))
@@ -86,15 +88,15 @@ Initialization flow:
 #+BEGIN_SRC artist :tangle no
    +-------+
    | Emacs |
-   +-------+                                   +----------+
-       |     if config.el doesn't exist  /---> |README.org|
-       v                     /-----------      +----------+
-   +-------+     /-----------                       |
-   |init.el| ----                                   | tangle/export elisp blocks
-   +-------+     \-----------                       v
-                             \-----------      +----------+
-                 if config.el exists     \---> |config.el |
-                                               +----------+
+   +-------+                               open  +----------+
+       |     if config.el doesn't exist  /-----> |README.org|
+       v                     /-----------        +----------+
+   +-------+     /-----------                          |  tangle/export elisp blocks
+   |init.el| ----                                      |
+   +-------+     \-----------                          v  load
+                             \-----------  load  +----------+
+                 if config.el exists     \-----> |config.el |
+                                                 +----------+
 #+END_SRC
 
 ** early-init.el
