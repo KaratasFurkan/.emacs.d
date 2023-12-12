@@ -305,11 +305,6 @@ start of message for debug purposes."
   (custom-file (no-littering-expand-etc-file-name "custom.el"))
   :config
   (no-littering-theme-backups)  ; this setups auto-save, backup and undo-tree files
-
-  (with-eval-after-load 'recentf  ; TODO: move this to `recentf' setup
-    (add-to-list 'recentf-exclude no-littering-var-directory)
-    (add-to-list 'recentf-exclude no-littering-etc-directory))
-
   (load custom-file t))  ; to load `safe-local-variable-values'
 #+END_SRC
 
@@ -346,7 +341,7 @@ Menu style keybindings like in *Spacemacs*.
  :map fk/menu-map :prefix-map errors          :prefix "e"
  :map fk/menu-map :prefix-map files           :prefix "f"
  :map fk/menu-map :prefix-map org             :prefix "o"
- :map fk/menu-map :prefix-map project         :prefix "p"
+ ;; :map fk/menu-map :prefix-map project         :prefix "p"  ; TODO: decide project or perspective
  :map fk/menu-map :prefix-map text            :prefix "t"
  :map fk/menu-map :prefix-map version-control :prefix "v"
  :map fk/menu-map :prefix-map windows         :prefix "w")
@@ -429,14 +424,17 @@ Change default window dividers to a better built-in alternative.
 *** Trailing Whitespace
 
 #+BEGIN_SRC emacs-lisp
-(setopt show-trailing-whitespace t)
-;; Disable `show-trailing-whitespace' when in non-file buffer
-(add-hook 'after-change-major-mode-hook (lambda ()
-                                          (unless (buffer-file-name)
-                                            (setq-local show-trailing-whitespace nil))))
+(defun fk/setup-trailing-whitespace ()
+  "Setup trailing whitespace feature."
+  (setopt show-trailing-whitespace t)
+  (set-face-attribute 'trailing-whitespace nil :background fk/light-color7)
+  ;; Disable `show-trailing-whitespace' when in non-file buffer
+  (add-hook 'after-change-major-mode-hook
+            (lambda ()
+              (unless (buffer-file-name)
+                (setq-local show-trailing-whitespace nil)))))
 
-;; (with-eval-after-load 'doom-themes
-;;   (set-face-attribute 'trailing-whitespace nil :background fk/light-color7))
+(add-hook 'dashboard-after-initialize-hook 'fk/setup-trailing-whitespace)
 #+END_SRC
 
 *** Others
@@ -589,8 +587,8 @@ Note that page break characters can be inserted with =M-x quoted-insert RET C-l=
   (beacon-blink-when-point-moves-vertically 10)
   (beacon-blink-when-point-moves-horizontally 50)
   (beacon-dont-blink-major-modes '(dashboard-mode minibuff))
-  :config
-  (beacon-mode))
+  :hook
+  (dashboard-after-initialize . beacon-mode))
 #+END_SRC
 
 ** Indent Bars
@@ -629,8 +627,7 @@ Note that page break characters can be inserted with =M-x quoted-insert RET C-l=
                                         (switch-to-buffer dashboard-buffer-name)
                                       (dashboard-open)))))
   :hook
-  (dashboard-mode . (lambda () (setq-local cursor-type nil
-                                           global-hl-line-mode nil)))
+  (dashboard-mode . (lambda () (setq-local cursor-type nil)))
   :config
   (dashboard-setup-startup-hook)
 
@@ -659,7 +656,7 @@ daemon."
     "Get a copy of the agenda buffer from Emacs daemon."
     (fk/dashboard-get-section
      "(progn
-        (setq org-agenda-span 2)
+        (setopt org-agenda-span 2)
         (org-agenda-list)
         (read-only-mode -1)
         (goto-char (point-min))
@@ -816,7 +813,7 @@ daemon."
   (defvar fk/perfect-margin-visible-width-large 180)
   :custom
   (perfect-margin-visible-width fk/perfect-margin-visible-width)
-  (perfect-margin-ignore-regexps '("^minibuf" "[mM]inibuf-[0-9]+" " *which-key*"))
+  (perfect-margin-ignore-regexps '("^minibuf" "[mM]inibuf-[0-9]+" " *which-key*" "*dashboard*"))
   :bind
   ("C-1" . fk/smart-C-x-1)
   :hook
@@ -896,7 +893,8 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
   ( :map vertico-map
     ("<SPC>" . (lambda nil (interactive) (insert "-"))))  ; TODO: remove this after setting up `orderless'
   :hook
-  (dashboard-after-initialize . vertico-mode))
+  (dashboard-after-initialize . vertico-mode)
+  (dashboard-after-initialize . vertico-multiform-mode))  ; to use different UIs for certain commands
 #+END_SRC
 
 *** Vertico Posframe
@@ -906,6 +904,13 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
   :custom
   (vertico-posframe-parameters '((left-fringe . 5) (right-fringe . 5)))
   (vertico-posframe-width 150)
+  (vertico-multiform-commands
+   '((fk/consult-line-dwim
+      posframe
+      (vertico-posframe-poshandler . posframe-poshandler-frame-bottom-center))
+     (fk/consult-ripgrep-dwim
+      posframe
+      (vertico-posframe-poshandler . posframe-poshandler-frame-bottom-center))))
   :hook
   (vertico-mode . vertico-posframe-mode))
 #+END_SRC
@@ -981,7 +986,7 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
   :custom-face
   ;; this is actually default but doesn't work without defining again
   (yas-field-highlight-face ((t (:inherit region))))
-  :bind*
+  :bind
   ( :map yas-minor-mode-map
     ("C-j" . yas-expand)
     ("TAB" . nil)  ; don't expand snippets with tab
@@ -996,9 +1001,8 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
 #+BEGIN_SRC emacs-lisp
 (global-subword-mode)  ; navigationInCamelCase
 
-(setopt
- recenter-positions '(middle 0.15 top 0.85 bottom)  ; `C-l' positions
- scroll-conservatively 101)                         ; smooth scrolling
+(setopt recenter-positions '(middle 0.15 top 0.85 bottom)  ; `C-l' positions
+        scroll-conservatively 101)                         ; smooth scrolling
 
 ;; scroll less than default
 (defvar fk/default-scroll-lines 15)
@@ -1023,7 +1027,7 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
   (interactive)
   (find-file config-org))
 
-(defun fk/persp-switch-config ()
+(defun fk/persp-switch-config ()  ; TODO: move to perspective section
   "Open config file in a dedicated perspective."
   (interactive)
   (persp-switch "config")
@@ -1062,6 +1066,7 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
 #+END_SRC
 
 *** get-selected-text
+
 #+BEGIN_SRC emacs-lisp
 (defun fk/get-selected-text ()
   "Return selected text if region is active, else nil."
@@ -1089,7 +1094,8 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
  ("M-l"     . move-to-window-line-top-bottom)
  ("C-x C-k" . kill-current-buffer)
  ("C-x c"   . fk/persp-switch-config)
- ("C-q"     . fk/switch-last-window))
+ ("C-q"     . fk/switch-last-window)
+ ("C-M-u"   . pop-global-mark))
 
 (bind-keys*
  :map files
@@ -1110,10 +1116,228 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
  :map windows
  ("b" . balance-windows)
  ("d" . delete-window)
- ("k" . kill-buffer-and-window))
+ ("k" . kill-buffer-and-window)
+ ("l" . fk/switch-last-window))
+#+END_SRC
+
+** Recentf (Recent Files)
+
+#+BEGIN_SRC emacs-lisp
+(use-package recentf
+  :preface
+  (setopt recentf-max-saved-items 200)
+  :custom
+  (recentf-exclude `(,(recentf-expand-file-name no-littering-var-directory)
+                     ,(recentf-expand-file-name no-littering-etc-directory)
+                     ,(recentf-expand-file-name "~/org/roam/")  ; TODO: org-roam-directory gives error since it's not defined yet
+                     ,(recentf-expand-file-name "~/emacs.*/src/")
+                     ,(recentf-expand-file-name "~/emacs.*/lisp/")
+                     ,(recentf-expand-file-name "~/.virtualenvs")
+                     ,(locate-user-emacs-file "eln-cache/")
+                     ,(locate-user-emacs-file "elpa/")
+                     "/usr/share/emacs/"
+                     "/usr/local/share/emacs/"
+                     "/usr/lib/node_modules/"
+                     "/tmp/"))
+  :hook
+  (dashboard-after-initialize . recentf-mode))
+#+END_SRC
+
+** Winner Mode
+
+Undo/redo window&buffer states.
+#+BEGIN_SRC emacs-lisp
+(use-package winner
+  :bind
+  (("M-u" . winner-undo)
+   ("M-U" . winner-redo)
+   :map windows
+   ("u" . winner-undo)
+   ("r" . winner-redo))
+  :hook
+  (dashboard-after-initialize . winner-mode))
+#+END_SRC
+
+** Ace Window
+
+#+BEGIN_SRC emacs-lisp
+(use-package ace-window
+  :custom
+  (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (aw-background nil)
+  (aw-dispatch-when-more-than 3)
+  :custom-face
+  (aw-leading-char-face ((t (:height 15.0 :foreground "orangered2"))))
+  :bind
+  (("M-o" . ace-window)
+   :map windows
+   ("w" . ace-window)
+   ("D" . ace-delete-window)
+   ("s" . ace-swap-window))
+  :hook
+  (dashboard-after-initialize . ace-window-posframe-mode))
+#+END_SRC
+
+** Mwim (Move Where I Mean)
+
+#+BEGIN_SRC emacs-lisp
+(use-package mwim
+  :bind
+  ("C-a" . mwim-beginning-of-code-or-line)
+  ("C-e" . mwim-end-of-line-or-code))
+#+END_SRC
+
+** Consult
+
+#+BEGIN_SRC emacs-lisp
+(use-package consult  ; TODO: has lots of custom variables and features to check
+  ;; TODO: disable `vertico-posframe-mode' during consult
+  :bind
+  (("C-x b"   . consult-buffer)
+   ("C-x C-b" . consult-buffer)
+   ("M-y"     . consult-yank-pop)
+   ("M-g g"   . consult-goto-line)
+   ("C-M-s"   . fk/consult-ripgrep-dwim)
+   ("M-s"     . fk/consult-line-dwim)
+   ("C-x C-j" . consult-imenu)
+   ("C-x C-r" . consult-recent-file)
+   :map files
+   ("r" . consult-recent-file)
+   :map isearch-mode-map
+   ("M-s" . consult-line)
+   :map minibuffer-local-map
+   ("C-r" . consult-history)
+   ("C-s" . consult-history))
+  :config
+  (consult-customize
+   fk/consult-ripgrep-dwim consult-recent-file consult-xref consult-buffer
+   :preview-key '(:debounce 0.3 any))  ; delay previews
+
+  (with-eval-after-load 'org
+    (keymap-set org-mode-map "C-x C-j" 'consult-org-heading))
+
+  (defun fk/consult-line-dwim ()
+    "If region is active, use the selected text as the `initial' arg."
+    (interactive)
+    (consult-line (fk/get-selected-text)))
+
+  (defun fk/consult-ripgrep-dwim ()
+    "If region is active, use the selected text as the `initial' arg."
+    (interactive)
+    (consult-ripgrep nil (fk/get-selected-text))))
+#+END_SRC
+
+** Xref
+
+#+BEGIN_SRC emacs-lisp
+(use-package xref
+  :custom
+  (xref-prompt-for-identifier nil)
+  (xref-show-definitions-function 'consult-xref)  ; alternative: `'xref-show-definitions-completing-read'
+  (xref-show-xrefs-function 'consult-xref)  ; alternative: `'xref-show-definitions-completing-read'
+  (xref-search-program 'ripgrep)
+  :bind
+  ("C-M-j" . xref-find-definitions)
+  ("C-M-k" . xref-go-back)
+  ("C-M-r" . xref-find-references))
+#+END_SRC
+
+** TODO Dumb Jump
+** Deadgrep
+
+#+BEGIN_SRC emacs-lisp
+(use-package deadgrep
+  :commands deadgrep
+  :bind
+  ( :map deadgrep-mode-map
+    ("C-c C-e" . deadgrep-edit-mode)))
+#+END_SRC
+
+** Avy
+
+#+BEGIN_SRC emacs-lisp
+(use-package avy
+  :bind
+  ("M-j" . avy-goto-word-or-subword-1))
+#+END_SRC
+
+** Perspective
+
+#+BEGIN_SRC emacs-lisp
+(use-package perspective  ; TODO: try tab-bar tab-spaces etc.
+  :preface
+  (defcustom persp-project-name nil "Should be set as directory local variable.")  ; TODO: setup hooks
+  :custom
+  (persp-mode-prefix-key (kbd "M-m p"))
+  (persp-modestring-dividers `(,(format "[%s " (nerd-icons-codicon "nf-cod-vm")) "]" " • "))
+  :custom-face
+  (persp-selected-face ((t (:foreground unspecified :inherit 'warning))))
+  :bind*
+  ( :map persp-mode-map
+    ("C-M-o" . persp-next)
+    ("C-x p" . persp-switch)
+    ("C-x C-p" . persp-switch-quick)
+    ("M-q" . persp-switch-last)
+    :map perspective-map
+    ("p" . persp-switch)
+    ("k" . persp-kill)
+    ("l" . persp-switch-last)
+    ("q" . persp-switch-quick)
+    ("n" . (lambda () (interactive) (persp-switch (make-temp-name "p-")))))
+  :hook
+  (dashboard-after-initialize . persp-mode))
+#+END_SRC
+
+** Block Nav
+
+#+BEGIN_SRC emacs-lisp
+(use-package block-nav
+  :config
+  (defmacro fk/bind-block-nav (library keymap)
+    "Bind block-nav commands to KEYMAP after the LIBRARY is loaded."
+    `(progn
+       (with-eval-after-load ',library
+         (keymap-set ,keymap "M-n" 'block-nav-next-block)
+         (keymap-set ,keymap "M-p" 'block-nav-previous-block))))
+
+  (fk/bind-block-nav prog-mode prog-mode-map)
+  (fk/bind-block-nav yaml-mode yaml-mode-map))
+#+END_SRC
+
+** God Mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package god-mode  ; TODO: get used to it
+  :preface
+  (setopt god-mode-cursor-color "#FFF8DC")
+  :bind
+  (("C-;" . god-mode-all)
+   :map god-local-mode-map
+   ("j" . avy-goto-word-or-subword-1))
+  :hook
+  (god-mode-enabled . (lambda ()
+                        (set-face-attribute 'cursor nil :background god-mode-cursor-color)
+                        ;; beacon-mode doesn't work properly with same color as cursor
+                        (setopt beacon-color (doom-darken god-mode-cursor-color 0.001))))
+  (god-mode-disabled . (lambda ()
+                         (set-face-attribute 'cursor nil :background fk/cursor-color)
+                         ;; beacon-mode doesn't work properly with same color as cursor
+                         (setopt beacon-color (doom-darken fk/cursor-color 0.001)))))
 #+END_SRC
 
 * Text Editing
+** Better Defaults
+
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode)  ; TODO: setup with use-package
+(electric-pair-mode)  ; TODO: setup with use-package
+
+(setopt fill-column 80
+        sentence-end-double-space nil
+        indent-tabs-mode nil  ; Use spaces instead of tabs
+        tab-width 4)
+#+END_SRC
+
 ** Utils
 *** backward-kill-word-or-region
 
@@ -1145,6 +1369,119 @@ I use this mostly to generate commit messages from branch names.
   (replace-regexp-in-region (rx (or "_" "-")) " " beg end))
 #+END_SRC
 
+*** unfill-toggle
+
+#+BEGIN_SRC emacs-lisp
+(defun fk/unfill-toggle ()
+  "Toggle filling/unfilling of the current region.
+Operates on the current paragraph if no region is active.
+Copied from: https://github.com/purcell/unfill"
+  (interactive)
+  (let (deactivate-mark
+        (fill-column
+         (if (eq last-command this-command)
+             (progn (setq this-command nil)
+                    most-positive-fixnum)
+           fill-column)))
+    (call-interactively 'fill-paragraph)))
+#+END_SRC
+
+** Keybindings
+#+BEGIN_SRC emacs-lisp
+(keyboard-translate ?\C-h ?\C-?)  ; C-h as DEL, (I use F1 and M-h as `help-command')
+;; (add-hook 'server-after-make-frame-hook (lambda () (keyboard-translate ?\C-h ?\C-?)))  ; Fix emacs --daemon  ; TODO check if this still necessary
+(keymap-global-set "C-w" 'fk/backward-kill-word-or-region)
+(keymap-global-set "C-o" 'fk/newline-below)
+
+(bind-keys*
+ :map text
+ ("s" . sort-lines)
+ ("f" . fk/unfill-toggle)
+ ("r" . fk/remove-hypens-and-underscores-region))
+#+END_SRC
+
+** Whitespace Cleanup
+
+#+BEGIN_SRC emacs-lisp
+(use-package whitespace-cleanup-mode
+  :hook
+  (dashboard-after-initialize . global-whitespace-cleanup-mode))
+#+END_SRC
+
+** Case Switching
+
+#+BEGIN_SRC emacs-lisp
+;; built-in commands
+(bind-keys
+ :map text
+ ("u" . upcase-dwim)
+ ("d" . downcase-dwim)
+ ("c" . capitalize-dwim))
+
+(use-package string-inflection
+  :bind
+  ( :map text
+    ("t" . fk/case-style-cycle)
+    ("k" . string-inflection-kebab-case))
+  :config
+  (defun fk/case-style-cycle ()
+    "Cycle between case styles e.g. FOO_BAR => FooBar => fooBar"
+    (interactive)
+    (cond
+     ((eq major-mode 'python-mode)
+      (string-inflection-python-style-cycle))
+     (t
+      (string-inflection-all-cycle)))))
+#+END_SRC
+
+** Paren
+
+#+BEGIN_SRC emacs-lisp
+(use-package paren
+  :custom
+  (show-paren-when-point-inside-paren t)
+  :custom-face
+  (show-paren-match ((t (:background unspecified :foreground "white"))))
+  :hook
+  (dashboard-after-initialize . show-paren-mode))
+#+END_SRC
+
+** Wrap Region
+
+#+BEGIN_SRC emacs-lisp
+(use-package wrap-region
+  :hook
+  (dashboard-after-initialize . wrap-region-global-mode)
+  :config
+  (wrap-region-add-wrapper "`" "`")
+  (wrap-region-add-wrapper "=" "=" nil 'org-mode)
+  (wrap-region-add-wrapper "*" "*" nil 'org-mode)
+  (wrap-region-add-wrapper "_" "_" nil 'org-mode)
+  (wrap-region-add-wrapper "/" "/" nil 'org-mode)
+  (wrap-region-add-wrapper "+" "+" nil 'org-mode)
+  (wrap-region-add-wrapper "~" "~" nil 'org-mode)
+  (wrap-region-add-wrapper "#" "#" nil 'org-mode))
+#+END_SRC
+
+** Expand Region
+
+#+BEGIN_SRC emacs-lisp
+(use-package expand-region
+  :custom
+  (expand-region-fast-keys-enabled nil)
+  (expand-region-subword-enabled t)
+  :bind*
+  ("C-t" . er/expand-region))
+#+END_SRC
+
+
+* File Modes
+
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode
+  :mode "\\.ya?ml\\'")
+#+END_SRC
+
 * Some random must have settings
 
 early-init.el:
@@ -1155,15 +1492,10 @@ early-init.el:
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(delete-selection-mode)
-(setopt fill-column 80)
 (keymap-global-set "M-l" 'move-to-window-line-top-bottom)
+;; TODO: test vundo or other undo packages
 (keymap-global-set "C-u" 'undo)  ; TODO: setup separately with use-package
 (setopt undo-limit 100mb)
-(keyboard-translate ?\C-h ?\C-?)
-(setopt indent-tabs-mode nil)
-
-(keymap-global-set "C-w" 'fk/backward-kill-word-or-region)
 
 (use-package org
   :custom
@@ -1215,78 +1547,22 @@ early-init.el:
   :config
   (marginalia-mode))
 
-(use-package consult
-  :bind
-  (("C-x b"   . consult-buffer)
-   ("C-x C-b" . consult-buffer)
-   ("M-y"     . consult-yank-pop)
-   ("M-g g"   . consult-goto-line)
-   ("M-g M-g" . consult-goto-line)
-   ("C-M-s"   . fk/consult-ripgrep-dwim)
-   ("M-s"     . fk/consult-line-dwim)
-   ("C-x C-j" . consult-imenu)
-   :map isearch-mode-map
-   ("M-s" . consult-line)
-   :map minibuffer-local-map
-   ("M-n" . consult-history)
-   ("M-p" . consult-history))
-  :config
-  (with-eval-after-load 'org
-    (keymap-set org-mode-map "C-x C-j" 'consult-org-heading))
-
-  (defun fk/consult-line-dwim ()
-    "If region is active, use the selected text as the `initial' arg."
-    (interactive)
-    (consult-line (fk/get-selected-text)))
-
-  (defun fk/consult-ripgrep-dwim ()
-    "If region is active, use the selected text as the `initial' arg."
-    (interactive)
-    (consult-ripgrep nil (fk/get-selected-text))))
-
 (use-package org-roam
-  :custom
-  (org-roam-directory "~/org/roam/")
+  :preface
+  ;; use preface to set this even if the package is not loaded since the
+  ;; directory is mentioned in a few more places in the config
+  (setopt org-roam-directory "~/org/roam/")
   :bind
   ( :map org
     ("o" . org-roam-node-find))
   :config
   (org-roam-db-autosync-mode))
 
-(use-package ace-window
-  :custom
-  (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-  (aw-background nil)
-  :custom-face
-  (aw-leading-char-face ((t (:height 15.0 :foreground "orangered2"))))
-  :bind
-  (("M-o" . ace-window)
-   :map windows
-   ("w" . ace-window)
-   ("D" . ace-delete-window)
-   ("s" . ace-swap-window)
-   ("l" . aw-flip-window))
-  :config
-  (ace-window-posframe-mode))
-
 (bind-keys*
  :map windows
  ("b" . balance-windows)
  ("d" . delete-window)
  ("k" . kill-buffer-and-window))
-
-(keymap-global-set "M-a" 'backward-sexp)
-(keymap-global-set "M-e" 'forward-sexp)
-
-(use-package mwim
-  :bind
-  ("C-a" . mwim-beginning-of-code-or-line)
-  ("C-e" . mwim-end-of-line-or-code))
-
-(use-package avy
-  :bind
-  ("M-j" . avy-goto-word-or-subword-1)
-  ("C-M-u" . avy-pop-mark))
 
 (use-package eglot
   :commands eglot)
@@ -1327,12 +1603,8 @@ early-init.el:
   ;; heavy, so it should be done manually if needed.
   (add-hook 'window-configuration-change-hook 'fk/activate-pyvenv))
 
-(use-package expand-region
-  :custom
-  (expand-region-fast-keys-enabled nil)
-  (expand-region-subword-enabled t)
-  :bind*
-  ("C-t" . er/expand-region))
+(keymap-global-set "M-a" 'backward-sexp)
+(keymap-global-set "M-e" 'forward-sexp)
 
 (use-package magit
   :commands magit
@@ -1349,36 +1621,13 @@ early-init.el:
 
 (use-package project
   :commands project-find-file project-switch-project
+  :bind
+  ("C-x f" . project-find-file)
   :custom
   (project-switch-commands 'magit-project-status)
-  :config
-  (set-keymap-parent project project-prefix-map))  ; "project" comes from `fk/menu-map'
-
-(use-package perspective  ; TODO: try tab-bar tab-spaces etc.
-  :preface
-  (defvar persp-icon (nerd-icons-codicon "nf-cod-vm"))
-  (defcustom persp-project-name nil "Should be set as directory local variable.")
-  :custom
-  (persp-mode-prefix-key (kbd "M-m x"))
-  (persp-state-default-file (no-littering-expand-var-file-name "perspective.el"))  ; TODO: remove
-  (persp-modestring-dividers `(,(format "[%s " persp-icon) "]" " • "))
-  :custom-face
-  (persp-selected-face ((t (:foreground unspecified :inherit 'doom-modeline-warning))))
-  :bind*
-  ( :map persp-mode-map
-    ("C-M-o" . persp-next)
-    ("C-x p" . persp-switch)
-    ("C-x C-p" . persp-switch-quick)
-    ("M-q" . persp-switch-last)
-    :map perspective-map
-    ("p" . persp-switch)
-    ("k" . persp-kill)
-    ("l" . persp-switch-last)
-    ("q" . persp-switch-quick)
-    ("n" . (lambda () (interactive) (persp-switch (make-temp-name "p-")))))
-  :hook
-  (dashboard-after-initialize . persp-mode)
-  (kill-emacs . persp-state-save))  ; TODO: remove
+  ;; :config
+  ;; (set-keymap-parent project project-prefix-map)
+  )  ; "project" comes from `fk/menu-map'
 
 ;; (use-package dirvish
 ;;   :config
