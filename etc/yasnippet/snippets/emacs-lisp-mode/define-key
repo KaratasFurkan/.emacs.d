@@ -1,7 +1,6 @@
 # -*- mode: snippet -*-
-# contributor: Xah Lee (XahLee.org)
-# name: define-key
-# key: define-key
-# key: dk
+# name: keymap-set
+# key: keymap-set
+# key: ks
 # --
-(define-key ${1:keymap} (kbd "${2:key}") $0)
+(keymap-set ${1:keymap} "${2:key}" '$0)

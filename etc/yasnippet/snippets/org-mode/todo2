@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: todo2
+# key: to
+# --
+;; TODO: $0

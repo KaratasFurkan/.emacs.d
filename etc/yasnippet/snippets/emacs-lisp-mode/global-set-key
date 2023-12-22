@@ -1,7 +1,6 @@
 # -*- mode: snippet -*-
-# contributor: Xah Lee (XahLee.org)
-# name: global-set-key
-# key: global-set-key
+# name: keymap-global-set
+# key: keymap-global-set
 # key: gsk
 # --
-(global-set-key (kbd "${1:key}") $0)
+(keymap-global-set "${1:key}" '$0)

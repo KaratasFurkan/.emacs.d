@@ -1,7 +1,6 @@
 # -*- mode: snippet -*-
-# contributor: Xah Lee (XahLee.org)
-# name: setq
-# key: setq
+# name: setopt
+# key: setopt
 # key: s
 # --
-(setq $0)
+(setopt $0)
