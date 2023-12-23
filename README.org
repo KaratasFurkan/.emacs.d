@@ -5,7 +5,7 @@
 ** Initial Screen (Dashboard)
 [[./screenshots/dashboard-rms.png]]
 
-No, that's a joke! I use the logo from [[https://github.com/tecosaur/emacs-config/blob/master/config.org#splash-screen][tecosaur & MarioRicalde]]:
+No, that's a joke! I use the logo from [[https://github.com/tecosaur/emacs-config/blob/24dcb8f022a060ccb065e98a5ce20200d85dbd4b/config.org#a-fancy-splash-screen][tecosaur & MarioRicalde]]:
 
 [[./screenshots/dashboard.png]]
 
@@ -271,9 +271,6 @@ File explorer (treemacs), auto complete (company), git&github integration
     - [[#ob-async][ob-async]]
     - [[#org-pomodoro][Org Pomodoro]]
     - [[#org-roam][Org Roam]]
-      - [[#org-roam-1][Org Roam]]
-      - [[#org-roam-server][Org Roam Server]]
-      - [[#company-org-roam][Company Org Roam]]
     - [[#org-fancy-priorities][Org Fancy Priorities]]
     - [[#org-tree-slide][Org Tree Slide]]
     - [[#org-export-twitter-bootstrap][Org Export Twitter Bootstrap]]
@@ -564,6 +561,7 @@ Copied from Doom Emacs:
 
 ** Custom Functions
 *** measure-time
+
 (Note: ":tangle early-init.el")
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
 (defmacro fk/measure-time (&rest body)
@@ -906,8 +904,8 @@ Change default window dividers to a better built-in alternative.
 ** Font
 *** Font
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
-(defconst fk/default-font-family "RobotoMono Nerd Font")
-(defconst fk/default-font-size 90)
+(defconst fk/default-font-family "Iosevka")
+(defconst fk/default-font-size 100)
 (defconst fk/default-icon-size 15)
 
 (defconst fk/variable-pitch-font-family "Noto Serif")
@@ -1319,8 +1317,9 @@ size. This function also handles icons and modeline font sizes."
   (dashboard-set-file-icons t)
   (dashboard-center-content t)
   (dashboard-items '((agenda . 0)  ; I override the insert-agenda function
-                     ;  (todo-items . 0)  ; Custom section
-                     (inbox-entries . 0)))  ; Custom section
+;  (todo-items . 0)  ; Custom section
+                     (inbox-entries . 0)  ; Custom section
+                     (habit-tracker . 0)))  ; Custom section
   :custom-face
   (dashboard-heading ((t (:inherit font-lock-keyword-face :height 1.2))))
   (dashboard-items-face ((t (:weight normal))))
@@ -1419,8 +1418,33 @@ daemon."
             (propertize " TODOs:\n" 'face 'dashboard-heading 'line-spacing 10)
             (fk/dashboard-get-todo-items)))
 
+  (defun fk/dashboard-get-habit-tracker ()
+    "Get habit tracker from Emacs daemon."
+    (fk/dashboard-get-section
+     "(let* ((file (expand-file-name \"20220427233506-habits.org\" \"~/org/roam/\"))
+             (file-buffer (find-file-noselect file))
+             (file-content (with-current-buffer file-buffer (buffer-string)))
+             (temp-buffer (generate-new-buffer \"*dashboard-temp*\"))
+             (bullet (propertize \"⁖\" 'face 'org-level-1)))
+        (with-current-buffer temp-buffer
+          (kill-buffer file-buffer)
+          (org-mode)
+          (insert file-content)
+          (goto-char (point-min))
+          (search-forward \"Current Month for Habit Tracker\")
+          (next-line 2)
+          (org-narrow-to-element)
+          (buffer-string)))"))
+
+  (defun fk/dashboard-insert-habit-tracker (&rest _)
+    "Insert habit tracker."
+    (insert (all-the-icons-octicon "calendar" :height 1.2 :v-adjust 0.02 :face 'dashboard-heading)
+            (propertize " Habit Tracker:\n" 'face 'dashboard-heading 'line-spacing 10)
+            (fk/dashboard-get-habit-tracker)))
+
   (add-to-list 'dashboard-item-generators  '(inbox-entries . fk/dashboard-insert-inbox-entries))
   (add-to-list 'dashboard-item-generators  '(todo-items . fk/dashboard-insert-todo-items))
+  (add-to-list 'dashboard-item-generators  '(habit-tracker . fk/dashboard-insert-habit-tracker))
 
   ;; Colorize org entries even if org.el or org-agenda.el hasn't loaded.
   ;; Note: defining faces is enough, color values comes from propertized string
@@ -1671,7 +1695,6 @@ current buffer."
   :custom
   (setq posframe-mouse-banish '(0 . 5000)))  ; Bottom-left corner to prevent EAF stealing focus
 #+END_SRC
-
 
 * Completion
 ** Better Defaults
@@ -4032,7 +4055,7 @@ otherwise, open the file in a new buffer."
   (org-level-6 ((t (:height 1.0 :weight bold))))
   (org-level-7 ((t (:height 1.0 :weight bold))))
   (org-level-8 ((t (:height 1.0 :weight bold))))
-  (org-drawer ((t (:foreground nil :inherit font-lock-comment-face))))
+  (org-drawer ((t (:foreground ,fk/light-color1))))
   (org-table ((t (:inherit org-block :family ,fk/default-font-family :foreground ,(face-foreground 'default)))))
   (org-document-title ((t (:family "AV Qest" :height 3.0))))
   (org-block-begin-line ((t (:foreground ,fk/light-color1 :background ,fk/background-color :extend t))))
@@ -4465,29 +4488,16 @@ _a_: Set Tags          ^^                                ^^
 #+END_SRC
 
 *** Org Roam
-**** Org Roam
 #+BEGIN_SRC emacs-lisp
 (use-package org-roam
   :custom
+  ;; (org-roam-directory (file-truename "~/org/roam/"))
   (org-roam-directory "~/org/roam/")
   :bind
   ( :map org
-    ("o" . org-roam-find-file)))
-#+END_SRC
-
-**** Org Roam Server
-#+BEGIN_SRC emacs-lisp
-;;(use-package org-roam-server
-;;  :after org-roam)
-#+END_SRC
-
-**** Company Org Roam
-#+BEGIN_SRC emacs-lisp
-(use-package company-org-roam
-  :disabled
-  :after org-roam
+    ("o" . org-roam-node-find))
   :config
-  (add-to-list 'company-backends 'company-org-roam))
+  (org-roam-db-autosync-mode))
 #+END_SRC
 
 *** Org Fancy Priorities

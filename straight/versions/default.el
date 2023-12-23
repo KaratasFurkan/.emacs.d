@@ -147,7 +147,6 @@
  ("org-bullets" . "767f55feb58b840a5a04eabfc3fbbf0d257c4792")
  ("org-fancy-priorities" . "44532ab8c25eb2c0028eecca7acd9e8ea8e2ff30")
  ("org-pomodoro" . "aa07c11318f91219336197e62c47bc7a3d090479")
- ("org-roam" . "756f6215b672e267f986a3d6e494f5309825b91a")
  ("org-tree-slide" . "9d2ba1df456d8d7c6372c8c294dbe3ee81540b33")
  ("ox-twbs" . "e8a27dc78b7be494d9918f26db7a3bbb6b45020b")
  ("pacmacs.el" . "5e0bcba1eeb10a4218087ff9cd6217d662fb775b")
