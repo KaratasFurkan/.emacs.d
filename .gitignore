@@ -4,8 +4,10 @@ early-init.el
 eln-cache
 elpa
 etc/*
+!etc/tree-sitter/
 !etc/yasnippet/
 straight/build
 straight/build-cache.el
 straight/repos
+tree-sitter
 var
