@@ -63,6 +63,7 @@
     - [[#cape][Cape]]
     - [[#nerd-icons-corfu][Nerd Icons Corfu]]
   - [[#yasnippet-snippet-completion][YASnippet (Snippet Completion)]]
+  - [[#orderless][Orderless]]
 - [[#search--navigation][Search & Navigation]]
   - [[#better-defaults-3][Better Defaults]]
   - [[#utils-2][Utils]]
@@ -987,10 +988,11 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
 ** Better Defaults
 
 #+BEGIN_SRC emacs-lisp
-(setopt completion-styles '(basic substring partial-completion flex)  ; TODO: I may add orderless package
-        completion-ignore-case t
+(setopt completion-ignore-case t
         read-buffer-completion-ignore-case t
         read-file-name-completion-ignore-case t)
+
+;; (setopt completion-styles '(basic substring partial-completion flex))  NOTE: I use `orderless'
 #+END_SRC
 
 ** Which Key (Keybinding Completion)
@@ -1149,6 +1151,14 @@ command is `project-find-file' and this command is called."
     ("<tab>" . nil))  ; TODO: test if only one of the tabs enough
   :hook
   (dashboard-after-initialize . yas-global-mode))
+#+END_SRC
+
+** Orderless
+
+#+BEGIN_SRC emacs-lisp
+(use-package orderless  ; TODO: configure
+  :custom
+  (completion-styles '(orderless basic substring partial-completion flex)))
 #+END_SRC
 
 * Search & Navigation
