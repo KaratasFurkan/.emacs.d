@@ -291,6 +291,14 @@ but it feels much better to see the dashboard instantly.
 Fun fact: I'm actually the one who [[https://github.com/emacs-dashboard/emacs-dashboard/pull/258][added]] this feature to [[https://github.com/emacs-dashboard/emacs-dashboard/][emacs-dashboard]], thanks
 to the maintainers for accepting it :)
 
+Lastly, I like to see a success message in the echo area after all packages are
+loaded. So let's add it at the end of =dashboard-after-initialize-hook=.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'dashboard-after-initialize-hook
+          (lambda ()
+            (message "Emacs started successfully.")) 100)
+#+END_SRC
+
 ** Garbage Collection
 
 Make startup faster by reducing the frequency of garbage collection. Set
