@@ -1622,19 +1622,35 @@ https://github.com/joaotavora/eglot/issues/420#issuecomment-1257247512"
 
 #+BEGIN_SRC emacs-lisp
 (use-package pixel-scroll
-  :ensure nil  ; don't try to install it since it's a built-in module
+  :ensure nil
   :custom
-  (pixel-scroll-precision-interpolate-page t)
-  (pixel-scroll-precision-interpolation-total-time 0.2)
-  ;; :bind  ; TODO: setup these only for normal buffers, not minibuffer, corfu etc.
-  ;; (("C-v". (lambda () (interactive)
-  ;;            (pixel-scroll-precision-interpolate (- (window-text-height nil t))
-  ;;                                                nil .3)))
-  ;;  ("M-v". (lambda () (interactive)
-  ;;            (pixel-scroll-precision-interpolate (window-text-height nil t)
-  ;;                                                nil .3))))
+  (pixel-scroll-precision-interpolation-factor 1.0)
+  :bind
+  (([remap scroll-up-command]   . fk/pixel-scroll-up-command)
+   ([remap scroll-down-command] . fk/pixel-scroll-down-command)
+   ([remap recenter-top-bottom] . fk/pixel-recenter-top-bottom))
   :hook
-  (dashboard-after-initialize . pixel-scroll-precision-mode))
+  (dashboard-after-initialize . pixel-scroll-precision-mode)
+  :config
+  (defun fk/pixel-scroll-up-command ()
+    "Similar to `scroll-up-command' but with pixel scrolling."
+    (interactive)
+    (pixel-scroll-precision-interpolate (- (* fk/default-scroll-lines (line-pixel-height)))))
+
+  (defun fk/pixel-scroll-down-command ()
+    "Similar to `scroll-down-command' but with pixel scrolling."
+    (interactive)
+    (pixel-scroll-precision-interpolate (* fk/default-scroll-lines (line-pixel-height))))
+
+  (defun fk/pixel-recenter-top-bottom ()
+    "Similar to `recenter-top-bottom' but with pixel scrolling."
+    (interactive)
+    (let* ((current-row (cdr (nth 6 (posn-at-point))))
+           (target-row (save-window-excursion
+                         (recenter-top-bottom)
+                         (cdr (nth 6 (posn-at-point)))))
+           (distance-in-pixels (* (- target-row current-row) (line-pixel-height))))
+      (pixel-scroll-precision-interpolate distance-in-pixels))))
 #+END_SRC
 
 * Text Editing
