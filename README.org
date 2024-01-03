@@ -63,6 +63,8 @@
     - [[#cape][Cape]]
     - [[#nerd-icons-corfu][Nerd Icons Corfu]]
   - [[#yasnippet-snippet-completion][YASnippet (Snippet Completion)]]
+    - [[#yasnippet][YASnippet]]
+    - [[#yasnippet-capf][YASnippet Capf]]
   - [[#orderless][Orderless]]
 - [[#search--navigation][Search & Navigation]]
   - [[#better-defaults-3][Better Defaults]]
@@ -99,6 +101,7 @@
   - [[#paren][Paren]]
   - [[#wrap-region][Wrap Region]]
   - [[#expand-region][Expand Region]]
+  - [[#wgrep-writable-grep][Wgrep (Writable Grep)]]
 - [[#programming][Programming]]
   - [[#common][Common]]
     - [[#electric-indent-mode][Electric Indent Mode]]
@@ -151,8 +154,16 @@
     - [[#git-link][Git Link]]
     - [[#git-timemachine][Git Timemachine]]
     - [[#git-blame-vc-msg][Git Blame (vc-msg)]]
+    - [[#git-blame][Git Blame]]
     - [[#dired-git-info][Dired Git Info]]
   - [[#keycast][Keycast]]
+  - [[#terminal-emulation][Terminal Emulation]]
+    - [[#eat-terminal-emulator][Eat (Terminal Emulator)]]
+    - [[#shell-pop][Shell Pop]]
+  - [[#restclient][Restclient]]
+    - [[#restclient-1][Restclient]]
+    - [[#ob-restclient][ob-restclient]]
+    - [[#password-mode][Password Mode]]
 - [[#file-modes][File Modes]]
 - [[#some-random-must-have-settings][Some random must have settings]]
 - [[#---local-variables---][-- Local Variables --]]
@@ -1033,22 +1044,12 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
   :custom
   (vertico-posframe-parameters '((left-fringe . 5) (right-fringe . 5)))
   (vertico-posframe-width 150)
-  (vertico-multiform-commands  ; TODO: DRY
-   '((fk/consult-line-dwim
-      posframe
-      (vertico-posframe-poshandler . posframe-poshandler-frame-bottom-center))
-     (consult-org-heading
-      posframe
-      (vertico-posframe-poshandler . posframe-poshandler-frame-bottom-center))
-     (consult-imenu
-      posframe
-      (vertico-posframe-poshandler . posframe-poshandler-frame-bottom-center))
-     (fk/consult-ripgrep-dwim
-      posframe
-      (vertico-posframe-poshandler . posframe-poshandler-frame-bottom-center))
-     ("fk/django-search-*"
-      posframe
-      (vertico-posframe-poshandler . posframe-poshandler-frame-bottom-center))
+  (vertico-multiform-commands
+   '((fk/consult-line-dwim (:not posframe))
+     (consult-org-heading (:not posframe))
+     (consult-imenu (:not posframe))
+     (fk/consult-ripgrep-dwim (:not posframe))
+     ("fk/django-search-*" (:not posframe))
      (t posframe)))
   :hook
   (vertico-mode . vertico-posframe-mode))
@@ -1060,13 +1061,14 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
 (use-package embark
   :bind
   ( :map minibuffer-local-map
-    ("M-o" . fk/embark-become-project-switch-project))
+    ("M-o" . fk/embark-become-project-switch-project)
+    ("C-c C-e" . embark-export))
   :config
   (defun fk/embark-become-project-switch-project ()
     "Read candidates for `project-switch-project' if the current
 command is `project-find-file' and this command is called."
     (interactive)
-    (when (eq embark--command 'project-find-file)
+    (when (memq embark--command '(project-find-file fk/project-find-file-or-switch-project))
       (embark--become-command 'project-switch-project (minibuffer-contents)))))
 
 (use-package embark-consult
@@ -1084,7 +1086,8 @@ command is `project-find-file' and this command is called."
   (corfu-auto-prefix 1)
   (corfu-auto-delay 0)
   (corfu-preview-current nil)
-  (corfu-popupinfo-delay '(1.0 . 1.0))
+  (corfu-popupinfo-delay '(1.0 . 0.5))
+  (corfu-on-exact-match 'show)  ; the default value `insert' does not play well with `yasnippet-capf'
   :custom-face
   (corfu-current ((t (:background ,fk/light-color3))))
   :bind
@@ -1094,8 +1097,15 @@ command is `project-find-file' and this command is called."
   :hook
   (dashboard-after-initialize . global-corfu-mode)
   (dashboard-after-initialize . corfu-popupinfo-mode)
+  (minibuffer-setup . fk/corfu-enable-in-minibuffer)
   :config
-  (add-to-list 'corfu-auto-commands 'backward-delete-char-untabify))
+  (add-to-list 'corfu-auto-commands 'backward-delete-char-untabify)
+
+  (defun fk/corfu-enable-in-minibuffer ()
+    "Enable Corfu in the minibuffer on `eval-expression', `shell-command' etc."
+    (when (local-variable-p 'completion-at-point-functions)
+      (setq-local corfu-echo-delay nil)  ; disable minibuffer messages
+      (corfu-mode))))
 
 (use-package nerd-icons-corfu
   :after corfu
@@ -1107,21 +1117,42 @@ command is `project-find-file' and this command is called."
 
 #+BEGIN_SRC emacs-lisp
 (use-package cape  ; TODO: Configure
-  :disabled
-  ;; :config
-  ;; (add-to-list 'completion-at-point-functions 'cape-dabbrev)
-  ;; (add-to-list 'completion-at-point-functions 'cape-file)
-  ;; (add-to-list 'completion-at-point-functions 'cape-elisp-block)
-  ;; (add-to-list 'completion-at-point-functions 'cape-history)
-  ;; (add-to-list 'completion-at-point-functions 'cape-keyword)
-  ;; (add-to-list 'completion-at-point-functions 'cape-tex)
-  ;; (add-to-list 'completion-at-point-functions 'cape-sgml)
-  ;; (add-to-list 'completion-at-point-functions 'cape-rfc1345)
-  ;; (add-to-list 'completion-at-point-functions 'cape-abbrev)
-  ;; (add-to-list 'completion-at-point-functions 'cape-dict)
-  ;; (add-to-list 'completion-at-point-functions 'cape-elisp-symbol)
-  ;; (add-to-list 'completion-at-point-functions 'cape-line)
-  )
+  :hook
+  (dashboard-after-initialize . fk/setup-global-cape)
+  (eglot-managed-mode . fk/setup-eglot-yasnippet-capf)
+  (emacs-lisp-mode . fk/setup-emacs-lisp-mode-capf)
+  :config
+  (defun fk/setup-global-cape ()
+    "Setup `cape' by adding its functions to `completion-at-point-functions'."
+    ;; (add-to-list 'completion-at-point-functions 'cape-dabbrev)
+    ;; (add-to-list 'completion-at-point-functions 'cape-file)
+    ;; (add-to-list 'completion-at-point-functions 'cape-elisp-symbol)
+    (add-to-list 'completion-at-point-functions 'cape-elisp-block)  ; good for literate configs
+    ;; (add-to-list 'completion-at-point-functions 'cape-history)
+    ;; (add-to-list 'completion-at-point-functions 'cape-keyword)
+    ;; (add-to-list 'completion-at-point-functions 'cape-tex)
+    ;; (add-to-list 'completion-at-point-functions 'cape-sgml)
+    ;; (add-to-list 'completion-at-point-functions 'cape-rfc1345)
+    ;; (add-to-list 'completion-at-point-functions 'cape-abbrev)
+    ;; (add-to-list 'completion-at-point-functions 'cape-dict)
+    ;; (add-to-list 'completion-at-point-functions 'cape-line)
+    )
+
+  (defun fk/setup-eglot-yasnippet-capf ()
+    "Combine `eglot-completion-at-point' with `yasnippet-capf'."
+    (setq-local completion-at-point-functions
+                (list (cape-capf-super
+                       'eglot-completion-at-point
+                       'yasnippet-capf))))
+
+  (defun fk/setup-emacs-lisp-mode-capf ()
+    "Combine `elisp-completion-at-point' with `cape-elisp-symbol'. It's
+especially useful for `use-package' forms. Also add `yasnippet-capf'."
+    (setq-local completion-at-point-functions
+                (list (cape-capf-super
+                       'elisp-completion-at-point
+                       'cape-elisp-symbol
+                       'yasnippet-capf)))))
 #+END_SRC
 
 *** Nerd Icons Corfu
@@ -1134,12 +1165,12 @@ command is `project-find-file' and this command is called."
 #+END_SRC
 
 ** YASnippet (Snippet Completion)
+*** YASnippet
 
 #+BEGIN_SRC emacs-lisp
-;; TODO: try minad's tempel
 (use-package yasnippet
   :custom
-  (yas-indent-line nil)  ; TODO: test this
+  (yas-indent-line 'fixed)
   (yas-inhibit-overlay-modification-protection t)  ; TODO: test this
   :custom-face
   ;; this is actually default but doesn't work without defining again
@@ -1151,6 +1182,13 @@ command is `project-find-file' and this command is called."
     ("<tab>" . nil))  ; TODO: test if only one of the tabs enough
   :hook
   (dashboard-after-initialize . yas-global-mode))
+#+END_SRC
+
+*** YASnippet Capf
+
+#+BEGIN_SRC emacs-lisp
+(use-package yasnippet-capf
+  :defer)
 #+END_SRC
 
 ** Orderless
@@ -1453,7 +1491,51 @@ Usage:
   ("C-M-r" . xref-find-references))
 #+END_SRC
 
-** TODO Dumb Jump
+** Dumb Jump
+
+#+BEGIN_SRC emacs-lisp
+(use-package dumb-jump
+  :custom
+  (dumb-jump-prefer-searcher 'rg)  ; still uses git-grep if it's a git project
+  :hook                            ; because it's supposed to be faster
+  (dashboard-after-initialize . fk/setup-dumb-jump)
+  :config
+  (defun fk/setup-dumb-jump ()
+    "Add `dumb-jump-xref-activate' to `xref-backend-functions'. This adds
+`dumb-jump' to the global value of `xref-backend-functions' which is used if its
+local value ends with a `t' and all the functions before the `t' returns nil."
+    ;; it's more like `add-to-list' but `add-hook' recommended for some reason
+    (add-hook 'xref-backend-functions 'dumb-jump-xref-activate)
+    (with-eval-after-load 'eglot
+      (fk/setup-eglot+dumb-jump-xref-backend)))
+
+  (defun fk/setup-eglot+dumb-jump-xref-backend ()
+    "Combine `eglot' and `dumb-jump' xref backends as a workaround for the issue
+of xref does not use the next backends after `eglot-xref-backend' fails. Source:
+https://github.com/joaotavora/eglot/issues/420#issuecomment-1257247512"
+    (cl-defmethod xref-backend-identifier-at-point ((_backend (eql eglot+dumb-jump)))
+      (cons (xref-backend-identifier-at-point 'eglot)
+            (xref-backend-identifier-at-point 'dumb-jump)))
+
+    (cl-defmethod xref-backend-identifier-completion-table ((_backend (eql eglot+dumb-jump)))
+      (xref-backend-identifier-completion-table 'eglot))
+
+    (cl-defmethod xref-backend-definitions ((_backend (eql eglot+dumb-jump)) identifier)
+      (or (xref-backend-definitions 'eglot (car identifier))
+          (xref-backend-definitions 'dumb-jump (cdr identifier))))
+
+    (cl-defmethod xref-backend-references ((_backend (eql eglot+dumb-jump)) identifier)
+      (or (xref-backend-references 'eglot (car identifier))
+          (xref-backend-references 'dumb-jump (cdr identifier))))
+
+    (cl-defmethod xref-backend-apropos ((_backend (eql eglot+dumb-jump)) pattern)
+      (xref-backend-apropos 'eglot pattern))
+
+    (defun xref-eglot+dumb-jump-backend () 'eglot+dumb-jump)
+
+    (advice-add 'eglot-xref-backend :override 'xref-eglot+dumb-jump-backend)))
+#+END_SRC
+
 ** Deadgrep
 
 #+BEGIN_SRC emacs-lisp
@@ -1705,6 +1787,17 @@ Copied from: https://github.com/purcell/unfill"
   ("C-t" . er/expand-region))
 #+END_SRC
 
+** Wgrep (Writable Grep)
+
+#+BEGIN_SRC emacs-lisp
+(use-package wgrep
+  :custom
+  (wgrep-auto-save-buffer t)
+  :bind
+  ( :map grep-mode-map
+    ("C-c C-e" . wgrep-change-to-wgrep-mode)))
+#+END_SRC
+
 * Programming
 ** Common
 *** Electric Indent Mode
@@ -1747,9 +1840,18 @@ Copied from: https://github.com/purcell/unfill"
   ;; TODO: do something like: (projectile-project-search-path (directory-files "~/projects" t "[^.]"))
   :commands project-find-file project-switch-project  ; TODO: combine these two
   :bind
-  ("C-x f" . project-find-file)
+  ("C-x f" . fk/project-find-file-or-switch-project)
   :custom
-  (project-switch-commands 'magit-project-status))
+  (project-switch-commands 'magit-project-status)
+  :config
+  (defun fk/project-find-file-or-switch-project ()
+    "Run `project-find-file' if in a project, else `project-switch-project'.
+This command is created because `project-find-file' does not respoect the value
+of `project-switch-commands' when selecting a project."
+    (interactive)
+    (call-interactively (if (project-current)
+                            'project-find-file
+                          'project-switch-project))))
 #+END_SRC
 
 *** Eglot (LSP)
@@ -1757,6 +1859,8 @@ Copied from: https://github.com/purcell/unfill"
 #+BEGIN_SRC emacs-lisp
 (use-package eglot
   :commands eglot
+  :init
+  (setopt eglot-stay-out-of '(flymake))  ; should be set before it's loaded
   :custom
   (eglot-ignored-server-capabilites '(:documentHighlightProvider)))
 #+END_SRC
@@ -1768,7 +1872,7 @@ Copied from: https://github.com/purcell/unfill"
   :ensure nil  ; don't try to install it since it's a built-in module
   :custom
   (treesit-extra-load-path `(,(no-littering-expand-etc-file-name "tree-sitter/")))
-  (treesit-language-source-alist
+  (treesit-language-source-alist  ; TODO: doesn't set on load, maybe because it's not a defcustom?
    ;; taken from https://www.masteringemacs.org/article/how-to-get-started-tree-sitter
    ;; install with `M-x treesit-install-language-grammar'
    '((bash       "https://github.com/tree-sitter/tree-sitter-bash")
@@ -1796,9 +1900,11 @@ Copied from: https://github.com/purcell/unfill"
      (tsx-mode        . tsx-ts-mode)
      (typescript-mode . typescript-ts-mode)
      (yaml-mode       . yaml-ts-mode)))
-  ;; (treesit-font-lock-level 4)  ; maximum
+  (treesit-font-lock-level 4)  ; maximum
   :custom-face
-  (font-lock-property-use-face ((t (:inherit font-lock-type-face)))))
+  (font-lock-property-use-face ((t (:inherit font-lock-type-face))))
+  (font-lock-function-call-face ((t (:inherit font-lock-type-face))))
+  (font-lock-variable-use-face ((t (:inherit default)))))
 #+END_SRC
 
 *** Rainbow Delimiters
@@ -1932,6 +2038,15 @@ section of the =use-package=.
    'python-ts-mode
    '((":=" 0 'escape-glyph t))
    'set)
+
+  ;; Temporary funny icon
+  (font-lock-add-keywords
+   'python-ts-mode
+   '(("from \\(hipo_django_core\\).*import"
+      (0 (prog1
+             (put-text-property
+              (match-beginning 1) (match-end 1) 'display
+              `(,(find-image '((:file "~/hipo.png"))) (raise 0.2))))))))
 
   (defun fk/check-pyright-updates ()
     "Check if `pyright' has an update."
@@ -2262,8 +2377,7 @@ section of the =use-package=.
     (interactive)
     (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
                                                              (emacs-lisp . t)
-                                                             (shell . t)
-                                                             (ein . t))))
+                                                             (shell . t))))
 
   (defun fk/org-babel-tangle-block()
     (interactive)
@@ -2318,25 +2432,25 @@ section of the =use-package=.
 
   (set-face-attribute 'org-mode-line-clock nil :inherit 'default)
 
-  (defun fk/org-clock-update-mode-line (&optional _)
-    "Display org-clock info in echo area. See `fk/minibuffer-modeline-update'."
-    (if org-clock-effort
-        (org-clock-notify-once-if-expired)
-      (setq org-clock-task-overrun nil))
-    (setq fk/org-clock-string
-          (let ((clock-string (org-clock-get-clock-string)))
-            (if (and (> org-clock-string-limit 0)
-                     (> (length clock-string) org-clock-string-limit))
-                (substring clock-string 0 org-clock-string-limit)
-              clock-string)))
-    (if (and org-clock-task-overrun org-clock-task-overrun-text)
-        (setq fk/org-clock-string
-              (concat (propertize
-                       org-clock-task-overrun-text
-                       'face 'org-mode-line-clock-overrun)
-                      fk/org-clock-string))))
+  ;; (defun fk/org-clock-update-mode-line (&optional _)
+  ;;   "Display org-clock info in echo area. See `fk/minibuffer-modeline-update'."
+  ;;   (if org-clock-effort
+  ;;       (org-clock-notify-once-if-expired)
+  ;;     (setq org-clock-task-overrun nil))
+  ;;   (setq fk/org-clock-string
+  ;;         (let ((clock-string (org-clock-get-clock-string)))
+  ;;           (if (and (> org-clock-string-limit 0)
+  ;;                    (> (length clock-string) org-clock-string-limit))
+  ;;               (substring clock-string 0 org-clock-string-limit)
+  ;;             clock-string)))
+  ;;   (if (and org-clock-task-overrun org-clock-task-overrun-text)
+  ;;       (setq fk/org-clock-string
+  ;;             (concat (propertize
+  ;;                      org-clock-task-overrun-text
+  ;;                      'face 'org-mode-line-clock-overrun)
+  ;;                     fk/org-clock-string))))
 
-  (advice-add 'org-clock-update-mode-line :override 'fk/org-clock-update-mode-line)
+  ;; (advice-add 'org-clock-update-mode-line :override 'fk/org-clock-update-mode-line)
 
   (add-hook 'org-clock-in-hook (lambda ()
                                  (interactive)
@@ -2417,16 +2531,12 @@ section of the =use-package=.
 
 #+BEGIN_SRC emacs-lisp
 (use-package org-super-agenda
-  :after org-agenda
   :custom
-  (org-super-agenda-groups '(( :name "Calendar"
-                               :time-grid t)
-                             ( :name "Deadlines"
-                               :deadline t)
-                             ( :name "Scheduled"
-                               :scheduled t)))
-  :config
-  (org-super-agenda-mode))
+  (org-super-agenda-groups '((:name "Calendar"  :time-grid t)
+                             (:name "Deadlines" :deadline  t)
+                             (:name "Scheduled" :scheduled t)))
+  :hook
+  (dashboard-after-initialize . org-super-agenda-mode))
 #+END_SRC
 
 *** Org QL
@@ -2764,6 +2874,8 @@ section of the =use-package=.
 
 Pull Requests, Issues etc.
 #+BEGIN_SRC emacs-lisp
+(use-package forge
+  :after magit)
 ;; (use-package forge
 ;;   :after magit
   ;; :config
@@ -2933,6 +3045,13 @@ Pull Requests, Issues etc.
     ("b" . vc-msg-show)))
 #+END_SRC
 
+*** Git Blame
+
+#+BEGIN_SRC emacs-lisp
+(use-package blamer
+  :commands blamer-mode)
+#+END_SRC
+
 *** Dired Git Info
 
 #+BEGIN_SRC emacs-lisp
@@ -2967,6 +3086,102 @@ Pull Requests, Issues etc.
   (add-to-list 'global-mode-string '("" keycast-mode-line " ")))
 #+END_SRC
 
+** Terminal Emulation
+*** Eat (Terminal Emulator)
+
+#+BEGIN_SRC emacs-lisp
+(use-package eat
+  :commands eat
+  :bind
+  (("C-M-t" . eat-project)
+   :map eat-semi-char-mode-map
+   ("M-o" . nil)
+   ("M-m" . nil)
+   ("M-q" . nil)
+   ("C-M-o" . nil)
+   ("C-M-s" . nil)
+   :map eat-mode-map
+   ("C-c C-e" . eat-semi-char-mode))
+  :hook
+  (eat-mode . fk/darken-background)
+  :config
+  (advice-add 'eat-emacs-mode :after (lambda ()
+                                       (face-remap-add-relative 'hl-line :background fk/background-color)
+                                       (hl-line-mode)))
+  (advice-add 'eat-semi-char-mode :after (lambda ()
+                                           (setq-local global-hl-line-mode nil)
+                                           (setq-local hl-line-mode nil)
+                                           (end-of-buffer)))
+
+  (defvar docker-container-prompt-regexp "^[\\^A-Z]*root@[A-z0-9-]*:/[^#]*# ")
+  (defvar python-pdb-prompt-regexp "^[\\^A-Z]*(Pdb) ")
+  (defvar python-ipdb-prompt-regexp "^[\\^A-Z]*ipdb> ")
+
+  (defface docker-container-prompt-face
+    '((t (:foreground "green yellow")))
+    "Face for docker container prompt in vterm.")
+
+  (font-lock-add-keywords  ; TODO: does not work without calling `font-lock-update'
+   'eat-mode
+   `((,docker-container-prompt-regexp 0 'docker-container-prompt-face t)
+     (,python-pdb-prompt-regexp       0 'docker-container-prompt-face t)
+     (,python-ipdb-prompt-regexp      0 'docker-container-prompt-face t))
+   'set))
+#+END_SRC
+
+*** Shell Pop
+
+#+BEGIN_SRC emacs-lisp
+(use-package shell-pop  ; TODO; fix wrong buffer name in first run issue
+  :custom
+  (shell-pop-shell-type '("eat" "*eat*" (lambda () (let ((current-prefix-arg 99)) (eat)))))
+  (shell-pop-full-span t)
+  :bind*
+  ("M-t" . shell-pop))
+#+END_SRC
+
+** Restclient
+*** Restclient
+
+#+BEGIN_SRC emacs-lisp
+(use-package restclient
+  :commands restclient-mode
+  :custom
+  (restclient-log-request nil)
+  ;;:config
+  ;;(setcdr (assoc "application/json" restclient-content-type-modes) 'json-mode)
+)
+#+END_SRC
+
+*** ob-restclient
+
+#+BEGIN_SRC emacs-lisp
+(use-package ob-restclient
+  :after org
+  :config
+  ;; (org-babel-do-load-languages 'org-babel-load-languages '((restclient . t)))  ; TODO: this may slow down org load
+  (add-hook 'org-babel-after-execute-hook (lambda () (let ((lang (nth 0 (org-babel-get-src-block-info))))
+                                                       (when (and buffer-file-name (string= lang "restclient"))
+                                                         (save-buffer))))))
+#+END_SRC
+
+*** Password Mode
+
+#+BEGIN_SRC emacs-lisp
+;; (use-package password-mode
+;;   :hook
+;;   (restclient-mode . password-mode)
+;;   (org-mode . (lambda ()
+;;                 (when (buffer-file-name)
+;;                   (let ((filename (file-name-nondirectory
+;;                                    (directory-file-name buffer-file-name))))
+;;                     (when (or (string-match "rest" filename)
+;;                               (string-match "api" filename))
+;;                       (password-mode))))))
+;;   :config
+;;   (add-to-list 'password-mode-password-prefix-regexs "\"password\":?[[:space:]]+"))
+#+END_SRC
+
 * File Modes
 
 #+BEGIN_SRC emacs-lisp
@@ -2987,6 +3202,7 @@ early-init.el:
 (keymap-global-set "M-l" 'move-to-window-line-top-bottom)
 ;; TODO: test vundo or other undo packages
 (keymap-global-set "C-u" 'undo)  ; TODO: setup separately with use-package
+(keymap-global-set "C-S-u" 'undo-redo)
 (setopt undo-limit 100mb)
 
 (use-package org-tempo
@@ -3035,6 +3251,9 @@ early-init.el:
 
 (keymap-global-set "M-a" 'backward-sexp)
 (keymap-global-set "M-e" 'forward-sexp)
+
+(with-eval-after-load 'dired
+  (keymap-set dired-mode-map "C-c C-e" 'wdired-change-to-wdired-mode))
 
 ;; (use-package dirvish
 ;;   :config
