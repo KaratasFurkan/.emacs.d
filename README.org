@@ -1812,6 +1812,8 @@ Copied from: https://github.com/purcell/unfill"
 
 #+BEGIN_SRC emacs-lisp
 (use-package expand-region
+  ;; I forked karthink's fork which includes org-mode slowness fix
+  :vc (expand-region :url "https://github.com/KaratasFurkan/expand-region.el")
   :custom
   (expand-region-fast-keys-enabled nil)
   (expand-region-subword-enabled t)
