@@ -22,7 +22,7 @@
     - [[#time-since-startup][time-since-startup]]
     - [[#time-since-last-check][time-since-last-check]]
 - [[#better-defaults][Better Defaults]]
-  - [[#file-locations][File Locations]]
+  - [[#file-locations-no-littering][File Locations (no-littering)]]
   - [[#helpful][Helpful]]
   - [[#menu-style-keybindings][Menu Style Keybindings]]
   - [[#others-1][Others]]
@@ -257,6 +257,7 @@ this is not the only feature of =straight.el= but it was the main one for me.
 #+BEGIN_SRC emacs-lisp
 ;; TODO: check package-quickstart and other optimization related stuff
 (use-package package
+  :ensure nil
   :config
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
 #+END_SRC
@@ -268,6 +269,7 @@ built-in in Emacs 29. Unfortunately, the =vc-use-package= support will be shippe
 with Emacs 30, though. So I install that extension manually.
 #+BEGIN_SRC emacs-lisp
 (use-package use-package
+  :ensure nil
   :config
   ;; add :vc keyword to `use-package'
   ;; example:
@@ -280,7 +282,12 @@ with Emacs 30, though. So I install that extension manually.
     (package-vc-install "https://github.com/slotThe/vc-use-package")))
 
 (use-package use-package-ensure
+  :ensure nil
   :custom
+  ;; NOTE: I use `:ensure nil' for all built-in packages to make sure
+  ;; `use-package' do not try to install them from package repositories. It is
+  ;; usually smart enough to recognize built-in packages but sometimes it tries
+  ;; to install some packages from remote repositories and fail.
   (use-package-always-ensure t))  ; install packages if not installed yet
 #+END_SRC
 
@@ -367,7 +374,7 @@ Similar to garbage collection optimization.
 (setopt
  frame-inhibit-implied-resize t  ; inhibit frame resize at startup
  inhibit-startup-screen t
- initial-major-mode 'fundamental-mode)
+ initial-major-mode 'fundamental-mode)  ; major mode for the `*scratch*' buffer
 #+END_SRC
 
 ** Utils
@@ -420,7 +427,7 @@ start of message for debug purposes."
 #+END_SRC
 
 * Better Defaults
-** File Locations
+** File Locations (no-littering)
 
 #+BEGIN_SRC emacs-lisp
 (use-package no-littering
@@ -428,7 +435,7 @@ start of message for debug purposes."
   (custom-file (no-littering-expand-etc-file-name "custom.el"))
   :config
   (no-littering-theme-backups)  ; this setups auto-save, backup and undo-tree files
-  (load custom-file t))  ; to load `safe-local-variable-values'
+  (load custom-file t))  ; mostly to load `safe-local-variable-values'
 #+END_SRC
 
 ** Helpful
@@ -530,11 +537,11 @@ Menu style keybindings like in *Spacemacs*.
 (global-auto-revert-mode)
 ;; save cursor place for files and start from there when revisited
 (save-place-mode)
-;; prevents emacs from hanging when visiting files with long lines e.g. minified
+;; prevents emacs from hanging when visiting files with long lines e.g. minified js
 (global-so-long-mode)
 
-;; Make sure to focus when a new emacsclient frame created. TODO: check if this necessary
-;; (add-hook 'server-after-make-frame-hook (lambda () (select-frame-set-input-focus (selected-frame))))
+;; make sure to focus when a new emacsclient frame created
+(add-hook 'server-after-make-frame-hook (lambda () (select-frame-set-input-focus (selected-frame))))
 #+END_SRC
 
 * Appearance
@@ -547,6 +554,7 @@ Menu style keybindings like in *Spacemacs*.
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+(blink-cursor-mode -1)
 
 (setopt mode-line-format nil)  ; hide modeline until `doom-modeline' is loaded
 #+END_SRC
@@ -561,7 +569,7 @@ Change default window dividers to a better built-in alternative.
  window-divider-default-bottom-width 1
  window-divider-default-right-width 1)
 
-(window-divider-mode)
+(window-divider-mode)  ; TODO: setup in use-package form
 #+END_SRC
 
 *** Trailing Whitespace
@@ -588,9 +596,8 @@ Change default window dividers to a better built-in alternative.
  truncate-lines t                    ; don't wrap long lines into multiple lines
  frame-resize-pixelwise t)           ; fit maximized emacs to screen correctly
 
-;; TODO: configure these modes separately in use-package forms for each
+;; TODO: configure it in use-package and it's own section
 (global-hl-line-mode)
-(blink-cursor-mode 0)
 
 ;; clear enabled themes before loading a new one
 (advice-add 'load-theme :before (lambda (&rest _)
@@ -1067,6 +1074,8 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
      (fk/consult-ripgrep-dwim (:not posframe))
      ("fk/django-search-*" (:not posframe))
      (t posframe)))
+  :custom-face
+  (vertico-posframe ((t (:background ,fk/dark-color))))
   :hook
   (vertico-mode . vertico-posframe-mode))
 #+END_SRC
@@ -1109,7 +1118,8 @@ command is `project-find-file' and this command is called."
   :bind
   ( :map corfu-map
     ("RET" . nil)
-    ("C-w" . nil))
+    ("C-w" . nil)
+    ("C-a" . nil))
   :hook
   (dashboard-after-initialize . global-corfu-mode)
   (dashboard-after-initialize . corfu-popupinfo-mode)
@@ -1121,7 +1131,11 @@ command is `project-find-file' and this command is called."
     "Enable Corfu in the minibuffer on `eval-expression', `shell-command' etc."
     (when (local-variable-p 'completion-at-point-functions)
       (setq-local corfu-echo-delay nil)  ; disable minibuffer messages
-      (corfu-mode))))
+      (corfu-mode)))
+
+  (with-eval-after-load 'corfu-popupinfo
+    (keymap-set corfu-popupinfo-map "M-n" 'corfu-popupinfo-scroll-up)
+    (keymap-set corfu-popupinfo-map "M-p" 'corfu-popupinfo-scroll-down)))
 
 (use-package nerd-icons-corfu
   :after corfu
@@ -3125,6 +3139,8 @@ Pull Requests, Issues etc.
 
 #+BEGIN_SRC emacs-lisp
 (use-package eat
+  ;; I use below command with a custom keybinding to use `eat' as my main terminal emulator
+  ;; emacsclient -c --eval "(eat nil (random 99999))"
   :commands eat
   :bind
   (("C-M-t" . eat-project)
@@ -3138,6 +3154,7 @@ Pull Requests, Issues etc.
    ("C-c C-e" . eat-semi-char-mode))
   :hook
   (eat-mode . fk/darken-background)
+  (eat-mode . (lambda () (setq-local font-lock-defaults '(nil t))))  ; fix `font-lock-add-keywords'
   :config
   (advice-add 'eat-emacs-mode :after (lambda ()
                                        (face-remap-add-relative 'hl-line :background fk/background-color)
@@ -3155,7 +3172,7 @@ Pull Requests, Issues etc.
     '((t (:foreground "green yellow")))
     "Face for docker container prompt in vterm.")
 
-  (font-lock-add-keywords  ; TODO: does not work without calling `font-lock-update'
+  (font-lock-add-keywords
    'eat-mode
    `((,docker-container-prompt-regexp 0 'docker-container-prompt-face t)
      (,python-pdb-prompt-regexp       0 'docker-container-prompt-face t)
