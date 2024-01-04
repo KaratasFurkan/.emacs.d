@@ -446,9 +446,25 @@ A better, more detailed *help* buffer.
     "Override `describe-*' commands with appropriate `helpful-*' commands."
     (advice-add 'describe-function :override 'helpful-callable)
     (advice-add 'describe-variable :override 'helpful-variable)
-    (advice-add 'describe-command :override 'helpful-command)
-    (advice-add 'describe-symbol :override 'helpful-symbol)
-    (advice-add 'describe-key :override 'helpful-key)))
+    (advice-add 'describe-command  :override 'helpful-command)
+    (advice-add 'describe-symbol   :override 'helpful-symbol)
+    (advice-add 'describe-key      :override 'helpful-key)
+
+    (defun fk/elisp--company-doc-buffer (str)  ; fix `corfu-popupinfo-mode'
+      (let ((symbol (intern-soft str)))
+        (save-window-excursion
+          (let ((display-buffer-overriding-action
+                 '(nil . ((inhibit-switch-frame . t)))))
+            (ignore-errors
+              (cond
+               ((fboundp symbol) (describe-function symbol))
+               ((boundp symbol) (describe-variable symbol))
+               ((featurep symbol) (describe-package symbol))
+               ((facep symbol) (describe-face symbol))
+               (t (signal 'user-error nil)))
+              (helpful--buffer symbol (fboundp symbol)))))))  ; only overriden line
+
+    (advice-add 'elisp--company-doc-buffer :override 'fk/elisp--company-doc-buffer)))
 #+END_SRC
 
 ** Menu Style Keybindings
