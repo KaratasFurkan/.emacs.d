@@ -1,0 +1,23 @@
+# -*- mode: snippet -*-
+# name: migration
+# key: migration
+# --
+from django.db import migrations
+
+
+def do_something(apps, schema_editor):
+    Model = apps.get_model('APP_NAME', 'MODEL_NAME')
+    for instance in Model.objects.all():
+        instance.something = 'xyz'
+        instance.save(update_fields=['something'])
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('APP_NAME', 'THE_MIGRATION_BEFORE_THIS_ONE'),
+    ]
+
+    operations = [
+        migrations.RunPython(do_something, reverse_code=migrations.RunPython.noop),
+    ]

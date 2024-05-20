@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: transaction_atomic
+# key: ta
+# --
+@transaction.atomic

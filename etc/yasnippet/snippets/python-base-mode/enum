@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: enum
+# key: enum
+# --
+class Status(models.TextChoices):
+    PENDING = 'pending', _('Pending')
+    COMPLETE = 'complete', _('Complete')

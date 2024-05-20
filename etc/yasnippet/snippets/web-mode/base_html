@@ -1,0 +1,42 @@
+# -*- mode: snippet -*-
+# name: base_html
+# key: bh
+# --
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <title>{% block title %}Unmute{% endblock %}</title>
+    {% block head %}{% endblock %}
+  </head>
+  <body class="body">
+    {% block body %}
+
+    {% block navbar %}
+    <nav>
+      <ul>
+        <li><a href="">Home</a></li>
+        <li><a href="">Signup</a></li>
+        <li><a href="">Login</a></li>
+      </ul>
+    </nav>
+    {% endblock navbar %}
+
+    {% if messages %}
+    <ul class="message-list">
+      {% for message in messages %}
+      <li class="message-list-item">
+        {{ message }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
+
+    {% endblock body %}
+  </body>
+</html>

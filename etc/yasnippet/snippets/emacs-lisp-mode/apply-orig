@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: apply-orig
+# key: ao
+# --
+(apply orig-func args)

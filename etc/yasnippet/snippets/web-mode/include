@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: include
+# key: include
+# --
+{% include "$0.html" ${1:with text="Text" }%}

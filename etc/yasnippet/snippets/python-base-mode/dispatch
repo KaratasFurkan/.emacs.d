@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: dispatch
+# key: dispatch
+# --
+def dispatch(self, request, *args, **kwargs):
+    $0
+    return super().dispatch(request, *args, **kwargs)

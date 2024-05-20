@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: save+clean
+# key: saveclean
+# --
+def save(self, *args, **kwargs):
+    self.full_clean()
+    super().save(*args, **kwargs)
+
+def clean(self):
+    if self._state.adding:
+        $0'do_something_if_created'
+    else:
+        'do_something_if_updated'

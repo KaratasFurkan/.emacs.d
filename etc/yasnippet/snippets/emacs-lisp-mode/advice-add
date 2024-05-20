@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: advice-add
+# key: aa
+# --
+(advice-add '$1 :${2:override} '$3)$0

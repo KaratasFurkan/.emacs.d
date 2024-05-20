@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: get_queryset
+# key: get_queryset
+# --
+def get_queryset(self, *args, **kwargs):
+    $0
+    return super().get_queryset(*args, **kwargs)

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: extends_base
+# key: e
+# --
+{% extends "base.html" %}
+
+$0

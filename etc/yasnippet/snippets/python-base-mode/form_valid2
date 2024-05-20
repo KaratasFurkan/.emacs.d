@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: form_valid2
+# key: form_valid2
+# --
+def form_valid(self, form):
+    response = super().form_valid(form)
+    $0
+    return response

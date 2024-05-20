@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: form_valid
+# key: form_valid
+# --
+def form_valid(self, form):
+    ${1:form.instance.user = self.request.user}$0
+    return super().form_valid(form)

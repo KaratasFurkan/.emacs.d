@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: urlspy
+# key: urlspy
+# --
+from django.urls import path
+
+app_name = '$0'
+
+urlpatterns = [
+    path('', SomeListView.as_view(), name='some_list'),
+]

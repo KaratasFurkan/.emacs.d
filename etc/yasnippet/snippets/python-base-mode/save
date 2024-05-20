@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: save
+# key: save
+# --
+def save(self, *args, **kwargs):
+    self.full_clean()
+    super().save(*args, **kwargs)

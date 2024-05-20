@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: clean
+# key: clean
+# --
+def clean(self):
+    if self._state.adding:
+        $0'do_something_if_created'
+    else:
+        'do_something_if_updated'

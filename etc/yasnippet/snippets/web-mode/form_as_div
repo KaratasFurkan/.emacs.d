@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: form_as_div
+# key: form
+# --
+<form method="POST" novalidate>
+  {% csrf_token %}
+  {{ form.as_div }}
+  <button type="submit">Save$0</button>
+</form>

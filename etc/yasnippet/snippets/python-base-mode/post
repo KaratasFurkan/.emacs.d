@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: post
+# key: post
+# --
+def post(self, request, *args, **kwargs):
+    $0
+    return super().post(request, *args, **kwargs)

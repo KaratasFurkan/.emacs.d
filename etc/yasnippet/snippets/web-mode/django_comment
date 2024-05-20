@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: django_comment
+# key: comment
+# --
+{% comment %}$0{% endcomment %}

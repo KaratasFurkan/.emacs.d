@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: get
+# key: get
+# --
+def get(self, request, *args, **kwargs):
+    $0
+    return super().get(request, *args, **kwargs)

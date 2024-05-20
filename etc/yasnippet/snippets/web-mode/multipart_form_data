@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: multipart_form_data
+# key: multipart
+# --
+enctype="multipart/form-data"
