@@ -124,6 +124,9 @@
     - [[#black][Black]]
     - [[#isort][Isort]]
     - [[#django][Django]]
+  - [[#html][HTML]]
+    - [[#emmet-mode][Emmet Mode]]
+    - [[#djlint-django-template-linter][djLint (Django Template Linter)]]
 - [[#tools][Tools]]
   - [[#org][Org]]
     - [[#org-1][Org]]
@@ -2160,6 +2163,8 @@ section of the =use-package=.
 
 *** Django
 
+See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
+
 #+BEGIN_SRC emacs-lisp
 (defun fk/setup-django ()
   "Setup django."
@@ -2252,22 +2257,31 @@ section of the =use-package=.
 ;;  ("c" . fk/django-copy-path-of-test-at-point)
 ;;  ("d" . fk/django-run-test-at-point))
 
-;; djhtml indenter
-;;
-;; (with-eval-after-load 'web-mode
-;;   (require 'reformatter)
-;;   (reformatter-define djhtml
-;;     ;; provides these commands:
-;;     ;;
-;;     ;; djhtml-buffer
-;;     ;; djhtml-region
-;;     ;; djhtml-on-save-mode
-;;     :program "djhtml"
-;;     :args `(,input-file "--tabwidth" "2")
-;;     :stdin nil
-;;     :stdout nil))
-
 (add-hook 'dashboard-after-initialize-hook 'fk/setup-django)
+#+END_SRC
+
+** HTML
+*** Emmet Mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package emmet-mode
+  :bind
+  ( :map emmet-mode-keymap
+    ("C-j" . emmet-expand-line)
+    ("C-'" . yas-expand))
+  :hook
+  (html-mode . emmet-mode)
+  (web-mode . emmet-mode)
+  (css-mode . emmet-mode))
+#+END_SRC
+
+*** djLint (Django Template Linter)
+
+#+BEGIN_SRC emacs-lisp
+(use-package djlint
+  :vc (djlint :url "https://github.com/KaratasFurkan/djlint.el"
+              :branch "main")
+  :commands djlint-format-on-save-mode djlint-format-buffer djlint-format-region)
 #+END_SRC
 
 * Tools
