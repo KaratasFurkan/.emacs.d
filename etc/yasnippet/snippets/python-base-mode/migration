@@ -6,10 +6,10 @@ from django.db import migrations
 
 
 def do_something(apps, schema_editor):
-    Model = apps.get_model('APP_NAME', 'MODEL_NAME')
-    for instance in Model.objects.all():
-        instance.something = 'xyz'
-        instance.save(update_fields=['something'])
+    ${1:model$$(capitalize yas-text)} = apps.get_model('app_name', '${1:$(capitalize yas-text)}')
+    for ${1:$(downcase yas-text)} in ${1:$(capitalize yas-text)}.objects.all():
+        ${1:$(downcase yas-text)}.something = 'xyz'
+        ${1:$(downcase yas-text)}.save(update_fields=['something'])
 
 
 class Migration(migrations.Migration):

@@ -2,6 +2,8 @@
 # name: django_if
 # key: if
 # --
-{% if ${1:condition} %}
+{% if ${2:condition} %}
   $0
-{% endif %}
+${1:\{% else %\}
+
+}{% endif %}

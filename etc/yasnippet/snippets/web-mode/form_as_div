@@ -2,8 +2,10 @@
 # name: form_as_div
 # key: form
 # --
-<form method="POST" novalidate>
+<form method="post"${1: enctype="multipart/form-data"}>
   {% csrf_token %}
   {{ form.as_div }}
-  <button type="submit">Save$0</button>
+  <button type="submit">
+    $0Save
+  </button>
 </form>

@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
 # name: update_fields
-# key: update
+# key: uf
 # --
 update_fields=['$0']

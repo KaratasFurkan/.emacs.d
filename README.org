@@ -40,6 +40,7 @@
     - [[#doom-modeline][Doom Modeline]]
     - [[#global-modeline][Global Modeline]]
     - [[#anzu][Anzu]]
+    - [[#modeline-scrollbar][Modeline Scrollbar]]
   - [[#page-break-lines][Page Break Lines]]
   - [[#highlight-todos][Highlight TODOs]]
   - [[#beacon][Beacon]]
@@ -51,6 +52,8 @@
   - [[#perfect-margin][Perfect Margin]]
   - [[#goggles-mode-highlight-changes][Goggles Mode (Highlight Changes)]]
   - [[#redacted-mode-blur-text-for-screenshots][Redacted Mode (Blur text for screenshots)]]
+  - [[#topspace-upper-margin][Topspace (Upper margin)]]
+  - [[#shackle][Shackle]]
 - [[#completion][Completion]]
   - [[#better-defaults-2][Better Defaults]]
   - [[#which-key-keybinding-completion][Which Key (Keybinding Completion)]]
@@ -66,6 +69,7 @@
     - [[#yasnippet][YASnippet]]
     - [[#yasnippet-capf][YASnippet Capf]]
   - [[#orderless][Orderless]]
+  - [[#hydra][Hydra]]
 - [[#search--navigation][Search & Navigation]]
   - [[#better-defaults-3][Better Defaults]]
   - [[#utils-2][Utils]]
@@ -80,6 +84,8 @@
   - [[#ace-window][Ace Window]]
   - [[#mwim-move-where-i-mean][Mwim (Move Where I Mean)]]
   - [[#consult][Consult]]
+    - [[#consult-1][Consult]]
+    - [[#consult-yasnippet][Consult YASnippet]]
   - [[#xref][Xref]]
   - [[#dumb-jump][Dumb Jump]]
   - [[#deadgrep][Deadgrep]]
@@ -99,14 +105,15 @@
   - [[#whitespace-cleanup][Whitespace Cleanup]]
   - [[#case-switching][Case Switching]]
   - [[#paren][Paren]]
+  - [[#multiple-cursors][Multiple Cursors]]
   - [[#wrap-region][Wrap Region]]
   - [[#expand-region][Expand Region]]
-  - [[#wgrep-writable-grep][Wgrep (Writable Grep)]]
 - [[#programming][Programming]]
   - [[#common][Common]]
     - [[#electric-indent-mode][Electric Indent Mode]]
     - [[#comments][Comments]]
     - [[#project][Project]]
+    - [[#flymake][Flymake]]
     - [[#eglot-lsp][Eglot (LSP)]]
     - [[#treesitter][TreeSitter]]
     - [[#rainbow-delimiters][Rainbow Delimiters]]
@@ -114,7 +121,9 @@
     - [[#symbol-overlay][Symbol Overlay]]
     - [[#rainbow-mode][Rainbow Mode]]
     - [[#bug-reference-mode][Bug Reference Mode]]
+    - [[#wgrep-writable-grep][Wgrep (Writable Grep)]]
   - [[#emacs-lisp][Emacs Lisp]]
+    - [[#emacs-lisp-1][Emacs Lisp]]
     - [[#elisp-slime-nav][Elisp Slime Nav]]
     - [[#aggressive-indent][Aggressive Indent]]
     - [[#lisp-data-mode][Lisp Data Mode]]
@@ -125,8 +134,12 @@
     - [[#isort][Isort]]
     - [[#django][Django]]
   - [[#html][HTML]]
+    - [[#html-1][HTML]]
     - [[#emmet-mode][Emmet Mode]]
     - [[#djlint-django-template-linter][djLint (Django Template Linter)]]
+  - [[#typescript][Typescript]]
+  - [[#rust][Rust]]
+  - [[#treesit-fold][Treesit Fold]]
 - [[#tools][Tools]]
   - [[#org][Org]]
     - [[#org-1][Org]]
@@ -147,17 +160,21 @@
     - [[#org-export-twitter-bootstrap][Org Export Twitter Bootstrap]]
     - [[#org-appear][Org Appear]]
     - [[#org-rainbow-tags][Org Rainbow Tags]]
+    - [[#org-timeblock][Org Timeblock]]
+  - [[#ai-tools][AI Tools]]
+    - [[#gptel][gptel]]
   - [[#version-control][Version Control]]
     - [[#magit][Magit]]
       - [[#magit-1][Magit]]
       - [[#magit-todos][Magit Todos]]
       - [[#magit-forge][Magit Forge]]
       - [[#magit-delta][Magit Delta]]
+      - [[#magit-file-icons][Magit File Icons]]
     - [[#diff-hl][diff-hl]]
     - [[#git-link][Git Link]]
     - [[#git-timemachine][Git Timemachine]]
     - [[#git-blame-vc-msg][Git Blame (vc-msg)]]
-    - [[#git-blame][Git Blame]]
+    - [[#git-blame-blamer-mode][Git Blame (blamer-mode)]]
     - [[#dired-git-info][Dired Git Info]]
   - [[#keycast][Keycast]]
   - [[#terminal-emulation][Terminal Emulation]]
@@ -167,7 +184,24 @@
     - [[#restclient-1][Restclient]]
     - [[#ob-restclient][ob-restclient]]
     - [[#password-mode][Password Mode]]
+    - [[#restclient-auto-completion-company-restclient][Restclient auto-completion (company-restclient)]]
+  - [[#dired][Dired]]
+    - [[#dired-1][Dired]]
+    - [[#nerd-icons-dired][Nerd Icons Dired]]
+    - [[#dirvish][Dirvish]]
+  - [[#calendar][Calendar]]
+  - [[#speed-type][Speed Type]]
+  - [[#pomm-pomodoro--third-time][Pomm (pomodoro & third time)]]
+  - [[#hammy-generic-timer][Hammy (Generic Timer)]]
+  - [[#sudo-edit][Sudo Edit]]
 - [[#file-modes][File Modes]]
+  - [[#markdown][Markdown]]
+  - [[#yaml][YAML]]
+  - [[#requirementstxt-pip-requirements][requirements.txt (pip-requirements)]]
+  - [[#docker][Docker]]
+    - [[#dockerfile][Dockerfile]]
+    - [[#docker-compose][Docker Compose]]
+  - [[#terraform][Terraform]]
 - [[#some-random-must-have-settings][Some random must have settings]]
 - [[#---local-variables---][-- Local Variables --]]
 
@@ -504,6 +538,8 @@ Menu style keybindings like in *Spacemacs*.
 
 #+BEGIN_SRC emacs-lisp
 (setopt
+ ;; prevent beep sound
+ ring-bell-function 'ignore
  ;; no need for a message in scratch buffer
  initial-scratch-message nil
  ;; .#locked-file-name
@@ -525,7 +561,7 @@ Menu style keybindings like in *Spacemacs*.
  ;; correctly resize windows by pixels (e.g. in `split-window' functions)
  window-resize-pixelwise t
  ;; disable annoying native-comp popus
- native-comp-async-report-warnings-errors 'silent
+ native-comp-async-report-warnings-errors 'silent  ; TODO: remove at Emacs 30
  ;; disable annoying "ad-handle-definition: 'something' got redefined" warnings
  ad-redefinition-action 'accept
  ;; use `y-or-n-p' instead of `yes-or-no-p'
@@ -636,6 +672,7 @@ I use this to darken some non-file buffers like eshell, vertico etc.
 (keymap-global-set "C-=" 'global-text-scale-adjust)
 (keymap-global-set "C--" 'global-text-scale-adjust)
 (keymap-global-set "C-0" 'global-text-scale-adjust)
+(setopt global-text-scale-adjust-limits '(10 . 5000))  ; fix resetting `aw-leading-char-face' height after text scale
 #+END_SRC
 
 ** Theme
@@ -648,29 +685,29 @@ I use this to darken some non-file buffers like eshell, vertico etc.
   (lazy-highlight ((t (:box (:line-width -1) :background unspecified :foreground unspecified))))
   :config
   (load-theme 'doom-spacegrey t)
-  (defconst fk/cursor-color     (face-background 'cursor))
-  (defconst fk/font-color       (face-foreground 'default))
-  (defconst fk/background-color (face-background 'default))
-  (defconst fk/dark-color       (doom-darken  fk/background-color 0.15))
-  (defconst fk/dark-color1      (doom-darken  fk/background-color 0.01))
-  (defconst fk/dark-color2      (doom-darken  fk/background-color 0.02))
-  (defconst fk/dark-color3      (doom-darken  fk/background-color 0.03))
-  (defconst fk/dark-color4      (doom-darken  fk/background-color 0.04))
-  (defconst fk/dark-color5      (doom-darken  fk/background-color 0.05))
-  (defconst fk/dark-color6      (doom-darken  fk/background-color 0.06))
-  (defconst fk/dark-color7      (doom-darken  fk/background-color 0.07))
-  (defconst fk/dark-color8      (doom-darken  fk/background-color 0.08))
-  (defconst fk/dark-color9      (doom-darken  fk/background-color 0.09))
-  (defconst fk/light-color      (doom-lighten fk/background-color 0.15))
-  (defconst fk/light-color1     (doom-lighten fk/background-color 0.09))
-  (defconst fk/light-color2     (doom-lighten fk/background-color 0.08))
-  (defconst fk/light-color3     (doom-lighten fk/background-color 0.07))
-  (defconst fk/light-color4     (doom-lighten fk/background-color 0.06))
-  (defconst fk/light-color5     (doom-lighten fk/background-color 0.05))
-  (defconst fk/light-color6     (doom-lighten fk/background-color 0.04))
-  (defconst fk/light-color7     (doom-lighten fk/background-color 0.03))
-  (defconst fk/light-color8     (doom-lighten fk/background-color 0.02))
-  (defconst fk/light-color9     (doom-lighten fk/background-color 0.01)))
+  (defconst fk/cursor-color     "#D08770")   ; (insert (face-background 'cursor))
+  (defconst fk/font-color       "#c0c5ce")   ; (insert (face-foreground 'default))
+  (defconst fk/background-color "#2b303b")   ; (insert (face-background 'default))
+  (defconst fk/dark-color       "#242832")   ; (insert (doom-darken  fk/background-color 0.15))
+  (defconst fk/dark-color1      "#2a2f3a")   ; (insert (doom-darken  fk/background-color 0.01))
+  (defconst fk/dark-color2      "#2a2f39")   ; (insert (doom-darken  fk/background-color 0.02))
+  (defconst fk/dark-color3      "#292e39")   ; (insert (doom-darken  fk/background-color 0.03))
+  (defconst fk/dark-color4      "#292e38")   ; (insert (doom-darken  fk/background-color 0.04))
+  (defconst fk/dark-color5      "#282d38")   ; (insert (doom-darken  fk/background-color 0.05))
+  (defconst fk/dark-color6      "#282d37")   ; (insert (doom-darken  fk/background-color 0.06))
+  (defconst fk/dark-color7      "#272c36")   ; (insert (doom-darken  fk/background-color 0.07))
+  (defconst fk/dark-color8      "#272c36")   ; (insert (doom-darken  fk/background-color 0.08))
+  (defconst fk/dark-color9      "#272b35")   ; (insert (doom-darken  fk/background-color 0.09))
+  (defconst fk/light-color      "#4a4f58")   ; (insert (doom-lighten fk/background-color 0.15))
+  (defconst fk/light-color1     "#3e424c")   ; (insert (doom-lighten fk/background-color 0.09))
+  (defconst fk/light-color2     "#3b404a")   ; (insert (doom-lighten fk/background-color 0.08))
+  (defconst fk/light-color3     "#393e48")   ; (insert (doom-lighten fk/background-color 0.07))
+  (defconst fk/light-color4     "#373c46")   ; (insert (doom-lighten fk/background-color 0.06))
+  (defconst fk/light-color5     "#353a44")   ; (insert (doom-lighten fk/background-color 0.05))
+  (defconst fk/light-color6     "#333842")   ; (insert (doom-lighten fk/background-color 0.04))
+  (defconst fk/light-color7     "#313640")   ; (insert (doom-lighten fk/background-color 0.03))
+  (defconst fk/light-color8     "#2f343e")   ; (insert (doom-lighten fk/background-color 0.02))
+  (defconst fk/light-color9     "#2d323c"))  ; (insert (doom-lighten fk/background-color 0.01))
 #+END_SRC
 
 ** Modeline
@@ -681,9 +718,14 @@ I use this to darken some non-file buffers like eshell, vertico etc.
   :init
   ;; show doom-modeline at the same time with dashboard
   (add-hook 'emacs-startup-hook 'doom-modeline-mode -100)  ; TODO: check if this necessary after adding all packages
+  :custom
+  (doom-modeline-buffer-encoding 'nondefault)
+  (doom-modeline-vcs-max-length 40)
   :custom-face
   (mode-line-active ((t (:background ,fk/dark-color))))
   (mode-line-inactive ((t (:background ,fk/dark-color5))))
+  (doom-modeline-buffer-path ((t (:inherit font-lock-comment-face :slant normal))))
+  (doom-modeline-buffer-modified ((t (:inherit error :weight bold))))
   :hook
   (dashboard-after-initialize . column-number-mode))  ; built-in mode
 #+END_SRC
@@ -701,6 +743,14 @@ I use this to display =[current/total]= counts when searching with =isearch=.
 (use-package anzu
   :hook
   (dashboard-after-initialize . global-anzu-mode))
+#+END_SRC
+
+*** Modeline Scrollbar
+
+#+BEGIN_SRC emacs-lisp
+(use-package mlscroll
+  :hook
+  (dashboard-after-initialize . mlscroll-mode))
 #+END_SRC
 
 ** Page Break Lines
@@ -731,6 +781,7 @@ Note that page break characters can be inserted with =M-x quoted-insert RET C-l=
 #+END_SRC
 
 ** Beacon
+
 #+BEGIN_SRC emacs-lisp
 (use-package beacon
   :disabled  ; TODO: it's buggy, try to fix or only blink on selected commands or try pulsar
@@ -747,9 +798,20 @@ Note that page break characters can be inserted with =M-x quoted-insert RET C-l=
 ** Indent Bars
 
 #+BEGIN_SRC emacs-lisp
-(use-package indent-bars  ; TODO: doesn't work
+(use-package indent-bars  ; TODO: html mode should check sgml-basic-offset, open a PR
   :vc (indent-bars :url "https://github.com/jdtsmith/indent-bars")
-  :commands indent-bars-mode)
+  :commands indent-bars-mode
+  :custom
+  (indent-bars-starting-column 0)
+  (indent-bars-pattern ".")
+  (indent-bars-width-frac 0.5)
+  (indent-bars-pad-frac 0.25)
+  (indent-bars-color-by-depth nil)
+  (indent-bars-highlight-current-depth '(:face default :blend 0.4))
+  :hook
+  ;; (python-base-mode . indent-bars-mode)
+  ;; (mhtml-mode . indent-bars-mode)
+  (mhtml-mode . (lambda () (setq-local indent-bars-spacing-override 2))))
 #+END_SRC
 
 ** Breadcrumb
@@ -762,6 +824,8 @@ Note that page break characters can be inserted with =M-x quoted-insert RET C-l=
 ** Dashboard
 
 #+BEGIN_SRC emacs-lisp
+;; TODO: consider implementing a custom dashboard since I already use my own
+;; sections only
 (use-package dashboard
   :custom
   (dashboard-startup-banner (locate-user-emacs-file "static/splash-images/emacs-e-medium.png"))
@@ -770,7 +834,8 @@ Note that page break characters can be inserted with =M-x quoted-insert RET C-l=
   (dashboard-items '((agenda . 0)  ; Custom section
                      ;;(todo-items . 0)  ; Custom section
                      (inbox-entries . 0)  ; Custom section
-                     (habit-tracker . 0)))  ; Custom section
+                     ;; (habit-tracker . 0)  ; Custom section
+                     ))
   :custom-face
   (dashboard-heading ((t (:height 1.2))))
   (dashboard-banner-logo-title ((t (:family "AV Qest" :height 2.5 :weight bold :foreground "#8583C7"))))
@@ -809,18 +874,21 @@ daemon."
     "Get a copy of the agenda buffer from Emacs daemon."
     (fk/dashboard-get-section
      "(progn
-        (setopt org-agenda-span 2)
-        (org-agenda-list)
+        (org-agenda-list nil nil 2)
         (read-only-mode -1)
         (goto-char (point-min))
         (kill-line 2)
-        (buffer-string))"))
+        (let ((agenda (buffer-string)))
+          (kill-buffer)
+          (dolist (file (org-agenda-files))
+            (kill-buffer (get-file-buffer file)))
+          agenda))"))
 
   (defun fk/dashboard-insert-agenda (&rest _)
     "Insert a copy of org-agenda buffer."
     (insert (nerd-icons-faicon "nf-fa-calendar" :v-adjust 0.12 :face 'dashboard-heading)
-     (propertize " Agenda:\n\n" 'face 'dashboard-heading)
-     (fk/dashboard-get-agenda)))
+            (propertize " Agenda:\n\n" 'face 'dashboard-heading)
+            (fk/dashboard-get-agenda)))
 
   (defun fk/dashboard-get-inbox-entries ()
     ;; TODO: appearance is not consistent, seems like there is some sort of caching
@@ -835,7 +903,7 @@ daemon."
           (kill-buffer file-buffer)
           (org-mode)
           (insert file-content)
-          (delete-non-matching-lines \"^*\" (point-min) (point-max))
+          (delete-non-matching-lines \"^* \" (point-min) (point-max))
           (string-replace \"*\" (format \"  %s\" bullet) (string-replace \"**\" (format \"   %s\" bullet) (buffer-string)))))"))
 
   (defun fk/dashboard-insert-inbox-entries (&rest _)
@@ -864,8 +932,8 @@ daemon."
   (defun fk/dashboard-insert-todo-items (&rest _)
     "Insert high priority todo items."
     (insert (nerd-icons-octicon "nf-oct-checklist" :v-adjust 0.04 :face 'dashboard-heading)
-     (propertize " TODOs:\n" 'face 'dashboard-heading 'line-spacing 10)
-     (fk/dashboard-get-todo-items)))
+            (propertize " TODOs:\n" 'face 'dashboard-heading 'line-spacing 10)
+            (fk/dashboard-get-todo-items)))
 
   (defun fk/dashboard-get-habit-tracker ()
     "Get habit tracker from Emacs daemon."
@@ -888,8 +956,8 @@ daemon."
   (defun fk/dashboard-insert-habit-tracker (&rest _)
     "Insert habit tracker."
     (insert (nerd-icons-faicon "nf-fa-chain" :v-adjust 0.07 :face 'dashboard-heading)
-     (propertize " Habit Tracker:\n" 'face 'dashboard-heading 'line-spacing 10)
-     (fk/dashboard-get-habit-tracker)))
+            (propertize " Habit Tracker:\n" 'face 'dashboard-heading 'line-spacing 10)
+            (fk/dashboard-get-habit-tracker)))
 
   ;; TODO: setopt gives error about wrong type
   (setq dashboard-item-generators '((agenda        . fk/dashboard-insert-agenda)
@@ -939,6 +1007,7 @@ daemon."
 
 #+BEGIN_SRC emacs-lisp
 (use-package display-fill-column-indicator
+  :ensure nil
   :custom-face
   (fill-column-indicator ((t (:foreground ,fk/light-color7))))
   :hook
@@ -959,6 +1028,7 @@ daemon."
 
 #+BEGIN_SRC emacs-lisp
 (use-package display-line-numbers
+  :ensure nil
   :custom
   (display-line-numbers-width-start t)  ; to fix alignment in org-mode
   :custom-face
@@ -978,7 +1048,7 @@ daemon."
   (defvar fk/perfect-margin-visible-width-large 180)
   :custom
   (perfect-margin-visible-width fk/perfect-margin-visible-width)
-  (perfect-margin-ignore-regexps '("^minibuf" "[mM]inibuf-[0-9]+" " *which-key*" "*dashboard*"))
+  (perfect-margin-ignore-regexps '("^minibuf" "[mM]inibuf-[0-9]+" " *which-key*" "*dashboard*" "*Calendar*"))
   :bind
   ("C-1" . fk/smart-C-x-1)
   :hook
@@ -1021,6 +1091,21 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
   (redacted-mode . (lambda () (read-only-mode (if redacted-mode 1 -1)))))
 #+END_SRC
 
+** TODO Topspace (Upper margin)
+** Shackle
+
+#+BEGIN_SRC emacs-lisp
+(use-package shackle
+  :custom
+  (shackle-default-size 0.4)
+  (shackle-rules `((help-mode :align t :select t)
+                   (helpful-mode :align t :select t)
+                   (calendar-mode :align t :select t)
+                   (,fk/gptel-buffer-name :align t :select t)))
+  :hook
+  (dashboard-after-initialize . shackle-mode))
+#+END_SRC
+
 * Completion
 ** Better Defaults
 
@@ -1041,8 +1126,8 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
   (which-key-idle-secondary-delay 0)
   (which-key-popup-type 'minibuffer)  ; default value `'side-window' makes windows move
   (which-key-ellipsis "..")  ; TODO: try to fix wide unicode ellipsis issue
-  :config
-  (which-key-mode))
+  :hook
+  (dashboard-after-initialize . which-key-mode))
 #+END_SRC
 
 ** Vertico (Generic Completion & Selection)
@@ -1074,8 +1159,8 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
    '((fk/consult-line-dwim (:not posframe))
      (consult-org-heading (:not posframe))
      (consult-imenu (:not posframe))
-     (fk/consult-ripgrep-dwim (:not posframe))
-     ("fk/django-search-*" (:not posframe))
+     ;; (fk/consult-ripgrep-dwim (:not posframe))
+     ;; ("fk/django-search-*" (:not posframe))
      (t posframe)))
   :custom-face
   (vertico-posframe ((t (:background ,fk/dark-color))))
@@ -1115,6 +1200,7 @@ command is `project-find-file' and this command is called."
   (corfu-auto-delay 0)
   (corfu-preview-current nil)
   (corfu-popupinfo-delay '(1.0 . 0.5))
+  (corfu-popupinfo-max-height 20)
   (corfu-on-exact-match 'show)  ; the default value `insert' does not play well with `yasnippet-capf'
   :custom-face
   (corfu-current ((t (:background ,fk/light-color3))))
@@ -1127,6 +1213,8 @@ command is `project-find-file' and this command is called."
   (dashboard-after-initialize . global-corfu-mode)
   (dashboard-after-initialize . corfu-popupinfo-mode)
   (minibuffer-setup . fk/corfu-enable-in-minibuffer)
+  (multiple-cursors-mode-enabled . (lambda () (corfu-mode -1)))
+  (multiple-cursors-mode-disabled . (lambda () (corfu-mode 1)))
   :config
   (add-to-list 'corfu-auto-commands 'backward-delete-char-untabify)
 
@@ -1154,6 +1242,7 @@ command is `project-find-file' and this command is called."
   (dashboard-after-initialize . fk/setup-global-cape)
   (eglot-managed-mode . fk/setup-eglot-yasnippet-capf)
   (emacs-lisp-mode . fk/setup-emacs-lisp-mode-capf)
+  (restclient-mode . fk/setup-restclient-mode-capf)
   :config
   (defun fk/setup-global-cape ()
     "Setup `cape' by adding its functions to `completion-at-point-functions'."
@@ -1171,21 +1260,27 @@ command is `project-find-file' and this command is called."
     ;; (add-to-list 'completion-at-point-functions 'cape-line)
     )
 
-  (defun fk/setup-eglot-yasnippet-capf ()
+  (defun fk/setup-eglot-yasnippet-capf ()  ; TODO: move to eglot section?
     "Combine `eglot-completion-at-point' with `yasnippet-capf'."
     (setq-local completion-at-point-functions
                 (list (cape-capf-super
                        'eglot-completion-at-point
                        'yasnippet-capf))))
 
-  (defun fk/setup-emacs-lisp-mode-capf ()
+  (defun fk/setup-emacs-lisp-mode-capf ()  ; TODO: move to emacs-lisp section?
     "Combine `elisp-completion-at-point' with `cape-elisp-symbol'. It's
 especially useful for `use-package' forms. Also add `yasnippet-capf'."
     (setq-local completion-at-point-functions
                 (list (cape-capf-super
                        'elisp-completion-at-point
-                       'cape-elisp-symbol
-                       'yasnippet-capf)))))
+                       'cape-elisp-symbol  ; TODO: disable in comments
+                       'yasnippet-capf))))
+
+  (defun fk/setup-restclient-mode-capf ()  ; TODO: move to restclient section?
+    "Use `company-restclient' backend with `corfu'."
+    (setq-local completion-at-point-functions
+                (mapcar 'cape-company-to-capf
+                        (list 'company-restclient)))))
 #+END_SRC
 
 *** Nerd Icons Corfu
@@ -1201,7 +1296,7 @@ especially useful for `use-package' forms. Also add `yasnippet-capf'."
 *** YASnippet
 
 #+BEGIN_SRC emacs-lisp
-(use-package yasnippet
+(use-package yasnippet  ; TODO: make it work well with `corfu'
   :custom
   (yas-indent-line 'fixed)
   (yas-inhibit-overlay-modification-protection t)  ; TODO: test this
@@ -1219,6 +1314,8 @@ especially useful for `use-package' forms. Also add `yasnippet-capf'."
 
 *** YASnippet Capf
 
+I combine this with ~eglot-completion-at-point~, ~elisp-completion-at-point~ etc.
+/See [[#cape][Cape]] section./
 #+BEGIN_SRC emacs-lisp
 (use-package yasnippet-capf
   :defer)
@@ -1227,19 +1324,34 @@ especially useful for `use-package' forms. Also add `yasnippet-capf'."
 ** Orderless
 
 #+BEGIN_SRC emacs-lisp
-(use-package orderless  ; TODO: configure
+(use-package orderless  ; TODO: configure or at least defer after `dashboard-after-initialize-hook'
   :custom
   (completion-styles '(orderless basic substring partial-completion flex)))
+#+END_SRC
+
+** Hydra
+#+BEGIN_SRC emacs-lisp
+;; TODO: check the newer versions of this and also transient
+(use-package hydra
+  :defer t
+  :init
+  (setq hydra-hint-display-type 'posframe)
+  (setq hydra-posframe-show-params
+        `( :internal-border-width 2
+           :internal-border-color ,fk/light-color
+           :left-fringe 5
+           :right-fringe 5
+           :poshandler posframe-poshandler-frame-bottom-center)))
 #+END_SRC
 
 * Search & Navigation
 ** Better Defaults
 
 #+BEGIN_SRC emacs-lisp
-(global-subword-mode)  ; navigationInCamelCase
+(global-subword-mode)  ; navigationInCamelCase TODO: wrap this with use-package
 
 (setopt recenter-positions '(middle 0.15 top 0.85 bottom)  ; `C-l' positions
-        scroll-conservatively 101)                         ; smooth scrolling
+        scroll-conservatively 101)  ; don't scroll full page on `next-line' at the end of the window
 
 ;; scroll less than default
 (defvar fk/default-scroll-lines 15)
@@ -1324,7 +1436,7 @@ especially useful for `use-package' forms. Also add `yasnippet-capf'."
 ** Keybindings
 
 #+BEGIN_SRC emacs-lisp
-(bind-keys*
+(bind-keys
  ("C-2"     . split-window-below)
  ("C-3"     . split-window-right)
  ("M-g M-g" . beginning-of-buffer)
@@ -1332,14 +1444,10 @@ especially useful for `use-package' forms. Also add `yasnippet-capf'."
  ("C-x C-k" . kill-current-buffer)
  ("C-x c"   . fk/persp-switch-config)
  ("C-q"     . fk/switch-last-window)
- ("C-M-u"   . pop-global-mark))
-
-(bind-keys*
+ ("C-M-u"   . pop-global-mark)
  :map files
  ("c" . fk/find-config)
- ("C" . fk/persp-switch-config))
-
-(bind-keys*
+ ("C" . fk/persp-switch-config)
  :map buffers
  ("s" . scratch-buffer)
  ("m" . fk/messages)
@@ -1347,9 +1455,7 @@ especially useful for `use-package' forms. Also add `yasnippet-capf'."
  ("t" . fk/generate-text-mode-scratch)
  ("p" . fk/generate-python-ts-mode-scratch)
  ("e" . fk/generate-emacs-lisp-mode-scratch)
- ("f" . fk/generate-fundamental-mode-scratch))
-
-(bind-keys*
+ ("f" . fk/generate-fundamental-mode-scratch)
  :map windows
  ("b" . balance-windows)
  ("d" . delete-window)
@@ -1361,8 +1467,9 @@ especially useful for `use-package' forms. Also add `yasnippet-capf'."
 
 #+BEGIN_SRC emacs-lisp
 (use-package recentf
-  :preface
-  (setopt recentf-max-saved-items 200)
+  :ensure nil
+  :preface                              ; should be set before loading the
+  (setopt recentf-max-saved-items 200)  ; package to not delete history
   :custom
   (recentf-exclude `(,(recentf-expand-file-name no-littering-var-directory)
                      ,(recentf-expand-file-name no-littering-etc-directory)
@@ -1385,6 +1492,7 @@ especially useful for `use-package' forms. Also add `yasnippet-capf'."
 Undo/redo window&buffer states.
 #+BEGIN_SRC emacs-lisp
 (use-package winner
+  :ensure nil
   :bind
   (("M-u" . winner-undo)
    ("M-U" . winner-redo)
@@ -1402,17 +1510,26 @@ Undo/redo window&buffer states.
   :custom
   (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (aw-background nil)
-  (aw-dispatch-when-more-than 3)
+  (aw-dispatch-when-more-than 2)
   :custom-face
   (aw-leading-char-face ((t (:height 15.0 :foreground "orangered2"))))
-  :bind
+  :bind*
   (("M-o" . ace-window)
    :map windows
    ("w" . ace-window)
    ("D" . ace-delete-window)
    ("s" . ace-swap-window))
   :hook
-  (dashboard-after-initialize . ace-window-posframe-mode))
+  (dashboard-after-initialize . ace-window-posframe-mode)
+  :config
+  (defun fk/ace-window-posframe-enable ()
+    (unless (and (require 'posframe nil t) (or (posframe-workable-p) (daemonp)))  ; enable if daemonp
+      (error "Posframe is not workable"))
+
+    (setq aw--lead-overlay-fn #'aw--lead-overlay-posframe)
+    (setq aw--remove-leading-chars-fn #'aw--remove-leading-chars-posframe))
+
+  (advice-add 'ace-window-posframe-enable :override 'fk/ace-window-posframe-enable))  ; daemon fix
 
 ;; TODO: transparent background in child frames flickers for some reason
 ;; (defun fk/aw--lead-overlay-posframe (path leaf)
@@ -1448,9 +1565,10 @@ Undo/redo window&buffer states.
 #+END_SRC
 
 ** Consult
+*** Consult
 
 #+BEGIN_SRC emacs-lisp
-(use-package consult  ; TODO: has lots of custom variables and features to check
+(use-package consult
   :init
   ;; load this macros even if `consult' is not loaded yet
   (defmacro fk/consult-ripgrep-define-search-command (name keymap kbd &optional glob initial)
@@ -1463,7 +1581,7 @@ Usage:
        (defun ,(intern (concat "fk/" name)) ()
          (interactive)
          (let ((consult-ripgrep-args (concat consult-ripgrep-args " --glob " ,glob)))
-           (fk/consult-ripgrep-dwim ,initial)))
+           (fk/consult-ripgrep-dwim (concat ,initial (fk/get-selected-text)))))
        (keymap-set ,keymap ,kbd ',(intern (concat "fk/" name)))
        (consult-customize ,(intern (concat "fk/" name)) :preview-key '(:debounce 0.3 any))))
 
@@ -1493,7 +1611,7 @@ Usage:
   :config
   (consult-customize
    fk/consult-ripgrep-dwim consult-recent-file consult-xref consult-buffer
-   :preview-key '(:debounce 0.3 any))  ; delay previews
+   :preview-key "M-j")  ; manual preview
 
   (with-eval-after-load 'org
     (keymap-set org-mode-map "C-x C-j" 'consult-org-heading))
@@ -1509,10 +1627,18 @@ Usage:
     (consult-ripgrep nil (or initial (fk/get-selected-text)))))
 #+END_SRC
 
+*** Consult YASnippet
+
+#+BEGIN_SRC emacs-lisp
+(use-package consult-yasnippet
+  :commands consult-yasnippet)
+#+END_SRC
+
 ** Xref
 
 #+BEGIN_SRC emacs-lisp
 (use-package xref
+  :ensure nil
   :custom
   (xref-prompt-for-identifier nil)
   (xref-show-definitions-function 'consult-xref)  ; alternative: `'xref-show-definitions-completing-read'
@@ -1592,7 +1718,7 @@ https://github.com/joaotavora/eglot/issues/420#issuecomment-1257247512"
 #+BEGIN_SRC emacs-lisp
 (use-package perspective  ; TODO: try tab-bar tab-spaces etc.
   :preface
-  (defcustom persp-project-name nil "Should be set as directory local variable.")  ; TODO: setup hooks
+  (defcustom fk/persp-project-name nil "Should be set as directory local variable.")
   :custom
   (persp-mode-prefix-key (kbd "M-m p"))
   (persp-modestring-dividers `(,(format "[%s " (nerd-icons-codicon "nf-cod-vm")) "]" " • "))
@@ -1611,23 +1737,46 @@ https://github.com/joaotavora/eglot/issues/420#issuecomment-1257247512"
     ("q" . persp-switch-quick)
     ("n" . (lambda () (interactive) (persp-switch (make-temp-name "p-")))))
   :hook
-  (dashboard-after-initialize . persp-mode))
+  (dashboard-after-initialize . persp-mode)
+  (fk/project-after-switch-project . fk/perspective-rename-with-project-name)
+  :config
+  (defun fk/perspective-rename-with-project-name ()
+    "Rename current perspective according to current project name."
+    (interactive)
+    (let* ((project-name (or fk/persp-project-name (project-name (project-current))))
+           (ellipsis "…")
+           (short-name (if (> (length project-name) 10)
+                           (concat (substring project-name 0 9) ellipsis)
+                         project-name))
+           (final-name (if (gethash short-name (perspectives-hash))  ; already exists
+                           (concat "2—" short-name)  ; hoping to not have more than 2
+                         short-name)))
+      (persp-rename final-name)))
+
+  ;; `consult' fix:
+  (with-eval-after-load 'consult
+    (consult-customize consult--source-buffer :hidden t :default nil)
+    (add-to-list 'consult-buffer-sources persp-consult-source)))
 #+END_SRC
 
 ** Block Nav
 
 #+BEGIN_SRC emacs-lisp
 (use-package block-nav
+  :hook
+  (dashboard-after-initialize . fk/setup-block-nav)
   :config
-  (defmacro fk/bind-block-nav (library keymap)
-    "Bind block-nav commands to KEYMAP after the LIBRARY is loaded."
-    `(progn
-       (with-eval-after-load ',library
-         (keymap-set ,keymap "M-n" 'block-nav-next-block)
-         (keymap-set ,keymap "M-p" 'block-nav-previous-block))))
+  (defun fk/setup-block-nav ()
+    "Setup `block-nav'."
+    (defmacro fk/bind-block-nav (library keymap)
+      "Bind block-nav commands to KEYMAP after the LIBRARY is loaded."
+      `(progn
+         (with-eval-after-load ',library
+           (keymap-set ,keymap "M-n" 'block-nav-next-block)
+           (keymap-set ,keymap "M-p" 'block-nav-previous-block))))
 
-  (fk/bind-block-nav prog-mode prog-mode-map)
-  (fk/bind-block-nav yaml-mode yaml-mode-map))
+    (fk/bind-block-nav prog-mode prog-mode-map)
+    (fk/bind-block-nav yaml-mode yaml-mode-map)))
 #+END_SRC
 
 ** God Mode
@@ -1635,16 +1784,16 @@ https://github.com/joaotavora/eglot/issues/420#issuecomment-1257247512"
 #+BEGIN_SRC emacs-lisp
 (use-package god-mode  ; TODO: get used to it
   :preface
-  (setopt god-mode-cursor-color "#FFF8DC")
+  (defvar fk/god-mode-cursor-color "wheat")
   :bind
   (("C-;" . god-mode-all)
    :map god-local-mode-map
    ("j" . avy-goto-word-or-subword-1))
   :hook
   (god-mode-enabled . (lambda ()
-                        (set-face-attribute 'cursor nil :background god-mode-cursor-color)
+                        (set-face-attribute 'cursor nil :background fk/god-mode-cursor-color)
                         ;; beacon-mode doesn't work properly with same color as cursor
-                        (setopt beacon-color (doom-darken god-mode-cursor-color 0.001))))
+                        (setopt beacon-color (doom-darken fk/god-mode-cursor-color 0.001))))
   (god-mode-disabled . (lambda ()
                          (set-face-attribute 'cursor nil :background fk/cursor-color)
                          ;; beacon-mode doesn't work properly with same color as cursor
@@ -1661,7 +1810,7 @@ https://github.com/joaotavora/eglot/issues/420#issuecomment-1257247512"
   :bind
   (([remap scroll-up-command]   . fk/pixel-scroll-up-command)
    ([remap scroll-down-command] . fk/pixel-scroll-down-command)
-   ([remap recenter-top-bottom] . fk/pixel-recenter-top-bottom))
+   ([remap recenter-top-bottom] . fk/pixel-scroll-recenter-top-bottom))
   :hook
   (dashboard-after-initialize . pixel-scroll-precision-mode)
   :config
@@ -1675,7 +1824,12 @@ https://github.com/joaotavora/eglot/issues/420#issuecomment-1257247512"
     (interactive)
     (pixel-scroll-precision-interpolate (* fk/default-scroll-lines (line-pixel-height))))
 
-  (defun fk/pixel-recenter-top-bottom ()
+  ;; TODO: fix window position after scrolling is done
+  ;; (run-at-time pixel-dead-time nil (lambda ()
+  ;;                                    (unless (pixel-scroll-in-rush-p)
+  ;;                                      (set-window-vscroll nil 0 t))))
+
+  (defun fk/pixel-scroll-recenter-top-bottom ()
     "Similar to `recenter-top-bottom' but with pixel scrolling."
     (interactive)
     (let* ((current-row (cdr (nth 6 (posn-at-point))))
@@ -1749,12 +1903,12 @@ Copied from: https://github.com/purcell/unfill"
 
 ** Keybindings
 #+BEGIN_SRC emacs-lisp
-(keyboard-translate ?\C-h ?\C-?)  ; C-h as DEL, (I use F1 and M-h as `help-command')
-;; (add-hook 'server-after-make-frame-hook (lambda () (keyboard-translate ?\C-h ?\C-?)))  ; Fix emacs --daemon  ; TODO check if this still necessary
-(keymap-global-set "C-w" 'fk/backward-kill-word-or-region)
-(keymap-global-set "C-o" 'fk/newline-below)
+(keymap-set key-translation-map "C-h" "DEL")  ; `C-h' as `DEL', (I use `M-h' and `F1' as `help-command')
+;; NOTE: (key-translate "C-h" "DEL") doesn't work. See: https://lists.gnu.org/archive/html/help-gnu-emacs/2009-10/msg00505.html
 
-(bind-keys*
+(bind-keys
+ ("C-w" . fk/backward-kill-word-or-region)
+ ("C-o" . fk/newline-below)
  :map text
  ("s" . sort-lines)
  ("f" . fk/unfill-toggle)
@@ -1799,12 +1953,30 @@ Copied from: https://github.com/purcell/unfill"
 
 #+BEGIN_SRC emacs-lisp
 (use-package paren
+  :ensure nil
   :custom
   (show-paren-when-point-inside-paren t)
   :custom-face
   (show-paren-match ((t (:background unspecified :foreground "white"))))
   :hook
   (dashboard-after-initialize . show-paren-mode))
+#+END_SRC
+
+** Multiple Cursors
+
+#+BEGIN_SRC emacs-lisp
+(use-package multiple-cursors
+  :custom
+  (mc/always-run-for-all t)
+  :bind*
+  (("C-M-n" . mc/mark-next-like-this)
+   ("C-M-p" . mc/mark-previous-like-this)
+   ("C-M-S-n" . mc/skip-to-next-like-this)
+   ("C-M-S-p" . mc/skip-to-previous-like-this)
+   ("C-S-n" . mc/unmark-previous-like-this)
+   ("C-S-p" . mc/unmark-next-like-this)
+   ("C-M-<mouse-1>" . mc/add-cursor-on-click)
+   ("C-x C-n" . mc/insert-numbers)))
 #+END_SRC
 
 ** Wrap Region
@@ -1822,31 +1994,19 @@ Copied from: https://github.com/purcell/unfill"
   (wrap-region-add-wrapper "~" "~" nil 'org-mode)
   (wrap-region-add-wrapper "#" "#" nil 'org-mode)
   (wrap-region-add-wrapper "`" "`" nil 'org-mode)
-  (wrap-region-add-wrapper "`" "`" nil 'markdown-mode))
+  (wrap-region-add-wrapper "`" "`" nil 'markdown-mode)
+  (wrap-region-add-wrapper "{{ " " }}" "{" 'mhtml-mode))
 #+END_SRC
 
 ** Expand Region
 
 #+BEGIN_SRC emacs-lisp
 (use-package expand-region
-  ;; I forked karthink's fork which includes org-mode slowness fix
-  :vc (expand-region :url "https://github.com/KaratasFurkan/expand-region.el")
   :custom
   (expand-region-fast-keys-enabled nil)
   (expand-region-subword-enabled t)
   :bind*
   ("C-t" . er/expand-region))
-#+END_SRC
-
-** Wgrep (Writable Grep)
-
-#+BEGIN_SRC emacs-lisp
-(use-package wgrep
-  :custom
-  (wgrep-auto-save-buffer t)
-  :bind
-  ( :map grep-mode-map
-    ("C-c C-e" . wgrep-change-to-wgrep-mode)))
 #+END_SRC
 
 * Programming
@@ -1855,6 +2015,7 @@ Copied from: https://github.com/purcell/unfill"
 
 #+BEGIN_SRC emacs-lisp
 (use-package electric
+  :ensure nil
   :bind
   ( :map prog-mode-map
     ("C-M-m" . electric-indent-just-newline))  ; "C-M-m" equals to "M-RET"
@@ -1866,7 +2027,7 @@ Copied from: https://github.com/purcell/unfill"
 
 #+BEGIN_SRC emacs-lisp
 (use-package newcomment
-  :ensure nil  ; don't try to install it since it's a built-in org module
+  :ensure nil
   :custom
   (comment-column 0)
   (comment-inline-offset 2)
@@ -1888,8 +2049,11 @@ Copied from: https://github.com/purcell/unfill"
 
 #+BEGIN_SRC emacs-lisp
 (use-package project
+  :ensure nil
   ;; TODO: do something like: (projectile-project-search-path (directory-files "~/projects" t "[^.]"))
-  :commands project-find-file project-switch-project  ; TODO: combine these two
+  :commands project-find-file project-switch-project
+  :preface
+  (defvar fk/project-after-switch-project-hook nil)
   :bind
   ("C-x f" . fk/project-find-file-or-switch-project)
   :custom
@@ -1902,21 +2066,44 @@ of `project-switch-commands' when selecting a project."
     (interactive)
     (call-interactively (if (project-current)
                             'project-find-file
-                          'project-switch-project))))
+                          'project-switch-project)))
+
+  (defun fk/run-project-switch-project-hooks (orig-func &rest args)
+    "Add `project-after-switch-project-hook' feature to `project-switch-project'."
+    (run-hooks 'fk/project-after-switch-project-hook))
+
+  (advice-add 'project-switch-project :after 'fk/run-project-switch-project-hooks)
+
+  (defun fk/copy-current-file-name ()
+    "Copy the project root relative file name of the current buffer."
+    (interactive)
+    (let* ((project-root (expand-file-name (caddr (project-current))))
+           (relative-filename (string-remove-prefix project-root  buffer-file-name)))
+      (kill-new (concat "{PROJECT_ROOT}/" relative-filename)))))
+#+END_SRC
+
+*** Flymake
+
+#+BEGIN_SRC emacs-lisp
+(use-package flymake
+  :ensure nil
+  :custom
+  (flymake-no-changes-timeout nil))  ; only check on mode-enabled or save
 #+END_SRC
 
 *** Eglot (LSP)
 
 #+BEGIN_SRC emacs-lisp
 (use-package eglot
+  :ensure nil
   :commands eglot
-  :init
+  :preface
   (setopt eglot-stay-out-of '(flymake))  ; should be set before it's loaded
   :custom
   (eglot-ignored-server-capabilites '(:documentHighlightProvider)))
 #+END_SRC
 
-*** TreeSitter
+*** TODO TreeSitter
 
 #+BEGIN_SRC emacs-lisp
 (use-package treesit
@@ -1928,12 +2115,14 @@ of `project-switch-commands' when selecting a project."
    ;; install with `M-x treesit-install-language-grammar'
    '((bash       "https://github.com/tree-sitter/tree-sitter-bash")
      (css        "https://github.com/tree-sitter/tree-sitter-css")
+     (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
      (elisp      "https://github.com/Wilfred/tree-sitter-elisp")
      (go         "https://github.com/tree-sitter/tree-sitter-go")
      (html       "https://github.com/tree-sitter/tree-sitter-html")
      (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
      (json       "https://github.com/tree-sitter/tree-sitter-json")
      (python     "https://github.com/tree-sitter/tree-sitter-python")
+     (rust       "https://github.com/tree-sitter/tree-sitter-rust")
      (toml       "https://github.com/tree-sitter/tree-sitter-toml")
      (tsx        "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
      (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
@@ -1947,6 +2136,7 @@ of `project-switch-commands' when selecting a project."
      (js-mode         . js-ts-mode)
      (json-mode       . json-ts-mode)
      (python-mode     . python-ts-mode)
+     (rust-mode       . rust-ts-mode)
      (toml-mode       . toml-ts-mode)
      (tsx-mode        . tsx-ts-mode)
      (typescript-mode . typescript-ts-mode)
@@ -2023,7 +2213,27 @@ use `hi-lock-unface-buffer' or disable `hi-lock-mode'."
   (dashboard-after-initialize . bug-reference-mode))
 #+END_SRC
 
+*** Wgrep (Writable Grep)
+
+#+BEGIN_SRC emacs-lisp
+(use-package wgrep
+  :custom
+  (wgrep-auto-save-buffer t)
+  :bind
+  ( :map grep-mode-map
+    ("C-c C-e" . wgrep-change-to-wgrep-mode)))
+#+END_SRC
+
 ** Emacs Lisp
+*** Emacs Lisp
+
+#+BEGIN_SRC emacs-lisp
+(use-package elisp-mode
+  :ensure nil
+  :custom
+  (emacs-lisp-docstring-fill-column t))  ; `t' means use `fill-column'
+#+END_SRC
+
 *** Elisp Slime Nav
 
 This package find definitions better than default. For example
@@ -2070,34 +2280,34 @@ section of the =use-package=.
 
 #+BEGIN_SRC emacs-lisp
 (use-package python
-  :custom
-  (python-indent-guess-indent-offset-verbose nil)
   ;; sudo npm install --global pyright
   ;; pip install flake8 black isort django-stubs djangorestframework-stubs
+  :ensure nil
+  :custom
+  (python-indent-guess-indent-offset-verbose nil)
+  (python-flymake-command '("flake8" "-"))
   :bind
-  ( :map python-ts-mode-map
+  ( :map python-base-mode-map
+    :map python-ts-mode-map  ; it would be nicer to not need this
     ("C-c r" . python-indent-shift-right)
-    ("C-c l" . python-indent-shift-left))
+    ("C-c l" . python-indent-shift-left)
+    ("C-c C-i" . python-import-symbol-at-point))
   :hook  ; NOTE: these hooks runs in reverse order (bottom first)
-  (python-ts-mode . eglot-ensure)
-  (python-ts-mode . fk/activate-pyvenv)  ; TODO: try emacs-pet
-  (python-ts-mode . (lambda () (setq-local fill-column 120)))
-  (python-ts-mode . fk/check-pyright-updates)
+  (python-base-mode . eglot-ensure)
+  (python-base-mode . flymake-mode)
+  (python-base-mode . fk/activate-pyvenv)
+  (python-base-mode . (lambda () (setq-local fill-column 120)))
+  (python-base-mode . fk/check-pyright-updates)
   :config
-  ;; Make walrus operator (":=") more visible
+  ;; Make walrus operator (":=") more visible  TODO: doesn't work with `python-base-mode'
+  (font-lock-add-keywords
+   'python-mode
+   '((":=" 0 'escape-glyph t))
+   t)
   (font-lock-add-keywords
    'python-ts-mode
    '((":=" 0 'escape-glyph t))
-   'set)
-
-  ;; Temporary funny icon
-  (font-lock-add-keywords
-   'python-ts-mode
-   '(("from \\(hipo_django_core\\).*import"
-      (0 (prog1
-             (put-text-property
-              (match-beginning 1) (match-end 1) 'display
-              `(,(find-image '((:file "~/hipo.png"))) (raise 0.2))))))))
+   t)
 
   (defun fk/check-pyright-updates ()
     "Check if `pyright' has an update."
@@ -2200,11 +2410,19 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
      (,django-block-regexp 1 'django-block-name-face t))
    t)
 
+  (font-lock-add-keywords
+   'mhtml-mode
+   `((,django-block-regexp 0 'django-block-keyword-face t)
+     (,django-block-regexp 1 'django-block-name-face t))
+   t)
+
   ;; Highlighting of django template comments
   (defvar django-comment-regexp
     (rx "{%" (zero-or-more space) "comment" (zero-or-more space) "%}"
         (zero-or-more (not (any "{%")))
         "{%" (zero-or-more space) "endcomment" (zero-or-more space) "%}"))
+
+  (defvar django-comment-regexp2 (rx "{#" (zero-or-more anything) "#}"))
 
   (defface django-comment-face
     '((t (:inherit 'font-lock-comment-face)))
@@ -2213,6 +2431,16 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
   (font-lock-add-keywords
    'web-mode
    `((,django-comment-regexp 0 'django-comment-face t))
+   t)
+
+  (font-lock-add-keywords
+   'mhtml-mode
+   `((,django-comment-regexp 0 'django-comment-face t))
+   t)
+
+  (font-lock-add-keywords
+   'mhtml-mode
+   `((,django-comment-regexp2 0 'django-comment-face t))
    t))
 
 
@@ -2261,6 +2489,14 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
 #+END_SRC
 
 ** HTML
+*** HTML
+
+#+BEGIN_SRC emacs-lisp
+(use-package mhtml-mode
+  :hook
+  (mhtml-mode . fk/activate-pyvenv))  ; for djLint which is a python package
+#+END_SRC
+
 *** Emmet Mode
 
 #+BEGIN_SRC emacs-lisp
@@ -2282,6 +2518,37 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
   :vc (djlint :url "https://github.com/KaratasFurkan/djlint.el"
               :branch "main")
   :commands djlint-format-on-save-mode djlint-format-buffer djlint-format-region)
+#+END_SRC
+
+** Typescript
+
+#+BEGIN_SRC emacs-lisp
+(use-package typescript-ts-mode
+  :ensure nil
+  :mode "\\.ts\\'"
+  :hook
+  (typescript-ts-mode . glasses-mode))
+#+END_SRC
+
+** Rust
+
+#+BEGIN_SRC emacs-lisp
+(use-package rust-ts-mode
+  :ensure nil
+  :init
+  (setopt exec-path `(,(expand-file-name "~/.cargo/bin") ,@exec-path))
+  :mode "\\.rs\\'"
+  :hook
+  (rust-ts-mode . eglot-ensure))
+#+END_SRC
+
+** Treesit Fold
+
+#+BEGIN_SRC emacs-lisp
+(use-package treesit-fold
+  :vc (treesit-fold :url "https://github.com/emacs-tree-sitter/treesit-fold")
+  :hook
+  (dashboard-after-initialize . global-treesit-fold-mode))
 #+END_SRC
 
 * Tools
@@ -2308,6 +2575,7 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
   (org-src-preserve-indentation t)
   (org-adapt-indentation nil)
   (org-tags-column -120)
+  (org-tags-sort-function 'string-collate-lessp)  ; alphabetical
   (org-imenu-depth 20)
   (org-hide-emphasis-markers t)
   (org-catch-invisible-edits 'show-and-error)
@@ -2464,7 +2732,7 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
    'org-mode
    `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
       1 'org-checkbox-done-text prepend))
-   'append)
+   t)
 
   (defun fk/org-insert-created-time ()
     (interactive)
@@ -2491,6 +2759,54 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
   (defun fk/org-refile-trash ()
     (interactive)
     (fk/org-refile-fixed-location-with-closed-timestamp "archive.org" "Trash"))
+
+  (defhydra org-refile-hydra
+    (:color red :hint nil)
+    "
+^Move^                 ^Todo^         ^Someday^          ^Archive^
+-----------------------------------------------------------
+_n_: Next              _w_: Work      _E_: Emacs         _d_: Done
+_p_: Previous          _e_: Emacs     _P_: Presentation  _x_: Trash
+^^                     _t_: Tech      _T_: Tech          ^^
+_1_: Low Priority      _h_: Home      _H_: Home          ^^
+_2_: Medium Priority   _o_: Other     _W_: Watch         ^^
+_3_: High Priority     ^^             _R_: Read          ^^
+^^                     ^^             _G_: Game          ^^
+_c_: Set Time Effort   ^^             _O_: Other         ^^
+_a_: Set Tags          ^^                                ^^
+
+
+"
+    ;; Move
+    ("n" next-line)
+    ("p" previous-line)
+    ("1" (lambda () (interactive) (org-priority ?C)))
+    ("2" (lambda () (interactive) (org-priority ?B)))
+    ("3" (lambda () (interactive) (org-priority ?A)))
+    ("c" org-set-effort)
+    ("a" org-set-tags-command)
+    ;; Todo
+    ("w" (lambda () (interactive) (fk/org-refile-fixed-location "todos.org" "Work")))
+    ("e" (lambda () (interactive) (fk/org-refile-fixed-location "todos.org" "Emacs")))
+    ("t" (lambda () (interactive) (fk/org-refile-fixed-location "todos.org" "Tech")))
+    ("h" (lambda () (interactive) (fk/org-refile-fixed-location "todos.org" "Home")))
+    ("o" (lambda () (interactive) (fk/org-refile-fixed-location "todos.org" "Other")))
+    ;; Someday
+    ("E" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Emacs")))
+    ("P" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Emacs Presentation")))
+    ("T" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Tech")))
+    ("H" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Home")))
+    ("W" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Watch")))
+    ("R" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Read")))
+    ("G" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Game")))
+    ("O" (lambda () (interactive) (fk/org-refile-fixed-location "someday.org" "Other")))
+    ;; Archive
+    ("d" fk/org-refile-done)
+    ("x" fk/org-refile-trash)
+    ;; General
+    ("m" org-refile "Refile manually")
+    ("s" save-buffer "Save buffer")
+    ("q" nil "Quit" :color blue))
 
   (set-face-attribute 'org-mode-line-clock nil :inherit 'default)
 
@@ -2586,7 +2902,23 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
            (weekday-count (fk/number-of-weekdays-in-a-month year month until-today))
            (average-working-minutes (/ total-time weekday-count)))
       (message "Average working hour: %s hours %s minutes"
-               (/ average-working-minutes 60) (mod average-working-minutes 60)))))
+               (/ average-working-minutes 60) (mod average-working-minutes 60))))
+
+  (defun fk/insert-heading-respect-previous (orig-func &rest args)
+    "Similar to `org-insert-heading-respect-content' but inserts pre-generated
+heading according to the previous heading if appropriate. For example:
+,* Meeting Notes 2024/04/25
+- Implement login| (running this command in where '|' is adds the below heading)
+,* Meeting Notes 2024/04/29 (today's date)
+"
+    (interactive)
+    (let ((previous-heading (substring-no-properties (org-get-heading t t t t)))
+          (regexp "[mM]eeting [nN]otes [0-9]\\{4\\}/[0-9]\\{1,2\\}/[0-9]\\{1,2\\}"))
+      (apply orig-func args)
+      (when (string-match-p regexp previous-heading)
+        (insert (format "Meeting Notes %s" (format-time-string "%Y/%m/%d"))))))
+
+  (advice-add 'org-insert-heading-respect-content :around 'fk/insert-heading-respect-previous))
 #+END_SRC
 
 *** Org Super Agenda
@@ -2890,6 +3222,92 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
   :hook
   (org-mode . (lambda () (unless (daemonp) (org-rainbow-tags-mode)))))
 #+END_SRC
+
+*** Org Timeblock
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-timeblock
+  :commands org-timeblock
+  :custom
+  (org-timeblock-files `(,(expand-file-name "timeblock.org" org-directory))))
+#+END_SRC
+** AI Tools
+*** gptel
+
+#+BEGIN_SRC emacs-lisp
+(use-package gptel
+  :commands gptel
+  :init
+  (setopt fk/gptel-buffer-name "*gptel-chat*")
+  :custom
+  (gptel-backend (gptel-make-openai "Groq"
+                   :host "api.groq.com"
+                   :endpoint "/openai/v1/chat/completions"
+                   :stream t
+                   :key 'gptel-api-key-from-auth-source
+                   :models '("llama-3.1-70b-versatile"
+                             "llama-3.1-8b-instant"
+                             "llama3-70b-8192"
+                             "llama3-8b-8192"
+                             "mixtral-8x7b-32768"
+                             "gemma-7b-it")))
+  (gptel-model "llama-3.1-70b-versatile")
+  (gptel-default-mode 'org-mode)
+  (gptel-prompt-prefix-alist '((markdown-mode . "## me\n")
+                               (org-mode . "** me\n")))
+  (gptel-response-prefix-alist '((markdown-mode . "### gptel\n")
+                                 (org-mode . "*** gptel\n")))
+  :bind
+  ( :map gptel-mode-map
+    ("C-c C-c" . gptel-send)
+    ("C-c C-e" . fk/toggle-end-of-buffer)
+    :map fk/menu-map
+    ("M-c" . fk/toggle-gptel))
+  :hook
+  (gptel-post-response . fk/toggle-end-of-buffer)
+  (gptel-mode . visual-line-mode)
+  :config
+  (defvar fk/toggle-gptel-last-window nil
+    "The last used window before jumping to the gptel window.")
+
+  (defun fk/toggle-gptel ()
+    "Toggle gptel buffer similar to shell popups."
+    (interactive)
+    (if (string= (buffer-name) fk/gptel-buffer-name)
+        (progn
+          (delete-window)
+          (select-window fk/toggle-gptel-last-window))
+      (setopt fk/toggle-gptel-last-window (selected-window))
+      (let ((selected-text (fk/get-selected-text))
+            (jumped-from-major-mode major-mode))
+        (pop-to-buffer (gptel fk/gptel-buffer-name))
+        (goto-char (point-max))
+        (when selected-text
+          (let* ((lang (string-remove-suffix "-mode" (symbol-name jumped-from-major-mode)))
+                 (begin-wrapper (concat
+                                 (cond
+                                  ((eq gptel-default-mode 'org-mode) "#+BEGIN_SRC ")
+                                  (t "```"))  ; markdown or anything else
+                                 lang))
+                 (end-wrapper (cond
+                               ((eq gptel-default-mode 'org-mode) "#+END_SRC")
+                               (t "```"))))  ; markdown or anything else
+            (goto-char (point-max))
+            (insert begin-wrapper "\n" (string-trim selected-text) "\n" end-wrapper "\n\n"))))))
+
+  (defvar-local fk/toggle-end-of-buffer-last-position nil
+    "The last position before jumping to the end of the buffer.")
+
+  (defun fk/toggle-end-of-buffer (&rest args)
+    "Toggle between current position and (point-max)."
+    (interactive)
+    (if (and (string= (buffer-name) fk/gptel-buffer-name) (eobp))
+        (when fk/toggle-end-of-buffer-last-position
+          (goto-char fk/toggle-end-of-buffer-last-position))
+      (setq fk/toggle-end-of-buffer-last-position (point))
+      (goto-char (point-max)))))
+#+END_SRC
+
 ** Version Control
 *** Magit
 **** Magit
@@ -3050,6 +3468,15 @@ Pull Requests, Issues etc.
 ;;   :hook (magit-mode . magit-delta-mode))
 #+END_SRC
 
+**** Magit File Icons
+
+#+BEGIN_SRC emacs-lisp
+(use-package magit-file-icons
+  :after magit
+  :config
+  (magit-file-icons-mode))
+#+END_SRC
+
 *** diff-hl
 
 #+BEGIN_SRC emacs-lisp
@@ -3107,7 +3534,7 @@ Pull Requests, Issues etc.
     ("b" . vc-msg-show)))
 #+END_SRC
 
-*** Git Blame
+*** Git Blame (blamer-mode)
 
 #+BEGIN_SRC emacs-lisp
 (use-package blamer
@@ -3156,9 +3583,10 @@ Pull Requests, Issues etc.
   ;; I use below command with a custom keybinding to use `eat' as my main terminal emulator
   ;; emacsclient -c --eval "(eat nil (random 99999))"
   :commands eat
-  :bind
+  :bind*
   (("C-M-t" . eat-project)
    :map eat-semi-char-mode-map
+   ("C-j" . nil)
    ("M-o" . nil)
    ("M-m" . nil)
    ("M-q" . nil)
@@ -3181,6 +3609,7 @@ Pull Requests, Issues etc.
   (defvar docker-container-prompt-regexp "^[\\^A-Z]*root@[A-z0-9-]*:/[^#]*# ")
   (defvar python-pdb-prompt-regexp "^[\\^A-Z]*(Pdb) ")
   (defvar python-ipdb-prompt-regexp "^[\\^A-Z]*ipdb> ")
+  (defvar vps-prompt-regexp (rx (or "root" "ubuntu") "@" (one-or-more alphanumeric) ":" (zero-or-more not-newline) "#"))
 
   (defface docker-container-prompt-face
     '((t (:foreground "green yellow")))
@@ -3190,8 +3619,9 @@ Pull Requests, Issues etc.
    'eat-mode
    `((,docker-container-prompt-regexp 0 'docker-container-prompt-face t)
      (,python-pdb-prompt-regexp       0 'docker-container-prompt-face t)
-     (,python-ipdb-prompt-regexp      0 'docker-container-prompt-face t))
-   'set))
+     (,python-ipdb-prompt-regexp      0 'docker-container-prompt-face t)
+     (,vps-prompt-regexp      0 'docker-container-prompt-face t))
+   t))
 #+END_SRC
 
 *** Shell Pop
@@ -3247,11 +3677,196 @@ Pull Requests, Issues etc.
 ;;   (add-to-list 'password-mode-password-prefix-regexs "\"password\":?[[:space:]]+"))
 #+END_SRC
 
-* File Modes
+*** Restclient auto-completion (company-restclient)
 
 #+BEGIN_SRC emacs-lisp
-(use-package yaml-mode
+(use-package company-restclient  ; NOTE: I use this with `cape' & `corfu'
+  :defer)
+#+END_SRC
+
+** Dired
+*** Dired
+
+#+BEGIN_SRC emacs-lisp
+(use-package dired
+  :ensure nil
+  :custom
+  ;; ls parameters:
+  ;; -l     use a long listing format
+  ;; -A, --almost-all
+  ;;        do not list implied . and ..
+  ;; -h, --human-readable
+  ;;        with -l and -s, print sizes like 1K 234M 2G etc.
+  ;; -p, --indicator-style=slash
+  ;;        append / indicator to directories
+  (dired-listing-switches "-lAhp --group-directories-first")
+  (dired-dwim-target t)
+  (dired-omit-files "^\\..*$")  ; hide everything which start with a dot in `dired-omit-mode'
+  (wdired-allow-to-change-permissions 'advanced)  ; allow editing file modes
+  :bind
+  ( :map dired-mode-map
+    ("H" . dired-hide-details-mode)
+    ("h" . dired-omit-mode)
+    ("C-M-u" . dired-up-directory)
+    ("O" . browse-url-xdg-open)                       ; open with associated app
+    ("f". fk/dired-open-systems-file-manager)
+    ("e". fk/dired-sort-by-extension)
+    ("C-c C-e" . wdired-change-to-wdired-mode))
+  :hook
+  (dired-after-readin . (lambda ()
+                          (when (and (string= (dired-current-directory)
+                                              (concat (getenv "HOME") "/"))
+                                     (not (eq last-command 'dired-omit-mode)))
+                            (dired-omit-mode))))
+  :config
+  (defun fk/dired-open-systems-file-manager ()
+    "Open current directory with the system's default file manager."
+    (interactive)
+    (call-process-shell-command (concat "xdg-open " default-directory " &")))
+
+  (defun fk/dired-sort-by-extension ()
+    "Sort files by extension."
+    (interactive)
+    (dired-sort-other (concat dired-listing-switches " -X"))))
+#+END_SRC
+
+*** Nerd Icons Dired
+
+#+BEGIN_SRC emacs-lisp
+(use-package nerd-icons-dired
+  :hook
+  (dired-mode . nerd-icons-dired-mode)
+  :config
+  (advice-add 'wdired-change-to-dired-mode :after 'revert-buffer))  ; fix icons after exiting wdired
+#+END_SRC
+
+
+*** TODO Dirvish
+
+** Calendar
+
+#+BEGIN_SRC emacs-lisp
+(use-package calendar
+  :ensure nil
+  :commands calendar
+  :custom
+  (calendar-week-start-day 1)  ; start at Monday
+  :hook
+  ;; bigger calendar like OS calendars
+  (calendar-mode . (lambda () (text-scale-increase 6))))
+#+END_SRC
+
+** Speed Type
+
+#+BEGIN_SRC emacs-lisp
+(use-package speed-type
+  :commands fk/speed-type-project
+  :config
+  (defun fk/speed-type-project ()
+    "Select example blocks from local projects to exercise touch typing with
+real code blocks."
+    (interactive)
+    (let* ((projects (directory-files "~/projects/python/" t "[^.][^zip]$"))
+           (project (nth (random (length projects)) projects))
+           (files (directory-files-recursively project "[^gunicorn][^__].py$" t
+                                               (lambda (path)
+                                                 (let ((dir (file-name-base path)))
+                                                   (not (or (string-prefix-p "." dir)
+                                                            (string-prefix-p "__" dir)
+                                                            (string= "migrations" dir)))))))
+           (file (nth (random (length files)) files)))
+      (speed-type--setup (with-temp-buffer
+                           (insert-file-contents file)
+                           (delete-whitespace-rectangle (point-min) (point-max))
+                           (speed-type--pick-text-to-type)))
+      (setq-local show-paren-mode nil)))
+
+  (advice-add 'speed-type--play-next :override 'fk/speed-type-project))
+#+END_SRC
+
+** Pomm (pomodoro & third time)
+
+#+BEGIN_SRC emacs-lisp
+(use-package pomm
+  :commands pomm pomm-third-time)
+#+END_SRC
+
+** Hammy (Generic Timer)
+
+#+BEGIN_SRC emacs-lisp
+(use-package hammy
+  :commands hammy-start)
+#+END_SRC
+
+** Sudo Edit
+
+#+BEGIN_SRC emacs-lisp
+(use-package sudo-edit
+  :commands sudo-edit)
+#+END_SRC
+
+* File Modes
+** Markdown
+
+#+BEGIN_SRC emacs-lisp
+(use-package markdown-mode
+  :mode "\\.md\\'"
+  :custom (markdown-header-scaling t)
+  :bind
+  ( :map markdown-mode-map
+    ("M-n" . markdown-next-visible-heading)
+    ("M-p" . markdown-previous-visible-heading)
+    ("C-M-j" . markdown-follow-thing-at-point)))
+#+END_SRC
+
+** YAML
+
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode  ; TODO: test yaml-ts-mode again later and try to switch to it
+  :ensure nil
   :mode "\\.ya?ml\\'")
+#+END_SRC
+
+** requirements.txt (pip-requirements)
+
+#+BEGIN_SRC emacs-lisp
+(use-package pip-requirements
+  :mode (("\\.pip\\'" . pip-requirements-mode)
+         ("requirements[^z-a]*\\.txt\\'" . pip-requirements-mode)
+         ("requirements[^z-a]*\\.in\\'"  . pip-requirements-mode))
+  :config
+  ;; prevent fetching packages. I use this package for just syntax higlighting.
+  (advice-add 'pip-requirements-fetch-packages :override 'ignore))
+#+END_SRC
+
+** Docker
+*** Dockerfile
+
+#+BEGIN_SRC emacs-lisp
+(use-package dockerfile-ts-mode
+  :ensure nil
+  :mode "Dockerfile\\'")
+#+END_SRC
+
+*** Docker Compose
+
+#+BEGIN_SRC emacs-lisp
+(use-package docker-compose-mode
+  :mode "docker-compose\\'")
+#+END_SRC
+
+** Terraform
+
+#+BEGIN_SRC emacs-lisp
+(use-package terraform-mode
+  :mode "\\.tf\\'"
+  :bind
+  ( :map terraform-mode-map
+    ("TAB" . terraform-toggle-or-indent)
+    ("<tab>" . terraform-toggle-or-indent))
+  :hook
+  (terraform-mode . outline-minor-mode)
+  (terraform-mode . eglot-ensure))
 #+END_SRC
 
 * Some random must have settings
@@ -3274,10 +3889,6 @@ early-init.el:
   :ensure nil  ; don't try to install it since it's a built-in org module
   :after org)
 
-(use-package nerd-icons-dired
-  :hook
-  (dired-mode . nerd-icons-dired-mode))
-
 (use-package nerd-icons-completion
   :hook
   (vertico-mode . nerd-icons-completion-mode)
@@ -3286,19 +3897,6 @@ early-init.el:
 (use-package nerd-icons-ibuffer
   :hook
   (ibuffer-mode . nerd-icons-ibuffer-mode))
-
-(use-package multiple-cursors
-  :custom
-  (mc/always-run-for-all t)
-  :bind*
-  (("C-M-n" . mc/mark-next-like-this)
-   ("C-M-p" . mc/mark-previous-like-this)
-   ("C-M-S-n" . mc/skip-to-next-like-this)
-   ("C-M-S-p" . mc/skip-to-previous-like-this)
-   ("C-S-n" . mc/unmark-previous-like-this)
-   ("C-S-p" . mc/unmark-next-like-this)
-   ("C-M-<mouse-1>" . mc/add-cursor-on-click)
-   ("C-x C-n" . mc/insert-numbers)))
 
 (use-package savehist
   :config

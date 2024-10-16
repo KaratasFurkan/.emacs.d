@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
 # name: save_update_fields
-# key: sup
+# key: suf
 # --
 save(update_fields=['$0'])

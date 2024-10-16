@@ -4,7 +4,7 @@
 # --
 from django.urls import path
 
-app_name = '$0'
+app_name = '`(file-name-nondirectory (string-remove-suffix "/" default-directory))`$0'
 
 urlpatterns = [
     path('', SomeListView.as_view(), name='some_list'),
