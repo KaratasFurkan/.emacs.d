@@ -305,18 +305,18 @@ I mainly use =use-package= for everything in my configuration. I'm glad to have 
 built-in in Emacs 29. Unfortunately, the =vc-use-package= support will be shipped
 with Emacs 30, though. So I install that extension manually.
 #+BEGIN_SRC emacs-lisp
-(use-package use-package
-  :ensure nil
-  :config
-  ;; add :vc keyword to `use-package'
-  ;; example:
-  ;; (use-package modus-themes
-  ;;   :vc (modus-themes :url "https://github.com/protesilaos/modus-themes"
-  ;;                     :branch "main"
-  ;;                     :rev "284433625ed7cd3b19d2e34589c3041e16dd0deb"))  ; TODO: doesn't work
-  ;; this will be built-in in Emacs 30
-  (unless (package-installed-p 'vc-use-package)
-    (package-vc-install "https://github.com/slotThe/vc-use-package")))
+;; (use-package use-package
+;;   :ensure nil
+;;   :config
+;;   ;; add :vc keyword to `use-package'
+;;   ;; example:
+;;   ;; (use-package modus-themes
+;;   ;;   :vc (modus-themes :url "https://github.com/protesilaos/modus-themes"
+;;   ;;                     :branch "main"
+;;   ;;                     :rev "284433625ed7cd3b19d2e34589c3041e16dd0deb"))  ; TODO: doesn't work
+;;   ;; this will be built-in in Emacs 30
+;;   (unless (package-installed-p 'vc-use-package)
+;;     (package-vc-install "https://github.com/slotThe/vc-use-package")))
 
 (use-package use-package-ensure
   :ensure nil
@@ -560,8 +560,6 @@ Menu style keybindings like in *Spacemacs*.
  fast-but-imprecise-scrolling t
  ;; correctly resize windows by pixels (e.g. in `split-window' functions)
  window-resize-pixelwise t
- ;; disable annoying native-comp popus
- native-comp-async-report-warnings-errors 'silent  ; TODO: remove at Emacs 30
  ;; disable annoying "ad-handle-definition: 'something' got redefined" warnings
  ad-redefinition-action 'accept
  ;; use `y-or-n-p' instead of `yes-or-no-p'
@@ -3059,14 +3057,14 @@ heading according to the previous heading if appropriate. For example:
 *** Toc Org
 
 #+BEGIN_SRC emacs-lisp
-(use-package toc-org
-  :vc (toc-org :url "https://github.com/KaratasFurkan/toc-org"
-               :branch "insert-silently")
-  :custom
-  (toc-org-max-depth 10)
-  (toc-org-insert-silently t)
-  :hook
-  (org-mode . toc-org-mode))
+;; (use-package toc-org
+;;   :vc (toc-org :url "https://github.com/KaratasFurkan/toc-org"
+;;                :branch "insert-silently")
+;;   :custom
+;;   (toc-org-max-depth 10)
+;;   (toc-org-insert-silently t)
+;;   :hook
+;;   (org-mode . toc-org-mode))
 #+END_SRC
 
 *** Org Babel Async
@@ -3338,16 +3336,16 @@ heading according to the previous heading if appropriate. For example:
 **** Magit Todos
 
 #+BEGIN_SRC emacs-lisp
-(use-package magit-todos
-  :commands magit-todos-list
-  :custom
-  (magit-todos-exclude-globs '("*jquery*.js" "*min.js" "*min.css" "*.mjml"))
-  (magit-todos-max-items 40)  ; It's actually 20 but needed to set x2 for some reason
-  :bind
-  ( :map version-control
-    ("T" . magit-todos-list))
-  :hook
-  (magit-mode . magit-todos-mode))
+;; (use-package magit-todos
+;;   :commands magit-todos-list
+;;   :custom
+;;   (magit-todos-exclude-globs '("*jquery*.js" "*min.js" "*min.css" "*.mjml"))
+;;   (magit-todos-max-items 40)  ; It's actually 20 but needed to set x2 for some reason
+;;   :bind
+;;   ( :map version-control
+;;     ("T" . magit-todos-list))
+;;   :hook
+;;   (magit-mode . magit-todos-mode))
 #+END_SRC
 
 **** Magit Forge
