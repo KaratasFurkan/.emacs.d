@@ -3243,13 +3243,13 @@ heading according to the previous heading if appropriate. For example:
                    :endpoint "/openai/v1/chat/completions"
                    :stream t
                    :key 'gptel-api-key-from-auth-source
-                   :models '("llama-3.1-70b-versatile"
-                             "llama-3.1-8b-instant"
-                             "llama3-70b-8192"
-                             "llama3-8b-8192"
-                             "mixtral-8x7b-32768"
-                             "gemma-7b-it")))
-  (gptel-model "llama-3.1-70b-versatile")
+                   :models '(llama-3.1-70b-versatile
+                             llama-3.1-8b-instant
+                             llama3-70b-8192
+                             llama3-8b-8192
+                             mixtral-8x7b-32768
+                             gemma-7b-it)))
+  (gptel-model 'llama-3.1-70b-versatile)
   (gptel-default-mode 'org-mode)
   (gptel-prompt-prefix-alist '((markdown-mode . "## me\n")
                                (org-mode . "** me\n")))
