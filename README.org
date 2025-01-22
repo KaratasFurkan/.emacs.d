@@ -2291,11 +2291,14 @@ section of the =use-package=.
     ("C-c l" . python-indent-shift-left)
     ("C-c C-i" . python-import-symbol-at-point))
   :hook  ; NOTE: these hooks runs in reverse order (bottom first)
+  (python-base-mode . copilot-mode)
   (python-base-mode . eglot-ensure)
   (python-base-mode . flymake-mode)
-  (python-base-mode . fk/activate-pyvenv)
+  ;; (python-base-mode . fk/activate-pyvenv)
+  (python-base-mode . pet-mode)
+  (python-base-mode . auto-virtualenvwrapper-activate)
   (python-base-mode . (lambda () (setq-local fill-column 120)))
-  (python-base-mode . fk/check-pyright-updates)
+  ;; (python-base-mode . fk/check-pyright-updates)
   :config
   ;; Make walrus operator (":=") more visible  TODO: doesn't work with `python-base-mode'
   (font-lock-add-keywords
@@ -2322,7 +2325,16 @@ section of the =use-package=.
 *** Pyvenv
 
 #+BEGIN_SRC emacs-lisp
+(use-package auto-virtualenvwrapper
+  :init
+  (setopt auto-virtualenvwrapper-verbose nil)
+  :hook
+  (window-configuration-change . auto-virtualenvwrapper-activate))
+
+(use-package pet)
+
 (use-package pyvenv
+  :disabled
   :config
   (defun fk/get-venv-name ()
     "Get venv name of current python project."
@@ -3243,13 +3255,14 @@ heading according to the previous heading if appropriate. For example:
                    :endpoint "/openai/v1/chat/completions"
                    :stream t
                    :key 'gptel-api-key-from-auth-source
-                   :models '(llama-3.1-70b-versatile
+                   :models '(llama-3.3-70b-versatile
+                             llama-3.1-70b-versatile
                              llama-3.1-8b-instant
                              llama3-70b-8192
                              llama3-8b-8192
                              mixtral-8x7b-32768
                              gemma-7b-it)))
-  (gptel-model 'llama-3.1-70b-versatile)
+  (gptel-model 'llama-3.3-70b-versatile)
   (gptel-default-mode 'org-mode)
   (gptel-prompt-prefix-alist '((markdown-mode . "## me\n")
                                (org-mode . "** me\n")))
@@ -3304,6 +3317,20 @@ heading according to the previous heading if appropriate. For example:
           (goto-char fk/toggle-end-of-buffer-last-position))
       (setq fk/toggle-end-of-buffer-last-position (point))
       (goto-char (point-max)))))
+#+END_SRC
+*** github copilot
+
+#+BEGIN_SRC emacs-lisp
+(use-package copilot
+  :commands copilot-mode
+  :vc (:url "https://github.com/copilot-emacs/copilot.el")
+  :bind
+  ( :map copilot-completion-map
+    ("C-s" . copilot-accept-completion)
+    ("M-f" . copilot-accept-completion-by-word)
+    ("M-e" . copilot-accept-completion-by-line)
+    ("M-n" . copilot-next-completion)
+    ("M-p" . copilot-previous-completion)))
 #+END_SRC
 
 ** Version Control
