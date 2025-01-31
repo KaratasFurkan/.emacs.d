@@ -3279,6 +3279,7 @@ heading according to the previous heading if appropriate. For example:
   :hook
   (gptel-post-response . fk/toggle-end-of-buffer)
   (gptel-mode . visual-line-mode)
+  (gptel-post-response-functions . fk/gptel-deepseek-wrap-think-block)
   :config
   (defvar fk/toggle-gptel-last-window nil
     "The last used window before jumping to the gptel window.")
@@ -3318,7 +3319,35 @@ heading according to the previous heading if appropriate. For example:
         (when fk/toggle-end-of-buffer-last-position
           (goto-char fk/toggle-end-of-buffer-last-position))
       (setq fk/toggle-end-of-buffer-last-position (point))
-      (goto-char (point-max)))))
+      (goto-char (point-max))))
+
+  (defun fk/gptel-deepseek-wrap-think-block (beg end)
+    "Wrap '<think>' blocks in an org-mode drawer if not already wrapped. Taken
+from:
+https://github.com/karthink/gptel/discussions/579#discussioncomment-11935728"
+    (when (derived-mode-p 'org-mode)
+      (save-excursion
+        (goto-char beg)
+        ;; Find all occurrences of <think> blocks
+        (while (re-search-forward "^<think>" end t)
+          (let ((start (line-beginning-position)))
+            ;; Check if the block is already wrapped
+            (unless (save-excursion
+                      (forward-line -1)
+                      (looking-at "^:THINKING:$"))
+              ;; Insert Org-mode drawer start
+              (goto-char start)
+              (insert-and-inherit ":THINKING:\n")
+              (forward-line 1)
+              ;; Find the closing tag again after insertion
+              (when (re-search-forward "</think>" end t)
+                (end-of-line)
+                ;; Ensure we don't add duplicate :END:
+                (unless (looking-at "\n:END:")
+                  (insert-and-inherit "\n:END:\n"))
+                ;; Move back to the start of the drawer for org-cycle
+                (goto-char start)
+                (org-cycle)))))))))
 #+END_SRC
 *** github copilot
 
