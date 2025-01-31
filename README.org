@@ -2086,6 +2086,7 @@ of `project-switch-commands' when selecting a project."
 (use-package flymake
   :ensure nil
   :custom
+  (flymake-show-diagnostics-at-end-of-line 'short)
   (flymake-no-changes-timeout nil))  ; only check on mode-enabled or save
 #+END_SRC
 
