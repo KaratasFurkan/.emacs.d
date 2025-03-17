@@ -2716,7 +2716,8 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
   (defun fk/org-babel-load-languages ()
     "Load languages I use."
     (interactive)
-    (org-babel-do-load-languages 'org-babel-load-languages '((python . t)
+    (org-babel-do-load-languages 'org-babel-load-languages `(,@org-babel-load-languages
+                                                             (python . t)
                                                              (emacs-lisp . t)
                                                              (shell . t))))
 
@@ -3738,6 +3739,17 @@ Pull Requests, Issues etc.
 #+BEGIN_SRC emacs-lisp
 (use-package company-restclient  ; NOTE: I use this with `cape' & `corfu'
   :defer)
+#+END_SRC
+
+** Verb (Restclient alternative)
+
+#+BEGIN_SRC emacs-lisp
+(use-package verb
+  :commands verb-mode
+  :hook
+  (verb-mode . (lambda () (org-babel-do-load-languages
+                           'org-babel-load-languages
+                           `(,@org-babel-load-languages (verb . t))))))
 #+END_SRC
 
 ** Dired
