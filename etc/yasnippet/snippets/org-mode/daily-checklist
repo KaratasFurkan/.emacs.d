@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: daily checklist
+# key: d
+# --
+- [ ] Stretching$0
+- [ ] Put phone away
+- [ ] Clock-in as "Todo management"
+- [ ] Email & Slack check
+- [ ] Todo Planning
+- [ ] Time blocking
+- [ ] Give an update on slack if necessary
+- [ ] Fill up worksheet
+
+Todos:
+- [ ] X

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: verb
+# key: v
+# --
+#+BEGIN_SRC verb :wrap src ob-verb-response
+GET /$0
+#+END_SRC

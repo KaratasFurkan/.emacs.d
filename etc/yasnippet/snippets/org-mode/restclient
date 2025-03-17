@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: restclient
+# key: r
+# --
+#+BEGIN_SRC restclient
+$0
+#+END_SRC

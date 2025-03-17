@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: verb post
+# key: vp
+# --
+#+BEGIN_SRC verb :wrap src ob-verb-response
+POST /$0
+
+{
+  "foo": "bar"
+}
+#+END_SRC

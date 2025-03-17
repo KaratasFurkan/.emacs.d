@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: restclient post
+# key: rp
+# --
+#+BEGIN_SRC restclient
+POST $0
+
+{
+  "foo": "bar"
+}
+#+END_SRC
