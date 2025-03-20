@@ -2382,6 +2382,16 @@ section of the =use-package=.
   :commands python-isort-buffer python-isort-region python-isort-on-save-mode)
 #+END_SRC
 
+*** Ruff
+
+#+BEGIN_SRC emacs-lisp
+(require 'reformatter)
+
+(reformatter-define ruff-sort-imports
+  :program "ruff"
+  :args '("check" "--select" "I" "--fix" "-"))
+#+END_SRC
+
 *** Django
 
 See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
@@ -3749,7 +3759,10 @@ Pull Requests, Issues etc.
   :hook
   (verb-mode . (lambda () (org-babel-do-load-languages
                            'org-babel-load-languages
-                           `(,@org-babel-load-languages (verb . t))))))
+                           `(,@org-babel-load-languages (verb . t)))))
+  (org-babel-after-execute-hook . (lambda () (let ((lang (nth 0 (org-babel-get-src-block-info))))
+                                               (when (and buffer-file-name (string= lang "verb"))
+                                                 (save-buffer))))))
 #+END_SRC
 
 ** Dired
