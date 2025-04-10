@@ -2284,7 +2284,7 @@ section of the =use-package=.
   :ensure nil
   :custom
   (python-indent-guess-indent-offset-verbose nil)
-  (python-flymake-command '("ruff" "check" "--quiet" "--preview" "--extend-select" "E,W,B,UP,I" "--output-format=pylint" "--stdin-filename=stdin" "-"))
+  (python-flymake-command '("ruff" "check" "--quiet" "--preview" "--extend-select" "E,W,B,UP,I" "--ignore" "E501" "--output-format=pylint" "--stdin-filename=stdin" "-"))
   :bind
   ( :map python-base-mode-map
     :map python-ts-mode-map  ; it would be nicer to not need this
