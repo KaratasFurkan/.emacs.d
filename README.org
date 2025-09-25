@@ -830,7 +830,7 @@ Note that page break characters can be inserted with =M-x quoted-insert RET C-l=
   (dashboard-init-info (format "Emacs started in %s\n\n" (fk/time-since-startup)))
   (dashboard-center-content t)
   (dashboard-items '((agenda . 0)  ; Custom section
-                     ;;(todo-items . 0)  ; Custom section
+                     (todo-items . 0)  ; Custom section
                      (inbox-entries . 0)  ; Custom section
                      ;; (habit-tracker . 0)  ; Custom section
                      ))
@@ -922,9 +922,7 @@ daemon."
           (kill-buffer file-buffer)
           (org-mode)
           (insert file-content)
-          (delete-matching-lines (regexp-quote \"[#B]\") (point-min) (point-max))
-          (delete-matching-lines (regexp-quote \"[#C]\") (point-min) (point-max))
-          (delete-non-matching-lines \"^*\" (point-min) (point-max))
+          (delete-non-matching-lines \"^\\\\* \\\\|^\\\\*\\\\* .*\\\\[#A\\\\]\" (point-min) (point-max))
           (string-replace \"*\" (format \"  %s\" bullet) (string-replace \"**\" (format \"   %s\" bullet) (buffer-string)))))"))
 
   (defun fk/dashboard-insert-todo-items (&rest _)
