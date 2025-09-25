@@ -2282,7 +2282,8 @@ section of the =use-package=.
   :ensure nil
   :custom
   (python-indent-guess-indent-offset-verbose nil)
-  (python-flymake-command '("ruff" "check" "--quiet" "--preview" "--extend-select" "E,W,B,UP,I" "--ignore" "E501" "--output-format=pylint" "--stdin-filename=stdin" "-"))
+  ;; (python-flymake-command '("ruff" "check" "--quiet" "--preview" "--extend-select" "E,W,B,UP,I" "--ignore" "E501" "--output-format=pylint" "--stdin-filename=stdin" "-"))
+  (python-flymake-command '("ruff" "check" "--quiet" "--output-format=pylint" "--stdin-filename=stdin" "-"))
   :bind
   ( :map python-base-mode-map
     :map python-ts-mode-map  ; it would be nicer to not need this
@@ -3754,6 +3755,8 @@ Pull Requests, Issues etc.
 #+BEGIN_SRC emacs-lisp
 (use-package verb
   :commands verb-mode
+  :custom
+  (verb-babel-timeout 20)
   :hook
   (verb-mode . (lambda () (org-babel-do-load-languages
                            'org-babel-load-languages
@@ -3947,6 +3950,16 @@ real code blocks."
   (terraform-mode . outline-minor-mode)
   (terraform-mode . eglot-ensure))
 #+END_SRC
+
+** CSV
+#+BEGIN_SRC emacs-lisp
+(use-package csv-mode
+  :mode "\\.csv\\'"
+  :custom
+  ;; (csv-align-max-width 999)
+  (csv-invisibility-default nil))
+#+END_SRC
+
 
 * Some random must have settings
 
