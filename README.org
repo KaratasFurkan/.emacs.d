@@ -812,17 +812,15 @@ Note that page break characters can be inserted with =M-x quoted-insert RET C-l=
 
 #+BEGIN_SRC emacs-lisp
 (use-package indent-bars  ; TODO: html mode should check sgml-basic-offset, open a PR
-  :vc (indent-bars :url "https://github.com/jdtsmith/indent-bars")
   :commands indent-bars-mode
   :custom
-  (indent-bars-starting-column 0)
-  (indent-bars-pattern ".")
-  (indent-bars-width-frac 0.5)
-  (indent-bars-pad-frac 0.25)
+  (indent-bars-prefer-character t)  ; stipple face doesn't work in emacs-plus
   (indent-bars-color-by-depth nil)
-  (indent-bars-highlight-current-depth '(:face default :blend 0.4))
+  (indent-bars-color `(,fk/light-color5))
+  (indent-bars-highlight-current-depth `(:color ,fk/light-color))
+  (indent-bars-display-on-blank-lines 'least)
   :hook
-  ;; (python-base-mode . indent-bars-mode)
+  (python-base-mode . indent-bars-mode)
   ;; (mhtml-mode . indent-bars-mode)
   (mhtml-mode . (lambda () (setq-local indent-bars-spacing-override 2))))
 #+END_SRC
@@ -2515,6 +2513,31 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
 (add-hook 'dashboard-after-initialize-hook 'fk/setup-django)
 #+END_SRC
 
+*** Pytest
+
+#+BEGIN_SRC emacs-lisp
+(use-package python-pytest
+  :commands fk/pytest-copy-test-command-for-thing-at-point
+  :bind
+  ( :map django
+    ("d" . fk/pytest-copy-test-command-for-thing-at-point))
+  :config
+  (defvar fk/pytest-command "pytest")
+
+  (defun fk/pytest-copy-test-command-for-thing-at-point ()
+    "Build pytest command for the thing at point and copy it to the kill ring.
+Example:
+pytest tests/test.py::TestSomething::test_something"
+    (interactive)
+    (let* ((file (python-pytest--relative-file-name (buffer-file-name)))
+           (node (python-pytest--node-id-def-or-class-at-point))
+           (path (format "%s::%s" file node))
+           (args "--disable-warnings")
+           (command (format "%s %s %s" fk/pytest-command path args)))
+      (message command)
+      (kill-new command))))
+#+END_SRC
+
 ** HTML
 *** HTML
 
@@ -3540,16 +3563,6 @@ Pull Requests, Issues etc.
 ;;   :hook (magit-mode . magit-delta-mode))
 #+END_SRC
 
-**** Magit File Icons
-
-#+BEGIN_SRC emacs-lisp
-(use-package magit-file-icons
-  :disabled
-  :after magit
-  :config
-  (magit-file-icons-mode))
-#+END_SRC
-
 *** diff-hl
 
 #+BEGIN_SRC emacs-lisp
@@ -3829,19 +3842,36 @@ Pull Requests, Issues etc.
     (dired-sort-other (concat dired-listing-switches " -X"))))
 #+END_SRC
 
-*** Nerd Icons Dired
-
+*** Dirvish
 #+BEGIN_SRC emacs-lisp
-(use-package nerd-icons-dired
-  :disabled  ; TODO: remove this since it's built-in in dirvish
+(use-package dirvish
+  :custom
+  (dirvish-attributes           ; The order *MATTERS* for some attributes
+   '(vc-state subtree-state nerd-icons git-msg file-size))
+  (dirvish-side-attributes
+   '(vc-state nerd-icons file-size))
+  (dirvish-use-mode-line nil)
+  :bind ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
+  (("M-0" . dirvish-side)
+   :map dirvish-mode-map
+   ("TAB" . dirvish-subtree-toggle))
   :hook
-  (dired-mode . nerd-icons-dired-mode)
-  :config
-  (advice-add 'wdired-change-to-dired-mode :after 'revert-buffer))  ; fix icons after exiting wdired
+  (dashboard-after-initialize . dirvish-override-dired-mode))
+
+;; (dirvish-define-attribute git-msg-time
+;;   "File's modified time reported by git log."
+;;   :right 20
+;;   :when (and dired-hide-details-mode (>= win-width 25))
+;;   (let* ((face (or hl-face 'dirvish-file-time))
+;;          str
+;;          str-len)
+;;     (setq str (format " %s " (shell-command-to-string
+;;                               (format "git log -1 --pretty=%%cr %s"
+;;                                       (shell-quote-argument f-name)))))
+;;     (add-face-text-property 0 (setq str-len (length str)) face t str)
+;;     `(right . ,str)))
 #+END_SRC
 
-
-*** TODO Dirvish
 
 ** Calendar
 
