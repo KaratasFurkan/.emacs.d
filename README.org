@@ -1240,11 +1240,6 @@ command is `project-find-file' and this command is called."
   (with-eval-after-load 'corfu-popupinfo
     (keymap-set corfu-popupinfo-map "M-n" 'corfu-popupinfo-scroll-up)
     (keymap-set corfu-popupinfo-map "M-p" 'corfu-popupinfo-scroll-down)))
-
-(use-package nerd-icons-corfu
-  :after corfu
-  :config
-  (add-to-list 'corfu-margin-formatters 'nerd-icons-corfu-formatter))
 #+END_SRC
 
 *** Cape
