@@ -408,6 +408,8 @@ Similar to garbage collection optimization.
 
 (Note: ":tangle early-init.el")
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
+(defconst running-on-macos (eq system-type 'darwin))
+
 (setopt
  frame-inhibit-implied-resize t  ; inhibit frame resize at startup
  inhibit-startup-screen t
@@ -464,6 +466,17 @@ start of message for debug purposes."
 #+END_SRC
 
 * Better Defaults
+** MacOS
+
+#+BEGIN_SRC emacs-lisp
+(when running-on-macos
+  (setopt mac-option-modifier 'super
+          mac-command-modifier 'meta
+          mac-right-option-modifier nil
+          find-function-C-source-directory "~/emacs-30/src")  ; to jump C source code
+  (add-to-list 'default-frame-alist '(fullscreen . fullboth)))
+#+END_SRC
+
 ** File Locations (no-littering)
 
 #+BEGIN_SRC emacs-lisp
@@ -658,7 +671,7 @@ I use this to darken some non-file buffers like eshell, vertico etc.
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
 (defconst fk/fixed-pitch-font-family "Iosevka")
 (defconst fk/variable-pitch-font-family "Sans Serif")
-(defconst fk/font-size 100)
+(defconst fk/font-size (if (eq system-type 'darwin) 140 100))
 
 (set-face-attribute 'default nil :family fk/fixed-pitch-font-family :height fk/font-size)
 (set-face-attribute 'variable-pitch nil :family fk/variable-pitch-font-family :height fk/font-size)
@@ -836,7 +849,7 @@ Note that page break characters can be inserted with =M-x quoted-insert RET C-l=
                      ))
   :custom-face
   (dashboard-heading ((t (:height 1.2))))
-  (dashboard-banner-logo-title ((t (:family "AV Qest" :height 2.5 :weight bold :foreground "#8583C7"))))
+  (dashboard-banner-logo-title ((t (:family "AvQest" :height 2.5 :weight bold :foreground "#8583C7"))))
   :bind
   ( :map buffers
     ("h" . (lambda () (interactive) (if (get-buffer dashboard-buffer-name)
@@ -861,7 +874,8 @@ daemon."
       (if (zerop exit-status)
           (let* ((output (with-current-buffer output-buffer
                            (buffer-substring-no-properties (point-min) (point-max))))
-                 (clean-output (string-trim (string-replace "#<marker" "<marker" output)))
+                 ;; (clean-output (string-trim (string-replace "#<marker" "<marker" output)))
+                 (clean-output (string-replace "#<marker" "<marker" output))
                  (propertized-output (car (read-from-string clean-output))))
             (kill-buffer output-buffer)
             propertized-output)
@@ -2661,7 +2675,7 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
   (org-level-8 ((t (:height 1.0  :weight normal))))
   (org-drawer ((t (:foreground ,fk/light-color1))))
   (org-table ((t (:inherit org-block :foreground ,(face-foreground 'default)))))
-  (org-document-title ((t (:family "AV Qest" :height 3.0))))
+  (org-document-title ((t (:family "AvQest" :height 3.0))))
   (org-block-begin-line ((t (:foreground ,fk/light-color1 :background ,fk/background-color :extend t))))
   (org-document-info-keyword ((t (:foreground ,fk/background-color))))  ; Make #+TITLE: invisible
   (org-meta-line ((t (:foreground ,fk/light-color1))))  ; Less distractive
