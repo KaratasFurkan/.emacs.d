@@ -295,6 +295,8 @@ this is not the only feature of =straight.el= but it was the main one for me.
 ;; TODO: check package-quickstart and other optimization related stuff
 (use-package package
   :ensure nil
+  :custom
+  (package-install-upgrade-built-in t)
   :config
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
 #+END_SRC
@@ -828,8 +830,10 @@ Note that page break characters can be inserted with =M-x quoted-insert RET C-l=
 ** Breadcrumb
 
 #+BEGIN_SRC emacs-lisp
-(use-package breadcrumb  ; TODO: setup for python and emacs source codes
-  :commands breadcrumb-local-mode)
+(use-package breadcrumb
+  :hook
+  (dashboard-after-initialize . breadcrumb-mode))
+#+END_SRC
 #+END_SRC
 
 ** Dashboard
@@ -1111,7 +1115,8 @@ otherwise cycles between 'enable perfect-margin-mode' > 'enlarge it' >
   (shackle-rules `((help-mode :align t :select t)
                    (helpful-mode :align t :select t)
                    (calendar-mode :align t :select t)
-                   (,fk/gptel-buffer-name :align t :select t)))
+                   ;; (,fk/gptel-buffer-name :align t :select t)
+                   ))
   :hook
   (dashboard-after-initialize . shackle-mode))
 #+END_SRC
@@ -1986,7 +1991,9 @@ Copied from: https://github.com/purcell/unfill"
    ("C-S-n" . mc/unmark-previous-like-this)
    ("C-S-p" . mc/unmark-next-like-this)
    ("C-M-<mouse-1>" . mc/add-cursor-on-click)
-   ("C-x C-n" . mc/insert-numbers)))
+   ("C-x C-n" . mc/insert-numbers)
+   :map mc/keymap
+   ("<return>" . nil)))  ; return (or C-m) quits multiple cursors by default
 #+END_SRC
 
 ** Wrap Region
@@ -2291,8 +2298,6 @@ section of the =use-package=.
 
 #+BEGIN_SRC emacs-lisp
 (use-package python
-  ;; sudo npm install --global pyright
-  ;; pip install flake8 black isort django-stubs djangorestframework-stubs
   :ensure nil
   :custom
   (python-indent-guess-indent-offset-verbose nil)
@@ -2305,14 +2310,13 @@ section of the =use-package=.
     ("C-c l" . python-indent-shift-left)
     ("C-c C-i" . python-import-symbol-at-point))
   :hook  ; NOTE: these hooks runs in reverse order (bottom first)
-  (python-base-mode . copilot-mode)
+  ;; (python-base-mode . copilot-mode)
   (python-base-mode . eglot-ensure)
   (python-base-mode . flymake-mode)
   ;; (python-base-mode . fk/activate-pyvenv)
   (python-base-mode . pet-mode)
   (python-base-mode . auto-virtualenvwrapper-activate)
   (python-base-mode . (lambda () (setq-local fill-column 120)))
-  ;; (python-base-mode . fk/check-pyright-updates)
   :config
   ;; Make walrus operator (":=") more visible  TODO: doesn't work with `python-base-mode'
   (font-lock-add-keywords
@@ -2322,18 +2326,7 @@ section of the =use-package=.
   (font-lock-add-keywords
    'python-ts-mode
    '((":=" 0 'escape-glyph t))
-   t)
-
-  (defun fk/check-pyright-updates ()
-    "Check if `pyright' has an update."
-    (interactive)
-    (make-process
-     :command '("bash" "-c" "npm outdated -g | grep pyright | wc -l")
-     :name "check-pyright-updates"
-     :filter (lambda (process output)
-               (pcase output
-                 ("0\n" (message "Pyright is up to date."))
-                 ("1\n" (message "A pyright update is available.")))))))
+   t))
 #+END_SRC
 
 *** Pyvenv
@@ -2608,7 +2601,7 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
   (org-checkbox-hierarchical-statistics nil)
   (org-src-preserve-indentation t)
   (org-adapt-indentation nil)
-  (org-tags-column -120)
+  (org-tags-column -100)
   (org-tags-sort-function 'string-collate-lessp)  ; alphabetical
   (org-imenu-depth 20)
   (org-hide-emphasis-markers t)
@@ -2644,7 +2637,8 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
   (org-fontify-done-headline t)
   (org-log-into-drawer t)  ; Log TODO state changes into :LOGBOOK: drawer insted of directly adding lines to the subtree
   (org-todo-keywords '((sequence "TODO(t)" "WAIT(w)" "HOLD(h)" "STRT(s)"
-                                 "WIP.(i)" "STAG(a)" "PROD(p)" "REPT(r)"
+                                 "WIP.(i)" "STAG(a)" "PROD(p)" "REPT(e)"
+                                 "INRW(r)"
                                  "|" "DONE(d)" "CNCL(c)")))
   (org-todo-keyword-faces
    '(("TODO" :foreground "orangered2" :weight bold)
@@ -2652,6 +2646,7 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
      ("HOLD" :foreground "#DC752F" :weight bold)
      ("STRT" :foreground "PaleGreen" :weight bold)
      ("WIP." :foreground "#86DC2F" :weight bold)
+     ("INRW" :foreground "brown" :weight bold)
      ("REPT" :foreground "#939DA4" :weight bold)
      ("STAG" :foreground "DarkTurquoise" :weight bold)
      ("PROD" :foreground "DodgerBlue" :weight bold)))
@@ -2727,7 +2722,6 @@ See: [[#djlint-django-template-linter][djLint (Django Template Linter)]]
   (org-capture-mode . delete-other-windows)  ; make capture buffer fullscreen
   ;; (org-agenda-mode . (lambda () (require 'org-habit)))
   :config
-  (add-to-list 'org-emphasis-alist '("#" (:box '(:line-width -1))))  ; FIXME: does not work.
   (setf (cdr (assoc "*" org-emphasis-alist)) '((:weight extra-bold :foreground "#DDDDDD")))
 
   (defun fk/org-directory-find-file ()
@@ -3069,8 +3063,8 @@ heading according to the previous heading if appropriate. For example:
   (let ((frame (posframe-show org-agenda-buffer
                               :poshandler 'posframe-poshandler-frame-center
                               :border-width 30
-                              :border-color fk/dark-color)))
-    (x-focus-frame frame)
+                              :border-color fk/dark-color
+                              :accept-focus t)))
     (with-current-buffer org-agenda-buffer
       (setq-local cursor-type 'box))))
 #+END_SRC
@@ -3272,113 +3266,110 @@ heading according to the previous heading if appropriate. For example:
 #+BEGIN_SRC emacs-lisp
 (use-package gptel
   :commands gptel
-  :init
-  (setopt fk/gptel-buffer-name "*gptel-chat*")
   :custom
-  (gptel-backend (gptel-make-openai "Groq"
-                   :host "api.groq.com"
-                   :endpoint "/openai/v1/chat/completions"
-                   :stream t
-                   :key 'gptel-api-key-from-auth-source
-                   :models '(deepseek-r1-distill-llama-70b
-                             llama-3.3-70b-versatile
-                             llama-3.1-70b-versatile
-                             llama-3.1-8b-instant
-                             llama3-70b-8192
-                             llama3-8b-8192
-                             mixtral-8x7b-32768
-                             gemma-7b-it)))
-  (gptel-model 'deepseek-r1-distill-llama-70b)
   (gptel-default-mode 'org-mode)
-  (gptel-prompt-prefix-alist '((markdown-mode . "## me\n")
-                               (org-mode . "** me\n")))
-  (gptel-response-prefix-alist '((markdown-mode . "### gptel\n")
-                                 (org-mode . "*** gptel\n")))
+  (gptel-prompt-prefix-alist '((markdown-mode . "## Me:\n")
+                               (org-mode . "** Me:\n")))
+  (gptel-response-prefix-alist '((markdown-mode . "## AI:\n")
+                                 (org-mode . "** AI:\n")))
   :bind
   ( :map gptel-mode-map
-    ("C-c C-c" . gptel-send)
-    ("C-c C-e" . fk/toggle-end-of-buffer)
-    :map fk/menu-map
-    ("M-c" . fk/toggle-gptel))
+    ("C-c C-c" . gptel-send))
   :hook
-  (gptel-post-response . fk/toggle-end-of-buffer)
   (gptel-mode . visual-line-mode)
-  (gptel-post-response-functions . fk/gptel-deepseek-wrap-think-block)
   :config
-  (defvar fk/toggle-gptel-last-window nil
-    "The last used window before jumping to the gptel window.")
+  ;; NOTE: this doesn't work when it's set in `:custom' block for some reason
+  (setopt gptel-backend (gptel-make-gemini "Gemini"
+                          :stream t
+                          :key 'gptel-api-key-from-auth-source))
+  (setopt gptel-model 'gemini-flash-latest)  ; 'gemini-pro-latest
+  (add-hook 'gptel-post-response-functions 'gptel-end-of-response))
 
-  (defun fk/toggle-gptel ()
-    "Toggle gptel buffer similar to shell popups."
-    (interactive)
-    (if (string= (buffer-name) fk/gptel-buffer-name)
-        (progn
-          (delete-window)
-          (select-window fk/toggle-gptel-last-window))
-      (setopt fk/toggle-gptel-last-window (selected-window))
-      (let ((selected-text (fk/get-selected-text))
-            (jumped-from-major-mode major-mode))
-        (pop-to-buffer (gptel fk/gptel-buffer-name))
-        (goto-char (point-max))
-        (when selected-text
-          (let* ((lang (string-remove-suffix "-mode" (symbol-name jumped-from-major-mode)))
-                 (begin-wrapper (concat
-                                 (cond
-                                  ((eq gptel-default-mode 'org-mode) "#+BEGIN_SRC ")
-                                  (t "```"))  ; markdown or anything else
-                                 lang))
-                 (end-wrapper (cond
-                               ((eq gptel-default-mode 'org-mode) "#+END_SRC")
-                               (t "```"))))  ; markdown or anything else
-            (goto-char (point-max))
-            (insert begin-wrapper "\n" (string-trim selected-text) "\n" end-wrapper "\n\n"))))))
+;; (use-package gptel
+;;   :commands gptel
+;;   :init
+;;   (setopt fk/gptel-buffer-name "*gptel-chat*")
+;;   :custom
+;;   (gptel-backend (gptel-make-openai "Groq"
+;;                    :host "api.groq.com"
+;;                    :endpoint "/openai/v1/chat/completions"
+;;                    :stream t
+;;                    :key 'gptel-api-key-from-auth-source
+;;                    :models '(deepseek-r1-distill-llama-70b
+;;                              llama-3.3-70b-versatile
+;;                              llama-3.1-70b-versatile
+;;                              llama-3.1-8b-instant
+;;                              llama3-70b-8192
+;;                              llama3-8b-8192
+;;                              mixtral-8x7b-32768
+;;                              gemma-7b-it)))
+;;   (gptel-model 'deepseek-r1-distill-llama-70b)
+;;   (gptel-default-mode 'org-mode)
+;;   (gptel-prompt-prefix-alist '((markdown-mode . "## me\n")
+;;                                (org-mode . "** me\n")))
+;;   (gptel-response-prefix-alist '((markdown-mode . "### gptel\n")
+;;                                  (org-mode . "*** gptel\n")))
+;;   :bind
+;;   ( :map gptel-mode-map
+;;     ("C-c C-c" . gptel-send)
+;;     ("C-c C-e" . fk/toggle-end-of-buffer)
+;;     :map fk/menu-map
+;;     ("M-c" . fk/toggle-gptel))
+;;   :hook
+;;   (gptel-post-response . fk/toggle-end-of-buffer)
+;;   (gptel-mode . visual-line-mode)
+;;   (gptel-post-response-functions . fk/gptel-deepseek-wrap-think-block)
+;;   :config
+;;   (defvar fk/toggle-gptel-last-window nil
+;;     "The last used window before jumping to the gptel window.")
 
-  (defvar-local fk/toggle-end-of-buffer-last-position nil
-    "The last position before jumping to the end of the buffer.")
+;;   (defun fk/toggle-gptel ()
+;;     "Toggle gptel buffer similar to shell popups."
+;;     (interactive)
+;;     (if (string= (buffer-name) fk/gptel-buffer-name)
+;;         (progn
+;;           (delete-window)
+;;           (select-window fk/toggle-gptel-last-window))
+;;       (setopt fk/toggle-gptel-last-window (selected-window))
+;;       (let ((selected-text (fk/get-selected-text))
+;;             (jumped-from-major-mode major-mode))
+;;         (pop-to-buffer (gptel fk/gptel-buffer-name))
+;;         (goto-char (point-max))
+;;         (when selected-text
+;;           (let* ((lang (string-remove-suffix "-mode" (symbol-name jumped-from-major-mode)))
+;;                  (begin-wrapper (concat
+;;                                  (cond
+;;                                   ((eq gptel-default-mode 'org-mode) "#+BEGIN_SRC ")
+;;                                   (t "```"))  ; markdown or anything else
+;;                                  lang))
+;;                  (end-wrapper (cond
+;;                                ((eq gptel-default-mode 'org-mode) "#+END_SRC")
+;;                                (t "```"))))  ; markdown or anything else
+;;             (goto-char (point-max))
+;;             (insert begin-wrapper "\n" (string-trim selected-text) "\n" end-wrapper "\n\n"))))))
 
-  (defun fk/toggle-end-of-buffer (&rest args)
-    "Toggle between current position and (point-max)."
-    (interactive)
-    (if (and (string= (buffer-name) fk/gptel-buffer-name) (eobp))
-        (when fk/toggle-end-of-buffer-last-position
-          (goto-char fk/toggle-end-of-buffer-last-position))
-      (setq fk/toggle-end-of-buffer-last-position (point))
-      (goto-char (point-max))))
+;;   (defvar-local fk/toggle-end-of-buffer-last-position nil
+;;     "The last position before jumping to the end of the buffer.")
 
-  (defun fk/gptel-deepseek-wrap-think-block (beg end)
-    "Wrap '<think>' blocks in an org-mode drawer if not already wrapped. Taken
-from:
-https://github.com/karthink/gptel/discussions/579#discussioncomment-11935728"
-    (when (derived-mode-p 'org-mode)
-      (save-excursion
-        (goto-char beg)
-        ;; Find all occurrences of <think> blocks
-        (while (re-search-forward "^<think>" end t)
-          (let ((start (line-beginning-position)))
-            ;; Check if the block is already wrapped
-            (unless (save-excursion
-                      (forward-line -1)
-                      (looking-at "^:THINKING:$"))
-              ;; Insert Org-mode drawer start
-              (goto-char start)
-              (insert-and-inherit ":THINKING:\n")
-              (forward-line 1)
-              ;; Find the closing tag again after insertion
-              (when (re-search-forward "</think>" end t)
-                (end-of-line)
-                ;; Ensure we don't add duplicate :END:
-                (unless (looking-at "\n:END:")
-                  (insert-and-inherit "\n:END:\n"))
-                ;; Move back to the start of the drawer for org-cycle
-                (goto-char start)
-                (org-cycle)))))))))
+;;   (defun fk/toggle-end-of-buffer (&rest args)
+;;     "Toggle between current position and (point-max)."
+;;     (interactive)
+;;     (if (and (string= (buffer-name) fk/gptel-buffer-name) (eobp))
+;;         (when fk/toggle-end-of-buffer-last-position
+;;           (goto-char fk/toggle-end-of-buffer-last-position))
+;;       (setq fk/toggle-end-of-buffer-last-position (point))
+;;       (goto-char (point-max))))
 #+END_SRC
+
 *** github copilot
 
 #+BEGIN_SRC emacs-lisp
 (use-package copilot
+  :disabled
   :commands copilot-mode
   :vc (:url "https://github.com/copilot-emacs/copilot.el")
+  :custom
+  (copilot-max-char-warning-disable t)
   :bind
   ( :map copilot-completion-map
     ("C-s" . copilot-accept-completion)
@@ -3401,6 +3392,7 @@ https://github.com/karthink/gptel/discussions/579#discussioncomment-11935728"
                                             (pullreqs . show)
                                             (issues . show)))
   (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
+  (magit-format-file-function 'magit-format-file-nerd-icons)
   :bind
   ( :map version-control
     ("v" . magit-status)
@@ -3552,6 +3544,7 @@ Pull Requests, Issues etc.
 
 #+BEGIN_SRC emacs-lisp
 (use-package magit-file-icons
+  :disabled
   :after magit
   :config
   (magit-file-icons-mode))
@@ -3701,9 +3694,19 @@ Pull Requests, Issues etc.
      (,python-pdb-prompt-regexp       0 'docker-container-prompt-face t)
      (,python-ipdb-prompt-regexp      0 'docker-container-prompt-face t)
      (,vps-prompt-regexp      0 'docker-container-prompt-face t))
-   t))
-#+END_SRC
+   t)
 
+  (defvar fk/eat-last-buffer-index 0)
+  (defun fk/eat-new-session (eat-buffer-suffix-input)
+    "Create a new eat buffer."
+    (interactive (list (read-string "eat buffer suffix: " nil nil "")))
+    (let ((eat-buffer-index (1+ fk/eat-last-buffer-index))
+          (eat-buffer-name (if (not (string= eat-buffer-suffix-input ""))
+                               (format "%s-%s-" eat-buffer-name eat-buffer-suffix-input)
+                             eat-buffer-name)))
+      (setopt fk/eat-last-buffer-index eat-buffer-index)
+      (eat nil eat-buffer-index))))
+#+END_SRC
 *** Shell Pop
 
 #+BEGIN_SRC emacs-lisp
@@ -3830,6 +3833,7 @@ Pull Requests, Issues etc.
 
 #+BEGIN_SRC emacs-lisp
 (use-package nerd-icons-dired
+  :disabled  ; TODO: remove this since it's built-in in dirvish
   :hook
   (dired-mode . nerd-icons-dired-mode)
   :config
