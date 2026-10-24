@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: fastapi-async-route
+# key: far
+# --
+@router.$0get("/")
+async def endpoint():
+    return {"x": "y"}

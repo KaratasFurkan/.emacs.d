@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: pydantic-model
+# key: pm
+# --
+class Item(BaseModel):
+    name: str | None = None

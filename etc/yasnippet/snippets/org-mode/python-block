@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: python-ts
+# key: p
+# --
+#+BEGIN_SRC python-ts
+$0
+#+END_SRC

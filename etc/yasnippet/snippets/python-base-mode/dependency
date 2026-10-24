@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: dependency
+# key: dp
+# --
+arg: Annotated[type, Depends($0dep)]

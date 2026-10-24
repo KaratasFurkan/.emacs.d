@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: dirlocal
+# key: dirlocal
+# --
+((nil      . ((fk/persp-project-name . "project")))
+ (web-mode . ((web-mode-markup-indent-offset . 2)
+              (eval . (fk/add-local-hook 'before-save-hook 'fk/indent-buffer)))))

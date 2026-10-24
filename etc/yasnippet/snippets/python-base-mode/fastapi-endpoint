@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: fastapi-route
+# key: fr
+# --
+@router.$0get("/")
+def endpoint():
+    return {"x": "y"}

@@ -2,6 +2,6 @@
 # name: verb
 # key: v
 # --
-#+BEGIN_SRC verb :wrap src ob-verb-response
+#+BEGIN_SRC verb
 GET /$0
 #+END_SRC
