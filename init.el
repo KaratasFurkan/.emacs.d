@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 (defconst config-org (locate-user-emacs-file "README.org"))
 (defconst config-el (locate-user-emacs-file "config.el"))
 

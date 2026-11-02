@@ -226,6 +226,8 @@ to load the tangled/exported elisp file or generate it if it doesn't exist yet.
 
 init.el:
 #+BEGIN_SRC emacs-lisp :tangle init.el
+;; -*- lexical-binding: t; -*-
+
 (defconst config-org (locate-user-emacs-file "README.org"))
 (defconst config-el (locate-user-emacs-file "config.el"))
 
@@ -234,6 +236,11 @@ init.el:
   (org-babel-tangle-file config-org config-el))
 
 (load-file config-el)
+#+END_SRC
+
+Start config.el with the lexical-binding cookie:
+#+BEGIN_SRC emacs-lisp
+;; -*- lexical-binding: t; -*-
 #+END_SRC
 
 Initialization flow:
@@ -257,6 +264,10 @@ Note that a few of the code blocks (mostly UI related) in this configuration
 tangle to =early-init.el= instead of =config.el= (which is the elisp file generated
 by this org file) to get the effects in the very beginning of the
 initialization.
+
+#+BEGIN_SRC emacs-lisp :tangle early-init.el
+;; -*- lexical-binding: t; -*-
+#+END_SRC
 
 ** Synchronizing Changes
 
@@ -711,9 +722,9 @@ I use this to darken some non-file buffers like eshell, vertico etc.
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
 (defconst fk/fixed-pitch-font-family "Iosevka Term")
 (defconst fk/variable-pitch-font-family "Sans Serif")
-(defconst fk/font-size (if (eq system-type 'darwin) 140 100))
+(defconst fk/font-size (if (eq system-type 'darwin) 140 110))
 
-(set-face-attribute 'default nil :family fk/fixed-pitch-font-family :height fk/font-size)
+(set-face-attribute 'default nil :family fk/fixed-pitch-font-family :height 110)
 (set-face-attribute 'variable-pitch nil :family fk/variable-pitch-font-family :height fk/font-size)
 
 ;; `global-text-scale-adjust' has kinda magic, it adjust font according to the pressed key:
@@ -736,12 +747,13 @@ I use this to darken some non-file buffers like eshell, vertico etc.
 
 #+BEGIN_SRC emacs-lisp
 (use-package doom-themes
-  :custom-face
-  (font-lock-string-face ((t (:foreground "PeachPuff3"))))
-  (font-lock-function-name-face ((t (:foreground "LightGoldenrod"))))
-  (lazy-highlight ((t (:box (:line-width -1) :background unspecified :foreground unspecified))))
   :config
   (load-theme 'doom-spacegrey t)
+  (custom-theme-set-faces
+   'doom-spacegrey
+   '(font-lock-string-face ((t (:foreground "PeachPuff3"))))
+   '(font-lock-function-name-face ((t (:foreground "LightGoldenrod"))))
+   '(lazy-highlight ((t (:box (:line-width -1) :background unspecified :foreground unspecified)))))
   (defconst fk/cursor-color     "#D08770")   ; (insert (face-background 'cursor))
   (defconst fk/font-color       "#c0c5ce")   ; (insert (face-foreground 'default))
   (defconst fk/background-color "#2b303b")   ; (insert (face-background 'default))
@@ -2010,10 +2022,11 @@ https://github.com/joaotavora/eglot/issues/420#issuecomment-1257247512"
           (lambda (win buff bury-or-kill)
             (not (persp-is-current-buffer buff))))
 
-  ;; `consult' fix:
-  (with-eval-after-load 'consult
-    (consult-customize consult--source-buffer :hidden t :default nil)
-    (add-to-list 'consult-buffer-sources persp-consult-source)))
+  ;; `consult' fix: TODO: Warning (emacs): consult-customize: consult--source-buffer is neither a command nor a source
+  ;; (with-eval-after-load 'consult
+  ;;   (consult-customize consult--source-buffer :hidden t :default nil)
+  ;;   (add-to-list 'consult-buffer-sources persp-consult-source)))
+  )
 #+END_SRC
 
 ** Block Nav
@@ -4291,6 +4304,7 @@ Re-introducing the old version fixes `face-remap-add-relative' for vterm buffers
 (use-package ghostel
   :commands ghostel ghostel-project fk/ghostel-project-dwim
   :custom
+  (ghostel-shell "/bin/zsh")
   (ghostel-readonly-fast-exit nil)
   :custom-face
   (ghostel-default ((t (:background ,fk/dark-color))))
@@ -4552,17 +4566,25 @@ real code blocks."
 ** Markdown
 
 #+BEGIN_SRC emacs-lisp
-(use-package markdown-mode
-  :mode "\\.md\\'"
-  :custom (markdown-header-scaling t)
-  :bind
-  ( :map markdown-mode-map
-    ("M-n" . markdown-next-visible-heading)
-    ("M-p" . markdown-previous-visible-heading)
-    ("C-M-j" . markdown-follow-thing-at-point)))
+;; (use-package markdown-mode
+;;   :mode "\\.md\\'"
+;;   :custom (markdown-header-scaling t)
+;;   :bind
+;;   ( :map markdown-mode-map
+;;     ("M-n" . markdown-next-visible-heading)
+;;     ("M-p" . markdown-previous-visible-heading)
+;;     ("C-M-j" . markdown-follow-thing-at-point)))
 
 (use-package markdown-indent-mode
-  :hook (markdown-mode . markdown-indent-mode))
+  :hook
+  ;; (markdown-mode . markdown-indent-mode)
+  (markdown-ts-mode . markdown-indent-mode))
+
+(use-package markdown-ts-mode
+  :ensure nil
+  :mode ("\\.md\\'" "\\.mdx\\'" "\\.markdown\\'")
+  :config
+  (require 'markdown-ts-mode-x))
 #+END_SRC
 
 ** YAML
@@ -4597,8 +4619,8 @@ real code blocks."
 *** Docker Compose
 
 #+BEGIN_SRC emacs-lisp
-(use-package docker-compose-mode
-  :mode "docker-compose\\'")
+;; (use-package docker-compose-mode
+;;   :mode "docker-compose\\'")
 #+END_SRC
 
 ** Terraform
