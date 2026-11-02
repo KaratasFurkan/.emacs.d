@@ -340,6 +340,18 @@ with Emacs 30, though. So I install that extension manually.
   ;; usually smart enough to recognize built-in packages but sometimes it tries
   ;; to install some packages from remote repositories and fail.
   (use-package-always-ensure t))  ; install packages if not installed yet
+
+;; Workaround for bug#77928: make :custom-face override themes again.
+(defun fk/use-package-handler/:custom-face (name _keyword args rest state)
+  (use-package-concat
+   (mapcar #'(lambda (def)
+               `(progn
+                  (apply #'face-spec-set (append (backquote ,def)))
+                  (put ',(car def) 'face-modified t)))
+           args)
+   (use-package-process-keywords name rest state)))
+
+(advice-add 'use-package-handler/:custom-face :override 'fk/use-package-handler/:custom-face)
 #+END_SRC
 
 * Performance Optimizations
@@ -487,7 +499,7 @@ start of message for debug purposes."
   (setopt mac-option-modifier 'super
           mac-command-modifier 'meta
           mac-right-option-modifier nil
-          find-function-C-source-directory "~/emacs-30/src")  ; to jump C source code
+          find-function-C-source-directory "~/emacs-31/src")  ; to jump C source code
   ;; (add-to-list 'default-frame-alist '(fullscreen . fullboth))
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
   (add-to-list 'default-frame-alist '(undecorated-round . t)))
@@ -566,9 +578,10 @@ Menu style keybindings like in *Spacemacs*.
 ** Exec path from shell
 
 #+BEGIN_SRC emacs-lisp
-;; (use-package exec-path-from-shell
-;;   :hook
-;;   (emacs-startup . exec-path-from-shell-initialize))
+(use-package exec-path-from-shell
+  :if running-on-macos
+  :hook
+  (emacs-startup . exec-path-from-shell-initialize))
 #+END_SRC
 
 ** Others
@@ -722,9 +735,9 @@ I use this to darken some non-file buffers like eshell, vertico etc.
 #+BEGIN_SRC emacs-lisp :tangle early-init.el
 (defconst fk/fixed-pitch-font-family "Iosevka Term")
 (defconst fk/variable-pitch-font-family "Sans Serif")
-(defconst fk/font-size (if (eq system-type 'darwin) 140 110))
+(defconst fk/font-size (if running-on-macos 140 110))
 
-(set-face-attribute 'default nil :family fk/fixed-pitch-font-family :height 110)
+(set-face-attribute 'default nil :family fk/fixed-pitch-font-family :height fk/font-size)
 (set-face-attribute 'variable-pitch nil :family fk/variable-pitch-font-family :height fk/font-size)
 
 ;; `global-text-scale-adjust' has kinda magic, it adjust font according to the pressed key:
