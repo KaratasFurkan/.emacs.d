@@ -4471,6 +4471,9 @@ Re-introducing the old version fixes `face-remap-add-relative' for vterm buffers
                                      (not (eq last-command 'dired-omit-mode)))
                             (dired-omit-mode))))
   :config
+  (when running-on-macos
+    (setopt insert-directory-program "gls"))
+
   (defun fk/dired-open-systems-file-manager ()
     "Open current directory with the system's default file manager."
     (interactive)
